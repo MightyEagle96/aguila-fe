@@ -2,7 +2,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 
 const httpService = axios.create({
-  baseURL: "http://localhost:3453/",
+  baseURL: process.env.REACT_APP_BACKEND_URL,
   timeout: 10000,
   headers: { "Content-Type": "application/json" },
 });
