@@ -1,0 +1,10 @@
+.homePage {
+  min-height: 70vh;
+}
+.banner {
+  background-image: linear-gradient(to right bottom, #1769aa, #2196f3);
+}
+
+.sideMenu {
+  background-image: linear-gradient(to right bottom, #f8f8f8, #ebebeb);
+}
