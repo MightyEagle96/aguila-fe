@@ -4,11 +4,13 @@ import { httpService } from "../httpService";
 import Swal from "sweetalert2";
 import DataTable from "react-data-table-component";
 import { colors } from "../util";
+import { Stack } from "@mui/system";
+import { Spinner } from "react-bootstrap";
 
 export default function CentresHandler() {
   const defaultData = { name: "", centreId: "", password: "" };
   const [data, setData] = useState(defaultData);
-
+  const [processing, setProcessing] = useState(false);
   const [centres, setCentres] = useState([]);
 
   const createCentre = (e) => {
@@ -24,24 +26,32 @@ export default function CentresHandler() {
       confirmButtonText: "YES",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        const path = "createCentre";
+        try {
+          setProcessing(true);
+          const path = "createCentre";
 
-        const res = await httpService.post(path, data);
-        if (res) {
-          setData(defaultData);
-          viewCentres();
+          const res = await httpService.post(path, data);
+          if (res) {
+            setData(defaultData);
+            viewCentres();
+            setProcessing(false);
+          }
+        } catch (error) {
+          setProcessing(false);
         }
       }
     });
   };
 
   const viewCentres = async () => {
+    setProcessing(true);
     const path = "viewCentres";
 
     const res = await httpService(path);
 
     if (res) {
       setCentres(res.data);
+      setProcessing(false);
     }
   };
 
@@ -65,10 +75,15 @@ export default function CentresHandler() {
       <div className="mt-3 mb-3">
         <div className="container">
           <div className="border p-3">
+            <Stack direction="row" spacing={2}>
+              <div>
+                <Typography fontWeight={600} variant="h4">
+                  NMCN Centres
+                </Typography>
+              </div>
+              <div>{processing ? <Spinner animation="grow" /> : null}</div>
+            </Stack>
             <div className="row">
-              <Typography fontWeight={600} variant="h5">
-                NMCN Centres
-              </Typography>
               <div className="col-md-8 ">
                 <DataTable
                   data={centres}
@@ -81,7 +96,7 @@ export default function CentresHandler() {
               </div>
               <div className="col-md-4 border-start">
                 <Typography fontWeight={600} gutterBottom>
-                  NMCN Centres
+                  Create centre
                 </Typography>
 
                 <form onSubmit={createCentre}>
