@@ -3,6 +3,7 @@ import {
   Button,
   IconButton,
   MenuItem,
+  Pagination,
   TextField,
   Typography,
 } from "@mui/material";
@@ -386,6 +387,11 @@ export default function ExamQuestionUpload() {
                   ))}
                 </tbody>
               </Table>
+            </div>
+            <div className="mt-2">
+              <div className="d-flex justify-content-end">
+                <Pagination count={Math.ceil(questions.length / 10)} />
+              </div>
             </div>
           </div>
         ) : null}
