@@ -63,9 +63,9 @@ export default function ExamQuestionUpload() {
       page,
     });
     setFetching(true);
-    const path = `viewExamType/${id}?limit=${query.limit}&page=${query.page}`;
+    const path = `viewExamType/${id}?limit=${query.limit}&page=${page}`;
     const res = await httpService.get(path);
-
+    console.log(res.data.questions);
     if (res) {
       setLength(res.data.length);
       setQuestions(res.data.questions);
@@ -415,10 +415,25 @@ export default function ExamQuestionUpload() {
             </div>
             <div className="mt-2">
               <div className="d-flex justify-content-end">
-                <Stack direction="row">
+                <Stack direction="row" spacing={2}>
                   <div className="d-flex align-items-center">
                     {fetching ? <Spinner size="sm" animation="border" /> : null}
                   </div>
+                  <div className="d-flex align-items-center">
+                    <Typography variant="caption">Rows per page</Typography>
+                    <TextField select variant="standard" className="ms-1">
+                      <MenuItem>10</MenuItem>
+                      <MenuItem>15</MenuItem>
+                      <MenuItem>20</MenuItem>
+                    </TextField>
+                  </div>
+
+                  <div className="d-flex align-items-center">
+                    <Typography variant="caption">
+                      Page: {query.page}
+                    </Typography>
+                  </div>
+
                   <Pagination
                     count={Math.ceil(length / query.limit)}
                     onClick={paginationResult}
