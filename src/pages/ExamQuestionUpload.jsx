@@ -352,6 +352,7 @@ export default function ExamQuestionUpload() {
               <Table striped bordered>
                 <thead>
                   <tr>
+                    <th>S/N</th>
                     <th>Question</th>
                     <th>Option A</th>
                     <th>Option B</th>
@@ -364,12 +365,13 @@ export default function ExamQuestionUpload() {
                 <tbody>
                   {questions.map((c, i) => (
                     <tr key={i}>
+                      <td>{i + 1}</td>
                       <td>{parse(c.question)}</td>
-                      <td>{c.optionA}</td>
-                      <td>{c.optionB}</td>
-                      <td>{c.optionC}</td>
-                      <td>{c.optionD}</td>
-                      <td>{c.correctAns}</td>
+                      <td>{parse(c.optionA)}</td>
+                      <td>{parse(c.optionB)}</td>
+                      <td>{parse(c.optionC)}</td>
+                      <td>{parse(c.optionD)}</td>
+                      <td>{parse(c.correctAns)}</td>
                       <td>
                         <Stack direction="row" spacing={2}>
                           <IconButton>
