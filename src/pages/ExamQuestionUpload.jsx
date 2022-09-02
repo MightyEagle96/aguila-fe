@@ -10,7 +10,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import { httpService } from "../httpService";
-import { Table } from "react-bootstrap";
+import { Spinner, Table } from "react-bootstrap";
 
 import "quill/dist/quill.snow.css";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
@@ -32,7 +32,7 @@ export default function ExamQuestionUpload() {
   const [questionData, setQuestionData] = useState(defaultData);
   const [examType, setExamType] = useState(null);
   const [questions, setQuestions] = useState([]);
-
+  const [posting, setPosting] = useState(false);
   const { id } = useParams();
 
   const handleChange = (e) => {
@@ -50,6 +50,7 @@ export default function ExamQuestionUpload() {
 
   const postQuestion = async (e) => {
     e.preventDefault();
+    setPosting(true);
     const path = `postQuestion/${id}`;
 
     const res = await httpService.post(path, questionData);
@@ -63,7 +64,9 @@ export default function ExamQuestionUpload() {
       });
       setQuestionData(defaultData);
       getExamType();
+      setPosting(false);
     }
+    setPosting(false);
   };
 
   useEffect(() => {
@@ -129,209 +132,221 @@ export default function ExamQuestionUpload() {
                 )}
               </div>
             </div>
-            <form onSubmit={postQuestion}>
-              {richText ? (
-                <>
-                  <div className="row">
-                    <div className="col-md-5">
-                      <Typography variant="caption">Question</Typography>
-                      <ReactQuill
-                        theme="snow"
-                        value={questionData.question}
-                        onChange={(e) =>
-                          setQuestionData({ ...questionData, question: e })
-                        }
-                        modules={{ toolbar: toolbarOptions }}
-                      />
-                    </div>
-                    <div className="col-md-3  mb-2 me-2">
-                      <Typography variant="caption">Option A</Typography>
-                      <ReactQuill
-                        theme="snow"
-                        value={questionData.optionA}
-                        onChange={(e) =>
-                          setQuestionData({ ...questionData, optionA: e })
-                        }
-                        modules={{ toolbar: optionToolbar }}
-                      />
-                    </div>
-                    <div className="col-md-3  mb-2 me-2">
-                      <Typography variant="caption">Option B</Typography>
-                      <ReactQuill
-                        theme="snow"
-                        value={questionData.optionB}
-                        onChange={(e) =>
-                          setQuestionData({ ...questionData, optionB: e })
-                        }
-                        modules={{ toolbar: optionToolbar }}
-                      />
-                    </div>
-                  </div>
+            <div className="mt-3">
+              <form field onSubmit={postQuestion}>
+                <fieldset disabled={posting}>
+                  {richText ? (
+                    <>
+                      <div className="row">
+                        <div className="col-md-5">
+                          <Typography variant="caption">Question</Typography>
+                          <ReactQuill
+                            theme="snow"
+                            value={questionData.question}
+                            onChange={(e) =>
+                              setQuestionData({ ...questionData, question: e })
+                            }
+                            modules={{ toolbar: toolbarOptions }}
+                          />
+                        </div>
+                        <div className="col-md-3  mb-2 me-2">
+                          <Typography variant="caption">Option A</Typography>
+                          <ReactQuill
+                            theme="snow"
+                            value={questionData.optionA}
+                            onChange={(e) =>
+                              setQuestionData({ ...questionData, optionA: e })
+                            }
+                            modules={{ toolbar: optionToolbar }}
+                          />
+                        </div>
+                        <div className="col-md-3  mb-2 me-2">
+                          <Typography variant="caption">Option B</Typography>
+                          <ReactQuill
+                            theme="snow"
+                            value={questionData.optionB}
+                            onChange={(e) =>
+                              setQuestionData({ ...questionData, optionB: e })
+                            }
+                            modules={{ toolbar: optionToolbar }}
+                          />
+                        </div>
+                      </div>
 
-                  <div className="mt-2">
-                    <div className="d-flex flex-wrap">
-                      <div className="col-md-3  mb-2 me-2">
-                        <Typography variant="caption">Option C</Typography>
-                        <ReactQuill
-                          theme="snow"
-                          value={questionData.optionC}
-                          onChange={(e) =>
-                            setQuestionData({ ...questionData, optionC: e })
-                          }
-                          modules={{ toolbar: optionToolbar }}
-                        />
+                      <div className="mt-2">
+                        <div className="d-flex flex-wrap">
+                          <div className="col-md-3  mb-2 me-2">
+                            <Typography variant="caption">Option C</Typography>
+                            <ReactQuill
+                              theme="snow"
+                              value={questionData.optionC}
+                              onChange={(e) =>
+                                setQuestionData({ ...questionData, optionC: e })
+                              }
+                              modules={{ toolbar: optionToolbar }}
+                            />
+                          </div>
+                          <div className="col-md-3  mb-2 me-2">
+                            <Typography variant="caption">Option D</Typography>
+                            <ReactQuill
+                              theme="snow"
+                              value={questionData.optionD}
+                              onChange={(e) =>
+                                setQuestionData({ ...questionData, optionD: e })
+                              }
+                              modules={{ toolbar: optionToolbar }}
+                            />
+                          </div>
+                          <div className="col-md-3  mb-2 me-2 d-flex align-items-center">
+                            {" "}
+                            <TextField
+                              fullWidth
+                              label="Correct Ans"
+                              maxRows={3}
+                              onChange={handleChange}
+                              name="correctAns"
+                              value={questionData.correctAns}
+                              required
+                              select
+                            >
+                              <MenuItem value={questionData.optionA}>
+                                {parse(questionData.optionA)}
+                              </MenuItem>
+                              <MenuItem value={questionData.optionB}>
+                                {parse(questionData.optionB)}
+                              </MenuItem>
+                              <MenuItem value={questionData.optionC}>
+                                {parse(questionData.optionC)}
+                              </MenuItem>
+                              <MenuItem value={questionData.optionD}>
+                                {parse(questionData.optionD)}
+                              </MenuItem>
+                            </TextField>
+                          </div>
+                          <div className="col-md-2 d-flex align-items-center">
+                            <Button type="submit" startIcon={<Upload />}>
+                              {posting ? (
+                                <Spinner animation="grow" />
+                              ) : (
+                                "post question"
+                              )}
+                            </Button>
+                          </div>
+                        </div>
                       </div>
-                      <div className="col-md-3  mb-2 me-2">
-                        <Typography variant="caption">Option D</Typography>
-                        <ReactQuill
-                          theme="snow"
-                          value={questionData.optionD}
-                          onChange={(e) =>
-                            setQuestionData({ ...questionData, optionD: e })
-                          }
-                          modules={{ toolbar: optionToolbar }}
-                        />
+                    </>
+                  ) : (
+                    <>
+                      <div className="row">
+                        <div className="col-md-5">
+                          <TextField
+                            fullWidth
+                            multiline
+                            label="Question"
+                            maxRows={3}
+                            onChange={handleChange}
+                            name="question"
+                            value={questionData.question}
+                            required
+                          />
+                        </div>
+                        <div className="col-md-3  mb-2 me-2">
+                          <TextField
+                            fullWidth
+                            multiline
+                            label="Option A"
+                            maxRows={3}
+                            onChange={handleChange}
+                            name="optionA"
+                            value={questionData.optionA}
+                            required
+                          />
+                        </div>
+                        <div className="col-md-3  mb-2 me-2">
+                          {" "}
+                          <TextField
+                            fullWidth
+                            multiline
+                            label="Option B"
+                            maxRows={3}
+                            onChange={handleChange}
+                            name="optionB"
+                            value={questionData.optionB}
+                            required
+                          />
+                        </div>
                       </div>
-                      <div className="col-md-3  mb-2 me-2 d-flex align-items-center">
-                        {" "}
-                        <TextField
-                          fullWidth
-                          label="Correct Ans"
-                          maxRows={3}
-                          onChange={handleChange}
-                          name="correctAns"
-                          value={questionData.correctAns}
-                          required
-                          select
-                        >
-                          <MenuItem value={questionData.optionA}>
-                            {parse(questionData.optionA)}
-                          </MenuItem>
-                          <MenuItem value={questionData.optionB}>
-                            {parse(questionData.optionB)}
-                          </MenuItem>
-                          <MenuItem value={questionData.optionC}>
-                            {parse(questionData.optionC)}
-                          </MenuItem>
-                          <MenuItem value={questionData.optionD}>
-                            {parse(questionData.optionD)}
-                          </MenuItem>
-                        </TextField>
-                      </div>
-                      <div className="col-md-2 d-flex align-items-center">
-                        <Button type="submit" startIcon={<Upload />}>
-                          post question
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className="row">
-                    <div className="col-md-5">
-                      <TextField
-                        fullWidth
-                        multiline
-                        label="Question"
-                        maxRows={3}
-                        onChange={handleChange}
-                        name="question"
-                        value={questionData.question}
-                        required
-                      />
-                    </div>
-                    <div className="col-md-3  mb-2 me-2">
-                      <TextField
-                        fullWidth
-                        multiline
-                        label="Option A"
-                        maxRows={3}
-                        onChange={handleChange}
-                        name="optionA"
-                        value={questionData.optionA}
-                        required
-                      />
-                    </div>
-                    <div className="col-md-3  mb-2 me-2">
-                      {" "}
-                      <TextField
-                        fullWidth
-                        multiline
-                        label="Option B"
-                        maxRows={3}
-                        onChange={handleChange}
-                        name="optionB"
-                        value={questionData.optionB}
-                        required
-                      />
-                    </div>
-                  </div>
 
-                  <div className="mt-2">
-                    <div className="d-flex flex-wrap">
-                      <div className="col-md-3  mb-2 me-2">
-                        {" "}
-                        <TextField
-                          fullWidth
-                          multiline
-                          label="Option C"
-                          maxRows={3}
-                          onChange={handleChange}
-                          name="optionC"
-                          value={questionData.optionC}
-                          required
-                        />
+                      <div className="mt-2">
+                        <div className="d-flex flex-wrap">
+                          <div className="col-md-3  mb-2 me-2">
+                            {" "}
+                            <TextField
+                              fullWidth
+                              multiline
+                              label="Option C"
+                              maxRows={3}
+                              onChange={handleChange}
+                              name="optionC"
+                              value={questionData.optionC}
+                              required
+                            />
+                          </div>
+                          <div className="col-md-3  mb-2 me-2">
+                            {" "}
+                            <TextField
+                              fullWidth
+                              multiline
+                              label="Option D"
+                              maxRows={3}
+                              onChange={handleChange}
+                              name="optionD"
+                              value={questionData.optionD}
+                              required
+                            />
+                          </div>
+                          <div className="col-md-3  mb-2 me-2">
+                            {" "}
+                            <TextField
+                              fullWidth
+                              label="Correct Ans"
+                              maxRows={3}
+                              onChange={handleChange}
+                              name="correctAns"
+                              value={questionData.correctAns}
+                              required
+                              select
+                            >
+                              <MenuItem value={questionData.optionA}>
+                                {questionData.optionA}
+                              </MenuItem>
+                              <MenuItem value={questionData.optionB}>
+                                {questionData.optionB}
+                              </MenuItem>
+                              <MenuItem value={questionData.optionC}>
+                                {questionData.optionC}
+                              </MenuItem>
+                              <MenuItem value={questionData.optionD}>
+                                {questionData.optionD}
+                              </MenuItem>
+                            </TextField>
+                          </div>
+                          <div className="col-md-2 d-flex align-items-center">
+                            <Button type="submit" startIcon={<Upload />}>
+                              {posting ? (
+                                <Spinner animation="grow" />
+                              ) : (
+                                "post question"
+                              )}
+                            </Button>
+                          </div>
+                        </div>
                       </div>
-                      <div className="col-md-3  mb-2 me-2">
-                        {" "}
-                        <TextField
-                          fullWidth
-                          multiline
-                          label="Option D"
-                          maxRows={3}
-                          onChange={handleChange}
-                          name="optionD"
-                          value={questionData.optionD}
-                          required
-                        />
-                      </div>
-                      <div className="col-md-3  mb-2 me-2">
-                        {" "}
-                        <TextField
-                          fullWidth
-                          label="Correct Ans"
-                          maxRows={3}
-                          onChange={handleChange}
-                          name="correctAns"
-                          value={questionData.correctAns}
-                          required
-                          select
-                        >
-                          <MenuItem value={questionData.optionA}>
-                            {questionData.optionA}
-                          </MenuItem>
-                          <MenuItem value={questionData.optionB}>
-                            {questionData.optionB}
-                          </MenuItem>
-                          <MenuItem value={questionData.optionC}>
-                            {questionData.optionC}
-                          </MenuItem>
-                          <MenuItem value={questionData.optionD}>
-                            {questionData.optionD}
-                          </MenuItem>
-                        </TextField>
-                      </div>
-                      <div className="col-md-2 d-flex align-items-center">
-                        <Button type="submit" startIcon={<Upload />}>
-                          post question
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                </>
-              )}
-            </form>
+                    </>
+                  )}
+                </fieldset>
+              </form>
+            </div>
 
             <div className="mt-3">
               <Table striped bordered>
