@@ -56,6 +56,24 @@ export default function ExamQuestionUpload() {
     setFetching(false);
   };
 
+  const paginationResult = async (e) => {
+    const page = Number(e.target.textContent);
+    setQuery({
+      ...query,
+      page,
+    });
+    setFetching(true);
+    const path = `viewExamType/${id}?limit=${query.limit}&page=${query.page}`;
+    const res = await httpService.get(path);
+
+    if (res) {
+      setLength(res.data.length);
+      setQuestions(res.data.questions);
+      setFetching(false);
+    }
+    setFetching(false);
+  };
+
   const postQuestion = async (e) => {
     e.preventDefault();
     setPosting(true);
@@ -403,14 +421,7 @@ export default function ExamQuestionUpload() {
                   </div>
                   <Pagination
                     count={Math.ceil(length / query.limit)}
-                    onClick={(e) => {
-                      setQuery({
-                        ...query,
-                        page: Number(e.target.textContent),
-                      });
-                      getExamType();
-                      // console.log();
-                    }}
+                    onClick={paginationResult}
                   />
                 </Stack>
               </div>
