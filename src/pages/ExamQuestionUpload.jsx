@@ -34,19 +34,26 @@ export default function ExamQuestionUpload() {
   const [examType, setExamType] = useState(null);
   const [questions, setQuestions] = useState([]);
   const [posting, setPosting] = useState(false);
+  const [query, setQuery] = useState({ page: 1, limit: 10 });
+  const [length, setLength] = useState(0);
+  const [fetching, setFetching] = useState(false);
   const { id } = useParams();
 
   const handleChange = (e) => {
     setQuestionData({ ...questionData, [e.target.name]: e.target.value });
   };
   const getExamType = async () => {
-    const path = `viewExamType/${id}`;
+    setFetching(true);
+    const path = `viewExamType/${id}?limit=${query.limit}&page=${query.page}`;
     const res = await httpService.get(path);
 
     if (res) {
-      setExamType(res.data);
+      setExamType(res.data.examType);
+      setLength(res.data.length);
       setQuestions(res.data.questions);
+      setFetching(false);
     }
+    setFetching(false);
   };
 
   const postQuestion = async (e) => {
@@ -390,7 +397,22 @@ export default function ExamQuestionUpload() {
             </div>
             <div className="mt-2">
               <div className="d-flex justify-content-end">
-                <Pagination count={Math.ceil(questions.length / 10)} />
+                <Stack direction="row">
+                  <div className="d-flex align-items-center">
+                    {fetching ? <Spinner size="sm" animation="border" /> : null}
+                  </div>
+                  <Pagination
+                    count={Math.ceil(length / query.limit)}
+                    onClick={(e) => {
+                      setQuery({
+                        ...query,
+                        page: Number(e.target.textContent),
+                      });
+                      getExamType();
+                      // console.log();
+                    }}
+                  />
+                </Stack>
               </div>
             </div>
           </div>
