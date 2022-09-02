@@ -3,6 +3,8 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import CandidatesHandler from "../pages/CandidatesHandler";
 import CentresHandler from "../pages/CentresHandler";
 import Dashboard from "../pages/Dashboard";
+import ExaminationHandler from "../pages/ExaminationHandler";
+import ExamQuestionUpload from "../pages/ExamQuestionUpload";
 import HomePage from "../pages/HomePage";
 import ViewCentre from "../pages/ViewCentre";
 
@@ -13,6 +15,8 @@ function MainRoutes() {
     { path: "/candidates", component: CandidatesHandler },
     { path: "/centres", component: CentresHandler },
     { path: "/centres/:id", component: ViewCentre },
+    { path: "/examination", component: ExaminationHandler },
+    { path: "/examination/:id", component: ExamQuestionUpload },
   ];
   return (
     <BrowserRouter>
