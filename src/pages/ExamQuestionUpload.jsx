@@ -74,6 +74,32 @@ export default function ExamQuestionUpload() {
     setFetching(false);
   };
 
+  const deleteQuestion = (questionId) => {
+    Swal.fire({
+      icon: "question",
+      title: "Delete",
+      text: "Do you want to delete this question?",
+      showCancelButton: true,
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        setPosting(true);
+        const path = `deleteQuestion/${id}`;
+        const res = await httpService.post(path, { questionId });
+        if (res) {
+          Swal.fire({
+            icon: "success",
+            text: res.data,
+            timer: 1000,
+            showConfirmButton: false,
+            toast: true,
+          });
+          getExamType();
+          setPosting(false);
+        }
+        setPosting(false);
+      }
+    });
+  };
   const postQuestion = async (e) => {
     e.preventDefault();
     setPosting(true);
@@ -400,7 +426,7 @@ export default function ExamQuestionUpload() {
                       <td>{parse(c.correctAns)}</td>
                       <td>
                         <Stack direction="row" spacing={2}>
-                          <IconButton>
+                          <IconButton onClick={() => deleteQuestion(c._id)}>
                             <i class="fas fa-trash    "></i>
                           </IconButton>
                           <IconButton>
@@ -442,7 +468,11 @@ export default function ExamQuestionUpload() {
               </div>
             </div>
           </div>
-        ) : null}
+        ) : (
+          <div className="text-center">
+            <Spinner animation="grow" />
+          </div>
+        )}
       </div>
     </div>
   );
