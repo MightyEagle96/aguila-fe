@@ -462,7 +462,7 @@ export default function ExamQuestionUpload() {
             </div>
             <div className="mt-2">
               <div className="d-flex justify-content-end">
-                <Stack direction="row" spacing={2}>
+                <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
                   <div className="d-flex align-items-center">
                     {fetching ? <Spinner size="sm" animation="border" /> : null}
                   </div>
@@ -491,6 +491,8 @@ export default function ExamQuestionUpload() {
                   <Pagination
                     count={Math.ceil(length / query.limit)}
                     onClick={paginationResult}
+                    showFirstButton
+                    showLastButton
                   />
                 </Stack>
               </div>
