@@ -37,6 +37,7 @@ export default function ExamQuestionUpload() {
   const [query, setQuery] = useState({ page: 1, limit: 10 });
   const [length, setLength] = useState(0);
   const [fetching, setFetching] = useState(false);
+  const [startIndex, setStartIndex] = useState(0);
   const { id } = useParams();
 
   const handleChange = (e) => {
@@ -50,6 +51,7 @@ export default function ExamQuestionUpload() {
     if (res) {
       setExamType(res.data.examType);
       setLength(res.data.length);
+      setStartIndex(res.data.startIndex);
       setQuestions(res.data.questions);
       setFetching(false);
     }
@@ -65,15 +67,34 @@ export default function ExamQuestionUpload() {
     setFetching(true);
     const path = `viewExamType/${id}?limit=${query.limit}&page=${page}`;
     const res = await httpService.get(path);
-    console.log(res.data.questions);
+
     if (res) {
       setLength(res.data.length);
       setQuestions(res.data.questions);
+      setStartIndex(res.data.startIndex);
       setFetching(false);
     }
     setFetching(false);
   };
 
+  const paginationResult2 = async (e) => {
+    const limit = Number(e.target.value);
+    setQuery({
+      ...query,
+      limit,
+    });
+    setFetching(true);
+    const path = `viewExamType/${id}?limit=${limit}&page=${query.page}`;
+    const res = await httpService.get(path);
+
+    if (res) {
+      setLength(res.data.length);
+      setQuestions(res.data.questions);
+      setFetching(false);
+      setStartIndex(res.data.startIndex);
+    }
+    setFetching(false);
+  };
   const deleteQuestion = (questionId) => {
     Swal.fire({
       icon: "question",
@@ -417,7 +438,7 @@ export default function ExamQuestionUpload() {
                 <tbody>
                   {questions.map((c, i) => (
                     <tr key={i}>
-                      <td>{i + 1}</td>
+                      <td>{startIndex + i}</td>
                       <td>{parse(c.question)}</td>
                       <td>{parse(c.optionA)}</td>
                       <td>{parse(c.optionB)}</td>
@@ -447,10 +468,17 @@ export default function ExamQuestionUpload() {
                   </div>
                   <div className="d-flex align-items-center">
                     <Typography variant="caption">Rows per page</Typography>
-                    <TextField select variant="standard" className="ms-1">
-                      <MenuItem>10</MenuItem>
-                      <MenuItem>15</MenuItem>
-                      <MenuItem>20</MenuItem>
+                    <TextField
+                      value={query.limit}
+                      select
+                      variant="standard"
+                      className="ms-2"
+                      onChange={paginationResult2}
+                    >
+                      <MenuItem value={5}>5</MenuItem>
+                      <MenuItem value={10}>10</MenuItem>
+                      <MenuItem value={15}>15</MenuItem>
+                      <MenuItem value={20}>20</MenuItem>
                     </TextField>
                   </div>
 
