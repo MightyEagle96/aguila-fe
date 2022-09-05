@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
+import { Container, Nav, Navbar } from "react-bootstrap";
 
 export default function NavigationBar() {
   return (
@@ -13,6 +13,7 @@ export default function NavigationBar() {
             <Nav.Link href="/candidates">Candidates Control</Nav.Link>
             <Nav.Link href="/centres">Centres Control</Nav.Link>
             <Nav.Link href="/examination">Examination Control</Nav.Link>
+            <Nav.Link href="/examDownload">Examination Download</Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Container>

@@ -19,6 +19,7 @@ import { Stack } from "@mui/system";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import parse from "html-react-parser";
+import "./ExamQuestionUpload.css";
 
 export default function ExamQuestionUpload() {
   const defaultData = {
@@ -421,80 +422,84 @@ export default function ExamQuestionUpload() {
               </form>
             </div>
 
-            <div className="mt-3">
-              <Table striped bordered>
-                <thead>
-                  <tr>
-                    <th>S/N</th>
-                    <th>Question</th>
-                    <th>Option A</th>
-                    <th>Option B</th>
-                    <th>Option C</th>
-                    <th>Option D</th>
-                    <th>Correct Answer</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {questions.map((c, i) => (
-                    <tr key={i}>
-                      <td>{startIndex + i}</td>
-                      <td>{parse(c.question)}</td>
-                      <td>{parse(c.optionA)}</td>
-                      <td>{parse(c.optionB)}</td>
-                      <td>{parse(c.optionC)}</td>
-                      <td>{parse(c.optionD)}</td>
-                      <td>{parse(c.correctAns)}</td>
-                      <td>
-                        <Stack direction="row" spacing={2}>
-                          <IconButton onClick={() => deleteQuestion(c._id)}>
-                            <i class="fas fa-trash    "></i>
-                          </IconButton>
-                          <IconButton>
-                            <i class="fas fa-edit    "></i>
-                          </IconButton>
-                        </Stack>
-                      </td>
+            <div className="table-view">
+              <div className="mt-3">
+                <Table striped bordered>
+                  <thead>
+                    <tr>
+                      <th>S/N</th>
+                      <th>Question</th>
+                      <th>Option A</th>
+                      <th>Option B</th>
+                      <th>Option C</th>
+                      <th>Option D</th>
+                      <th>Correct Answer</th>
+                      <th>Action</th>
                     </tr>
-                  ))}
-                </tbody>
-              </Table>
-            </div>
-            <div className="mt-2">
-              <div className="d-flex justify-content-end">
-                <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-                  <div className="d-flex align-items-center">
-                    {fetching ? <Spinner size="sm" animation="border" /> : null}
-                  </div>
-                  <div className="d-flex align-items-center">
-                    <Typography variant="caption">Rows per page</Typography>
-                    <TextField
-                      value={query.limit}
-                      select
-                      variant="standard"
-                      className="ms-2"
-                      onChange={paginationResult2}
-                    >
-                      <MenuItem value={5}>5</MenuItem>
-                      <MenuItem value={10}>10</MenuItem>
-                      <MenuItem value={15}>15</MenuItem>
-                      <MenuItem value={20}>20</MenuItem>
-                    </TextField>
-                  </div>
+                  </thead>
+                  <tbody>
+                    {questions.map((c, i) => (
+                      <tr key={i}>
+                        <td>{startIndex + i}</td>
+                        <td>{parse(c.question)}</td>
+                        <td>{parse(c.optionA)}</td>
+                        <td>{parse(c.optionB)}</td>
+                        <td>{parse(c.optionC)}</td>
+                        <td>{parse(c.optionD)}</td>
+                        <td>{parse(c.correctAns)}</td>
+                        <td>
+                          <Stack direction="row" spacing={2}>
+                            <IconButton onClick={() => deleteQuestion(c._id)}>
+                              <i class="fas fa-trash    "></i>
+                            </IconButton>
+                            <IconButton>
+                              <i class="fas fa-edit    "></i>
+                            </IconButton>
+                          </Stack>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              </div>
+              <div className="mt-2">
+                <div className="d-flex justify-content-end">
+                  <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+                    <div className="d-flex align-items-center">
+                      {fetching ? (
+                        <Spinner size="sm" animation="border" />
+                      ) : null}
+                    </div>
+                    <div className="d-flex align-items-center">
+                      <Typography variant="caption">Rows per page</Typography>
+                      <TextField
+                        value={query.limit}
+                        select
+                        variant="standard"
+                        className="ms-2"
+                        onChange={paginationResult2}
+                      >
+                        <MenuItem value={5}>5</MenuItem>
+                        <MenuItem value={10}>10</MenuItem>
+                        <MenuItem value={15}>15</MenuItem>
+                        <MenuItem value={20}>20</MenuItem>
+                      </TextField>
+                    </div>
 
-                  <div className="d-flex align-items-center">
-                    <Typography variant="caption">
-                      Page: {query.page}
-                    </Typography>
-                  </div>
+                    <div className="d-flex align-items-center">
+                      <Typography variant="caption">
+                        Page: {query.page}
+                      </Typography>
+                    </div>
 
-                  <Pagination
-                    count={Math.ceil(length / query.limit)}
-                    onClick={paginationResult}
-                    showFirstButton
-                    showLastButton
-                  />
-                </Stack>
+                    <Pagination
+                      count={Math.ceil(length / query.limit)}
+                      onClick={paginationResult}
+                      showFirstButton
+                      showLastButton
+                    />
+                  </Stack>
+                </div>
               </div>
             </div>
           </div>
