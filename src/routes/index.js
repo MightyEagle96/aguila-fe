@@ -7,6 +7,7 @@ import DownloadExam from "../pages/DownloadExam";
 import ExaminationHandler from "../pages/ExaminationHandler";
 import ExamQuestionUpload from "../pages/ExamQuestionUpload";
 import HomePage from "../pages/HomePage";
+import ResultsPage from "../pages/ResultsPage";
 import ViewCentre from "../pages/ViewCentre";
 
 function MainRoutes() {
@@ -19,6 +20,7 @@ function MainRoutes() {
     { path: "/examination", component: ExaminationHandler },
     { path: "/examination/:id", component: ExamQuestionUpload },
     { path: "/examDownload", component: DownloadExam },
+    { path: "/results", component: ResultsPage },
   ];
   return (
     <BrowserRouter>
