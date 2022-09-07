@@ -13,6 +13,11 @@ function MyFooter() {
           All rights reserved{" "}
           <i class="fas fa-copyright    "> {new Date().getFullYear()}</i>
         </Typography>
+        <div className="ps-4">
+          <Typography variant="caption" gutterBottom>
+            Powered by Mighty Eagle Tech
+          </Typography>
+        </div>
       </div>
     </div>
   );
