@@ -1,4 +1,4 @@
-import { Button, Typography } from "@mui/material";
+import { Button, CardActionArea, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { Alert, Badge } from "react-bootstrap";
 import { useParams } from "react-router-dom";
@@ -82,20 +82,27 @@ export default function QuestionBank() {
             </div>
             <div className="mt-2 d-flex flex-wrap">
               {questionBanks.map((c, i) => (
-                <div className="col-md-3 me-2 p-3 shadow rounded">
-                  <Typography fontWeight={600} gutterBottom>
-                    Bank {i + 1}
-                  </Typography>
-                  <div className="d-flex justify-content-between">
-                    <Typography variant="caption" fontStyle={"italic"}>
-                      Questions: {c.questions.length}
+                <div className="col-md-3 me-2 mb-2">
+                  <CardActionArea
+                    className="p-3 shadow rounded"
+                    onClick={() =>
+                      window.location.assign(`/postExamQuestions/${c._id}`)
+                    }
+                  >
+                    <Typography fontWeight={600} gutterBottom>
+                      Bank {i + 1}
                     </Typography>
-                    {c.isTaken ? (
-                      <Badge>Taken</Badge>
-                    ) : (
-                      <Badge bg="danger">Not taken</Badge>
-                    )}
-                  </div>
+                    <div className="d-flex justify-content-between">
+                      <Typography variant="caption" fontStyle={"italic"}>
+                        Questions: {c.questions.length}
+                      </Typography>
+                      {c.isTaken ? (
+                        <Badge>Taken</Badge>
+                      ) : (
+                        <Badge bg="danger">Not taken</Badge>
+                      )}
+                    </div>
+                  </CardActionArea>
                 </div>
               ))}
             </div>

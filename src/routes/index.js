@@ -20,7 +20,7 @@ function MainRoutes() {
     { path: "/centres/:id", component: ViewCentre },
     { path: "/examination", component: ExaminationHandler },
     { path: "/questionBank/:id", component: QuestionBank },
-    { path: "/examination/:id", component: ExamQuestionUpload },
+    { path: "/postExamQuestions/:id", component: ExamQuestionUpload },
     { path: "/examDownload", component: DownloadExam },
     { path: "/results", component: ResultsPage },
   ];
