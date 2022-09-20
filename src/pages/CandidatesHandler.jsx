@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, TextField, Typography } from "@mui/material";
+import { Button, MenuItem, TextField, Typography } from "@mui/material";
 import { httpService } from "../httpService";
 import Swal from "sweetalert2";
 import DataTable from "react-data-table-component";
@@ -7,11 +7,12 @@ import { Spinner } from "react-bootstrap";
 import { colors } from "../util";
 
 export default function CandidatesHandler() {
-  const defaultData = { number: 0 };
+  const defaultData = { number: 0, examType: "" };
   const [data, setData] = useState(defaultData);
   const [loading, setLoading] = useState(false);
   const [assigning, setAssigning] = useState(false);
   const [centres, setCentres] = useState([]);
+  const [examTypes, setExamTypes] = useState([]);
 
   const createCentre = (e) => {
     e.preventDefault();
@@ -37,6 +38,23 @@ export default function CandidatesHandler() {
     });
   };
 
+  const deleteCandidates = async () => {
+    const path = "deleteCandidates";
+
+    const res = await httpService.delete(path);
+    if (res) {
+      viewCandidates();
+      Swal.fire({ icon: "success", title: "SUCCESS", text: res.data });
+    }
+  };
+  const viewExamTypes = async () => {
+    const path = "viewExamTypes";
+    const res = await httpService.get(path);
+
+    if (res) {
+      setExamTypes(res.data);
+    }
+  };
   const viewCandidates = async () => {
     setLoading(true);
     const path = "viewCandidates";
@@ -49,41 +67,22 @@ export default function CandidatesHandler() {
     } else setLoading(false);
   };
 
-  const assignExamType = () => {
-    Swal.fire({
-      icon: "question",
-      text: "Do you wish to assign candidates to different exam types",
-      showCancelButton: true,
-    }).then(async (e) => {
-      if (e.isConfirmed) {
-        setAssigning(true);
-        const path = "assignExamType";
-
-        const res = await httpService(path);
-        if (res) {
-          Swal.fire({
-            icon: "success",
-            text: res.data,
-            timer: 2000,
-            showConfirmButton: false,
-          });
-          setAssigning(false);
-          viewCandidates();
-        }
-        setAssigning(false);
-      }
-    });
-  };
   useEffect(() => {
     viewCandidates();
+    viewExamTypes();
   }, []);
   const handleChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
   };
   const columns = [
-    { name: "Candidate", selector: (row) => row.name },
+    {
+      name: "Candidate",
+      selector: (row) => (
+        <Typography textTransform={"capitalize"}>{row.name}</Typography>
+      ),
+    },
     { name: "Registration Number", selector: (row) => row.registrationNumber },
-    { name: "Exam Type", selector: (row) => row.examTypeText },
+    { name: "Exam Type", selector: (row) => row.examType.examType },
   ];
   return (
     <div>
@@ -104,26 +103,37 @@ export default function CandidatesHandler() {
                   </Typography>
 
                   <form onSubmit={createCentre}>
-                    <div className="div mb-3">
+                    <div className="mt-3 mb-3">
                       <TextField
                         label="Number"
                         name="number"
-                        value={data.number}
+                        fullWidth
                         onChange={handleChange}
                         type="number"
                       />
                     </div>
-                    <Button variant="contained" type="submit">
+                    <div className="mt-3">
+                      <TextField
+                        select
+                        label="Exam Type"
+                        fullWidth
+                        name="examType"
+                        onChange={handleChange}
+                      >
+                        {examTypes.map((c, i) => (
+                          <MenuItem key={i} value={c._id}>
+                            {c.examType}
+                          </MenuItem>
+                        ))}
+                      </TextField>
+                    </div>
+                    <Button variant="contained" type="submit" className="mt-3">
                       Create Candidates
                     </Button>
                   </form>
                   <div className="mt-3">
-                    <Button variant="outlined" onClick={assignExamType}>
-                      {assigning ? (
-                        <Spinner amimation="glow" />
-                      ) : (
-                        "  Assign exam types for all candidates"
-                      )}
+                    <Button color="error" onClick={deleteCandidates}>
+                      delete candidates
                     </Button>
                   </div>
                 </div>
