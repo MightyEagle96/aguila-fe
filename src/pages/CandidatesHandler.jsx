@@ -82,7 +82,10 @@ export default function CandidatesHandler() {
       ),
     },
     { name: "Registration Number", selector: (row) => row.registrationNumber },
-    { name: "Exam Type", selector: (row) => row.examType.examType },
+    {
+      name: "Exam Type",
+      selector: (row) => (row.examType ? row.examType.examType : ""),
+    },
   ];
   return (
     <div>
