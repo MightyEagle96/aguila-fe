@@ -13,6 +13,7 @@ export default function NavigationBar() {
             <Nav.Link href="/candidates">Candidates Control</Nav.Link>
             <Nav.Link href="/centres">Centres Control</Nav.Link>
             <Nav.Link href="/examination">Examination Control</Nav.Link>
+            <Nav.Link href="/createdExamination">Created Examination</Nav.Link>
             <Nav.Link href="/examDownload">Examination Download</Nav.Link>
           </Nav>
         </Navbar.Collapse>

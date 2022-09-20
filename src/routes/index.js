@@ -2,6 +2,7 @@ import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import CandidatesHandler from "../pages/CandidatesHandler";
 import CentresHandler from "../pages/CentresHandler";
+import CreatedExamination from "../pages/CreatedExamination";
 import Dashboard from "../pages/Dashboard";
 import DownloadExam from "../pages/DownloadExam";
 import ExaminationHandler from "../pages/ExaminationHandler";
@@ -23,6 +24,7 @@ function MainRoutes() {
     { path: "/postExamQuestions/:id", component: ExamQuestionUpload },
     { path: "/examDownload", component: DownloadExam },
     { path: "/results", component: ResultsPage },
+    { path: "/createdExamination", component: CreatedExamination },
   ];
   return (
     <BrowserRouter>

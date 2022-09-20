@@ -99,7 +99,28 @@ export default function ExaminationHandler() {
       title: "Please confirm",
       text: "Do you wish to create this examination?",
       showCancelButton: true,
-    }).then(async () => {});
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        let banks = [];
+
+        questionBanks.forEach((c) => banks.push(c.value));
+        const path = "createExamination";
+
+        const res = await httpService.post(path, {
+          questionBanks: banks,
+          title: examTitle,
+        });
+
+        if (res) {
+          Swal.fire({
+            icon: "success",
+            title: "SUCCESS",
+            text: res.data,
+            timer: 3000,
+          }).then(() => window.location.assign("/createdExamination"));
+        }
+      }
+    });
   };
   return (
     <div>
