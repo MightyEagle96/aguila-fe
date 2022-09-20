@@ -191,7 +191,7 @@ export default function ExamQuestionUpload() {
               </Typography>
             </Alert>
           </div>
-          <div className="border m-3 p-3">
+          <div className="m-3">
             <div className="d-flex justify-content-end mb-2">
               {richText ? (
                 <Button
