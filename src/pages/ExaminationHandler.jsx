@@ -92,6 +92,15 @@ export default function ExaminationHandler() {
     if (exist) return true;
     return false;
   };
+
+  const createExamination = () => {
+    Swal.fire({
+      icon: "question",
+      title: "Please confirm",
+      text: "Do you wish to create this examination?",
+      showCancelButton: true,
+    }).then(async () => {});
+  };
   return (
     <div>
       <div className="mt-3 mb-3">
@@ -243,15 +252,33 @@ export default function ExaminationHandler() {
                     </div>
                   </div>
                   <div className="col-md-6 border-start">
-                    <div>
-                      <Typography variant="h3" fontWeight={600}>
-                        {examTitle}
-                      </Typography>
-                    </div>
-                    <div className="mt-2">
-                      <Typography color="GrayText">
-                        Selected Question banks
-                      </Typography>
+                    <div className="p-4 shadow rounded">
+                      <div>
+                        <Typography variant="h3" fontWeight={600}>
+                          {examTitle}
+                        </Typography>
+                      </div>
+                      <div className="mt-2 mb-5">
+                        <Typography color="GrayText">
+                          Selected Question banks
+                        </Typography>
+                        <div className="mt-4">
+                          {questionBanks.map((c, i) => (
+                            <Typography gutterBottom key={i}>
+                              <i class="fas fa-arrow-right    "></i> {c.text}
+                            </Typography>
+                          ))}
+                        </div>
+                        <div className="mt-4">
+                          <Button
+                            variant="outlined"
+                            disabled={questionBanks.length === 0 ? true : false}
+                            onClick={createExamination}
+                          >
+                            Create examination
+                          </Button>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
