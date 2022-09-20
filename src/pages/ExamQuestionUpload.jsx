@@ -23,17 +23,8 @@ import "./ExamQuestionUpload.css";
 
 export default function ExamQuestionUpload() {
   const { id } = useParams();
-  const [questionBank, setQuestionBank] = useState(null);
+  //const [questionBank, setQuestionBank] = useState(null);
 
-  const viewQuestions = async () => {
-    const path = `viewQuestions/${id}`;
-
-    const res = await httpService.get(path);
-
-    if (res) {
-      setQuestionBank(res.data);
-    }
-  };
   const defaultData = {
     question: "",
     optionA: "",
@@ -44,7 +35,7 @@ export default function ExamQuestionUpload() {
   };
   const [richText, setRichText] = useState(false);
   const [questionData, setQuestionData] = useState(defaultData);
-  //const [examType, setExamType] = useState(null);
+  const [examType, setExamType] = useState(null);
   const [questions, setQuestions] = useState([]);
   const [posting, setPosting] = useState(false);
   const [query, setQuery] = useState({ page: 1, limit: 10 });
@@ -57,10 +48,11 @@ export default function ExamQuestionUpload() {
   };
   const getExamType = async () => {
     setFetching(true);
-    const path = `viewExamType/${id}?limit=${query.limit}&page=${query.page}`;
+    const path = `getExamQuestions/${id}?limit=${query.limit}&page=${query.page}`;
     const res = await httpService.get(path);
+    console.log(res.data);
     if (res) {
-      //setExamType(res.data.examType);
+      setExamType(res.data.examType);
       setLength(res.data.length);
       setStartIndex(res.data.startIndex);
       setQuestions(res.data.questions);
@@ -76,7 +68,7 @@ export default function ExamQuestionUpload() {
       page,
     });
     setFetching(true);
-    const path = `viewExamType/${id}?limit=${query.limit}&page=${page}`;
+    const path = `getExamQuestions/${id}?limit=${query.limit}&page=${page}`;
     const res = await httpService.get(path);
     if (res) {
       setLength(res.data.length);
@@ -93,7 +85,7 @@ export default function ExamQuestionUpload() {
       limit,
     });
     setFetching(true);
-    const path = `viewExamType/${id}?limit=${limit}&page=${query.page}`;
+    const path = `getExamQuestions/${id}?limit=${limit}&page=${query.page}`;
     const res = await httpService.get(path);
     if (res) {
       setLength(res.data.length);
@@ -150,7 +142,7 @@ export default function ExamQuestionUpload() {
   };
 
   useEffect(() => {
-    viewQuestions();
+    getExamType();
   }, []);
 
   const optionToolbar = [
@@ -182,12 +174,12 @@ export default function ExamQuestionUpload() {
   ];
   return (
     <div>
-      {questionBank ? (
+      {examType ? (
         <div>
           <div className="container">
             <Alert>
               <Typography>
-                Paper Type: <strong>{questionBank.examType.examType}</strong>
+                Paper Type: <strong>{examType}</strong>
               </Typography>
             </Alert>
           </div>
@@ -439,7 +431,7 @@ export default function ExamQuestionUpload() {
                 </tr>
               </thead>
               <tbody>
-                {questionBank.questions.map((c, i) => (
+                {questions.map((c, i) => (
                   <tr key={i}>
                     <td>{startIndex + i}</td>
                     <td>{parse(c.question)}</td>
@@ -477,10 +469,10 @@ export default function ExamQuestionUpload() {
                       className="ms-2"
                       onChange={paginationResult2}
                     >
-                      <MenuItem value={5}>5</MenuItem>
-                      <MenuItem value={10}>10</MenuItem>
-                      <MenuItem value={15}>15</MenuItem>
-                      <MenuItem value={20}>20</MenuItem>
+                      <MenuItem value={5}>10</MenuItem>
+                      <MenuItem value={10}>20</MenuItem>
+                      <MenuItem value={15}>50</MenuItem>
+                      <MenuItem value={20}>100</MenuItem>
                     </TextField>
                   </div>
 
