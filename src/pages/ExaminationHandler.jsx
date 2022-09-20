@@ -6,6 +6,11 @@ import {
   Stack,
   TextField,
   Typography,
+  Radio,
+  RadioGroup,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
 } from "@mui/material";
 import { httpService } from "../httpService";
 import { useState, useEffect } from "react";
@@ -18,6 +23,7 @@ export default function ExaminationHandler() {
   const [loading, setLoading] = useState(false);
   const [processLoading, setProcessLoading] = useState(false);
   const [processing, setProcessing] = useState(false);
+  const [examTitle, setExamTitle] = useState("");
 
   const createExamType = async (e) => {
     e.preventDefault();
@@ -82,7 +88,7 @@ export default function ExaminationHandler() {
     <div>
       <div className="mt-3 mb-3">
         <div className="container">
-          <div className="p-3 border">
+          <div>
             <div className="d-flex justify-content-between">
               <div>
                 <Typography fontWeight={600} variant="h5" gutterBottom>
@@ -136,15 +142,70 @@ export default function ExaminationHandler() {
               </div>
             </div>
 
-            <hr />
-            <div>
-              <Typography>Create Examination to download</Typography>
+            <div className="border border-info rounded p-3 mt-3">
+              <Typography textTransform="uppercase" variant="h5">
+                Create Examination to download
+              </Typography>
 
-              <div className="mt-2">
-                <TextField
-                  label="Examination Title"
-                  helperText="Enter the name of this examination"
-                />
+              <div className="mt-4">
+                <Stack direction="row" spacing={2}>
+                  <div>
+                    <TextField
+                      label="Examination Title"
+                      helperText="Enter the name of this examination"
+                      onChange={(e) => setExamTitle(e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <Typography variant="h3" fontWeight={600}>
+                      {examTitle}
+                    </Typography>
+                  </div>
+                </Stack>
+              </div>
+              <div className="mt-3">
+                <div className="col-md-4">
+                  <Typography variant="body2" color="GrayText">
+                    Create the questions for this examination from different
+                    question banks under each paper type
+                  </Typography>
+                </div>
+                <div className="row">
+                  <div className="col-md-6">
+                    <div className="mt-4">
+                      {examinationTypes.map((c, i) => (
+                        <div key={i} className="p-3 mb-2 shadow rounded">
+                          <Typography
+                            fontWeight={600}
+                            textTransform={"uppercase"}
+                            gutterBottom
+                          >
+                            {c.examType}
+                          </Typography>
+                          <FormControl>
+                            <FormLabel id="demo-row-radio-buttons-group-label">
+                              Question Banks
+                            </FormLabel>
+                            <RadioGroup
+                              row
+                              aria-labelledby="demo-row-radio-buttons-group-label"
+                              name="row-radio-buttons-group"
+                            >
+                              {c.questionBanks.map((d, p) => (
+                                <FormControlLabel
+                                  value={d}
+                                  control={<Radio />}
+                                  label={`Bank ${p + 1}`}
+                                />
+                              ))}
+                            </RadioGroup>
+                          </FormControl>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="col-md-6"></div>
+                </div>
               </div>
             </div>
           </div>
