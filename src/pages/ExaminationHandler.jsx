@@ -1,17 +1,18 @@
 import React from "react";
 import {
   Button,
-  IconButton,
-  Link,
   Stack,
   TextField,
   Typography,
-  Radio,
-  RadioGroup,
+  FormGroup,
+  Checkbox,
   FormControl,
   FormControlLabel,
   FormLabel,
 } from "@mui/material";
+
+import { pink } from "@mui/material/colors";
+import { FavoriteBorder, Favorite } from "@mui/icons-material";
 import { httpService } from "../httpService";
 import { useState, useEffect } from "react";
 import { Spinner, Table } from "react-bootstrap";
@@ -24,6 +25,7 @@ export default function ExaminationHandler() {
   const [processLoading, setProcessLoading] = useState(false);
   const [processing, setProcessing] = useState(false);
   const [examTitle, setExamTitle] = useState("");
+  const [questionBanks, setQuestionBanks] = useState([]);
 
   const createExamType = async (e) => {
     e.preventDefault();
@@ -49,7 +51,6 @@ export default function ExaminationHandler() {
     const res = await httpService(path);
 
     if (res) {
-      console.log(res.data);
       setExaminationTypes(res.data);
       setLoading(false);
     }
@@ -84,6 +85,13 @@ export default function ExaminationHandler() {
   useEffect(() => {
     viewExaminationTypes();
   }, []);
+
+  const existed = (text) => {
+    const exist = questionBanks.find((c) => c.text === text);
+
+    if (exist) return true;
+    return false;
+  };
   return (
     <div>
       <div className="mt-3 mb-3">
@@ -156,11 +164,6 @@ export default function ExaminationHandler() {
                       onChange={(e) => setExamTitle(e.target.value)}
                     />
                   </div>
-                  <div>
-                    <Typography variant="h3" fontWeight={600}>
-                      {examTitle}
-                    </Typography>
-                  </div>
                 </Stack>
               </div>
               <div className="mt-3">
@@ -170,9 +173,9 @@ export default function ExaminationHandler() {
                     question banks under each paper type
                   </Typography>
                 </div>
-                <div className="row">
+                <div className="row mt-4">
                   <div className="col-md-6">
-                    <div className="mt-4">
+                    <div>
                       {examinationTypes.map((c, i) => (
                         <div key={i} className="p-3 mb-2 shadow rounded">
                           <Typography
@@ -186,25 +189,71 @@ export default function ExaminationHandler() {
                             <FormLabel id="demo-row-radio-buttons-group-label">
                               Question Banks
                             </FormLabel>
-                            <RadioGroup
-                              row
-                              aria-labelledby="demo-row-radio-buttons-group-label"
-                              name="row-radio-buttons-group"
-                            >
+                            <FormGroup aria-label="position" row>
                               {c.questionBanks.map((d, p) => (
                                 <FormControlLabel
+                                  key={p}
                                   value={d}
-                                  control={<Radio />}
+                                  control={
+                                    <Checkbox
+                                      icon={<FavoriteBorder />}
+                                      checkedIcon={<Favorite />}
+                                      onChange={(e) => {
+                                        if (
+                                          e.target.checked &&
+                                          !existed(
+                                            `${c.examType} Bank ${p + 1}`
+                                          )
+                                        ) {
+                                          setQuestionBanks((oldArray) => [
+                                            ...oldArray,
+                                            {
+                                              value: e.target.value,
+                                              text: `${c.examType} Bank ${
+                                                p + 1
+                                              }`,
+                                            },
+                                          ]);
+                                        } else if (
+                                          !e.target.checked &&
+                                          existed(`${c.examType} Bank ${p + 1}`)
+                                        ) {
+                                          const newBank = questionBanks.filter(
+                                            (c) => c.value !== e.target.value
+                                          );
+                                          setQuestionBanks(newBank);
+                                        }
+                                      }}
+                                      sx={{
+                                        color: pink[800],
+                                        "&.Mui-checked": {
+                                          color: pink[600],
+                                        },
+                                      }}
+                                    />
+                                  }
                                   label={`Bank ${p + 1}`}
+                                  labelPlacement="end"
                                 />
                               ))}
-                            </RadioGroup>
+                            </FormGroup>
                           </FormControl>
                         </div>
                       ))}
                     </div>
                   </div>
-                  <div className="col-md-6"></div>
+                  <div className="col-md-6 border-start">
+                    <div>
+                      <Typography variant="h3" fontWeight={600}>
+                        {examTitle}
+                      </Typography>
+                    </div>
+                    <div className="mt-2">
+                      <Typography color="GrayText">
+                        Selected Question banks
+                      </Typography>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
