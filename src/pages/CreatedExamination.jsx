@@ -38,6 +38,29 @@ export default function CreatedExamination() {
       }
     });
   };
+
+  const deactivateExamination = (id) => {
+    Swal.fire({
+      icon: "question",
+      title: "Make inactive",
+      text: "Do you want to deactivate this examination",
+      showCancelButton: true,
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const path = `deactivateExamination/${id}`;
+        const res = await httpService.get(path);
+        viewCreatedExaminations();
+        if (res) {
+          Swal.fire({
+            icon: "success",
+            title: "SUCCESS",
+            text: res.data,
+            timer: 3000,
+          });
+        }
+      }
+    });
+  };
   useEffect(() => {
     viewCreatedExaminations();
   }, []);
@@ -76,7 +99,11 @@ export default function CreatedExamination() {
                       <Button onClick={() => activateExamination(c._id)}>
                         activate
                       </Button>
-                    ) : null}
+                    ) : (
+                      <Button onClick={() => deactivateExamination(c._id)}>
+                        deactivate
+                      </Button>
+                    )}
                   </td>
                 </tr>
               ))}

@@ -21,9 +21,9 @@ export default function DownloadExam() {
       name: "Downloaded",
       selector: (row) =>
         row.downloadedExam ? (
-          <Badge bg="success">yes</Badge>
+          <Badge bg="success">YES</Badge>
         ) : (
-          <Badge bg="danger">no</Badge>
+          <Badge bg="danger">NO</Badge>
         ),
     },
   ];
