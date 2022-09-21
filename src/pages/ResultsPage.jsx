@@ -46,7 +46,9 @@ function ResultsPage() {
               <Typography variant="h5">Result</Typography>
 
               <div className="mt-2">
-                <Typography>Candidate: {result.name}</Typography>
+                <Typography textTransform={"capitalize"}>
+                  Candidate: {result.name}
+                </Typography>
               </div>
               <div className="mt-2">
                 <Typography>
@@ -54,7 +56,9 @@ function ResultsPage() {
                 </Typography>
               </div>
               <div className="mt-2">
-                <Typography>Examination Type: {result.examTypeText}</Typography>
+                <Typography>
+                  Examination Type: {result.examType.examType}
+                </Typography>
               </div>
               <div className="mt-2">
                 <Typography>Score: {result.score}</Typography>
