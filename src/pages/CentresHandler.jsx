@@ -70,6 +70,25 @@ export default function CentresHandler() {
   const rowClick = (e) => {
     window.location.assign(`/centres/${e._id}`);
   };
+
+  const deleteCentres = () => {
+    Swal.fire({
+      icon: "question",
+      title: "Confirm",
+      text: "Do you wish to delete all centes?",
+      showCancelButton: true,
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const path = "deleteCentres";
+
+        const res = await httpService.delete(path);
+        if (res) {
+          viewCentres();
+          Swal.fire({ icon: "success", title: res.data });
+        }
+      }
+    });
+  };
   return (
     <div>
       <div className="mt-3 mb-3">
@@ -139,6 +158,12 @@ export default function CentresHandler() {
                     Create Centre
                   </Button>
                 </form>
+
+                <div className="mt-3">
+                  <Button color="error" onClick={deleteCentres}>
+                    delete centres
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
