@@ -122,6 +122,24 @@ export default function ExaminationHandler() {
       }
     });
   };
+
+  const deleteExaminationTypes = () => {
+    Swal.fire({
+      icon: "question",
+      title: "Confirm",
+      text: "Do you want to delete all examination types?",
+      showCancelButton: true,
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const path = "deleteExaminationType";
+        const res = await httpService.delete(path);
+        if (res) {
+          viewExaminationTypes();
+          Swal.fire({ icon: "success", title: res.data });
+        }
+      }
+    });
+  };
   return (
     <div>
       <div className="mt-3 mb-3">
@@ -153,7 +171,14 @@ export default function ExaminationHandler() {
                 </form>
               </div>
               <div className="col-md-7 border-start">
-                <Typography gutterBottom>Created Examination Types</Typography>
+                <div className="d-flex justify-content-between">
+                  <Typography gutterBottom>
+                    Created Examination Types
+                  </Typography>
+                  <Button color="error" onClick={deleteExaminationTypes}>
+                    Delete examination types
+                  </Button>
+                </div>
 
                 <Table>
                   <thead border>
