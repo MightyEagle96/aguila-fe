@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Button, Typography } from "@mui/material";
+import { Button, IconButton, Stack, Typography } from "@mui/material";
+import { Delete, DeleteForever, DeleteOutline } from "@mui/icons-material";
 import { Badge, Table } from "react-bootstrap";
 import { httpService } from "../httpService";
 import Swal from "sweetalert2";
@@ -64,6 +65,27 @@ export default function CreatedExamination() {
   useEffect(() => {
     viewCreatedExaminations();
   }, []);
+
+  const deleteCreatedExamination = async (id) => {
+    Swal.fire({
+      icon: "question",
+      title: "Delete Examination?",
+      text: "Are you sure you want to delete this already created examination?",
+      showCancelButton: true,
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const path = `deleteExamination/${id}`;
+
+        const res = await httpService.delete(path);
+
+        if (res && res.data) {
+          viewCreatedExaminations();
+          Swal.fire({ icon: "success", text: res.data, title: "SUCCESS" });
+        }
+      }
+    });
+  };
+
   return (
     <div>
       <div className="container mt-2">
@@ -95,15 +117,28 @@ export default function CreatedExamination() {
                     )}
                   </td>
                   <td>
-                    {!c.active ? (
-                      <Button onClick={() => activateExamination(c._id)}>
-                        activate
-                      </Button>
-                    ) : (
-                      <Button onClick={() => deactivateExamination(c._id)}>
-                        deactivate
-                      </Button>
-                    )}
+                    <Stack direction="row" spacing={1}>
+                      <div>
+                        {!c.active ? (
+                          <Button onClick={() => activateExamination(c._id)}>
+                            activate
+                          </Button>
+                        ) : (
+                          <Button onClick={() => deactivateExamination(c._id)}>
+                            deactivate
+                          </Button>
+                        )}
+                      </div>
+                      <div className="border-end"></div>
+                      <div>
+                        <IconButton
+                          color="error"
+                          onClick={() => deleteCreatedExamination(c._id)}
+                        >
+                          <Delete />
+                        </IconButton>
+                      </div>
+                    </Stack>
                   </td>
                 </tr>
               ))}

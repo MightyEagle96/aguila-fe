@@ -94,6 +94,7 @@ export default function ExaminationHandler() {
   };
 
   const createExamination = () => {
+    if (examTitle === "") return alert("Please enter an examination title");
     Swal.fire({
       icon: "question",
       title: "Please confirm",
