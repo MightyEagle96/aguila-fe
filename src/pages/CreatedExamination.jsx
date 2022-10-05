@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, IconButton, Stack, Typography } from "@mui/material";
+import { Button, IconButton, Link, Stack, Typography } from "@mui/material";
 import { Delete, DeleteForever, DeleteOutline } from "@mui/icons-material";
 import { Badge, Table } from "react-bootstrap";
 import { httpService } from "../httpService";
@@ -137,6 +137,12 @@ export default function CreatedExamination() {
                         >
                           <Delete />
                         </IconButton>
+                      </div>
+                      <div className="border-end"></div>
+                      <div className="d-flex align-items-center">
+                        <Link href={`/dashboard/${c._id}`} underline="hover">
+                          View Dashboard
+                        </Link>
                       </div>
                     </Stack>
                   </td>
