@@ -10,7 +10,7 @@ export default function NavigationBar() {
   return (
     <Navbar bg="dark" expand="lg">
       <Container>
-        <Navbar.Brand href="#home">
+        <Navbar.Brand href="/">
           <Avatar
             src={logo}
             className="d-inline-block align-top me-2"
