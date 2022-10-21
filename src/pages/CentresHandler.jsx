@@ -129,7 +129,7 @@ export default function CentresHandler() {
                 pointerOnHover
               />
             </div>
-            <div className="col-md-4 border-start">
+            <div className="col-md-4">
               <Typography fontWeight={600} gutterBottom>
                 Create centre
               </Typography>

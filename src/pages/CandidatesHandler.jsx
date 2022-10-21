@@ -78,7 +78,9 @@ export default function CandidatesHandler() {
     {
       name: "Candidate",
       selector: (row) => (
-        <Typography textTransform={"capitalize"}>{row.name}</Typography>
+        <Typography textTransform={"capitalize"} variant="body2">
+          {row.name}
+        </Typography>
       ),
     },
     { name: "Registration Number", selector: (row) => row.registrationNumber },
@@ -90,56 +92,52 @@ export default function CandidatesHandler() {
   return (
     <div>
       {!loading ? (
-        <div className="mt-3 mb-3">
-          <div className="container">
-            <div className="border p-3">
-              <div className="row">
-                <Typography fontWeight={600} variant="h5">
-                  NMCN Candidates
-                </Typography>
-                <div className="col-md-9 ">
-                  <DataTable data={centres} columns={columns} pagination />
-                </div>
-                <div className="col-md-3 border-start">
-                  <Typography fontWeight={600} gutterBottom>
-                    Create Candidate
-                  </Typography>
+        <div className="mt-5 mb-5">
+          <div className="row">
+            <Typography fontWeight={600} variant="h5">
+              NMCN Candidates
+            </Typography>
+            <div className="col-md-9 ">
+              <DataTable data={centres} columns={columns} pagination />
+            </div>
+            <div className="col-md-3 ">
+              <Typography fontWeight={600} gutterBottom>
+                Create Candidate
+              </Typography>
 
-                  <form onSubmit={createCentre}>
-                    <div className="mt-3 mb-3">
-                      <TextField
-                        label="Number"
-                        name="number"
-                        fullWidth
-                        onChange={handleChange}
-                        type="number"
-                      />
-                    </div>
-                    <div className="mt-3">
-                      <TextField
-                        select
-                        label="Exam Type"
-                        fullWidth
-                        name="examType"
-                        onChange={handleChange}
-                      >
-                        {examTypes.map((c, i) => (
-                          <MenuItem key={i} value={c._id}>
-                            {c.examType}
-                          </MenuItem>
-                        ))}
-                      </TextField>
-                    </div>
-                    <Button variant="contained" type="submit" className="mt-3">
-                      Create Candidates
-                    </Button>
-                  </form>
-                  <div className="mt-3">
-                    <Button color="error" onClick={deleteCandidates}>
-                      delete candidates
-                    </Button>
-                  </div>
+              <form onSubmit={createCentre}>
+                <div className="mt-3 mb-3">
+                  <TextField
+                    label="Number"
+                    name="number"
+                    fullWidth
+                    onChange={handleChange}
+                    type="number"
+                  />
                 </div>
+                <div className="mt-3">
+                  <TextField
+                    select
+                    label="Exam Type"
+                    fullWidth
+                    name="examType"
+                    onChange={handleChange}
+                  >
+                    {examTypes.map((c, i) => (
+                      <MenuItem key={i} value={c._id}>
+                        {c.examType}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </div>
+                <Button variant="contained" type="submit" className="mt-3">
+                  Create Candidates
+                </Button>
+              </form>
+              <div className="mt-3">
+                <Button color="error" onClick={deleteCandidates}>
+                  delete candidates
+                </Button>
               </div>
             </div>
           </div>

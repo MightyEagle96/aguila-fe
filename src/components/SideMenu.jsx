@@ -36,9 +36,9 @@ export default function SideMenu() {
       redirectTo: "/centres",
     },
     {
-      text: "Manage active exam",
-      icon: <i class="fas fa-wrench    "></i>,
-      redirectTo: `/manageActiveExam`,
+      text: "Candidates",
+      icon: <People />,
+      redirectTo: `/candidates`,
     },
     {
       text: "Monitor active exam",
