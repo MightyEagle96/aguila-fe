@@ -26,6 +26,7 @@ export default function ExaminationHandler() {
   const [processing, setProcessing] = useState(false);
   const [examTitle, setExamTitle] = useState("");
   const [questionBanks, setQuestionBanks] = useState([]);
+  const [examination, setExamination] = useState("");
 
   const createExamType = async (e) => {
     e.preventDefault();
@@ -42,6 +43,27 @@ export default function ExaminationHandler() {
       });
       viewExaminationTypes();
     }
+  };
+
+  const createNewExamination = async (e) => {
+    e.preventDefault();
+
+    Swal.fire({
+      icon: "question",
+      title: "Confirm",
+      text: "Create new examination",
+      showCancelButton: true,
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const path = "createNewExamination";
+
+        const res = await httpService.post(path, { name: examination });
+
+        if (res) {
+          Swal.fire({ icon: "success", title: "Success", text: res.data });
+        }
+      }
+    });
   };
 
   const viewExaminationTypes = async () => {
@@ -143,188 +165,205 @@ export default function ExaminationHandler() {
   };
   return (
     <div>
-      <div className="mt-3 mb-3">
-        <div className="container">
-          <div>
-            <div className="d-flex justify-content-between">
-              <div>
-                <Typography fontWeight={600} variant="h5" gutterBottom>
-                  EXAMINATION CONTROL
+      <div className="mt-5 mb-5">
+        <div>
+          <div className="d-flex justify-content-between">
+            <div>
+              <Typography fontWeight={600} variant="h4" gutterBottom>
+                Examination Control
+              </Typography>
+              <hr />
+            </div>
+            <div>{processLoading ? <Spinner animation="grow" /> : null}</div>
+          </div>
+
+          <div className="row mb-5">
+            <div className="col-md-6">
+              <Typography gutterBottom variant="h6">
+                New Examination
+              </Typography>
+              <form onSubmit={createNewExamination}>
+                <TextField
+                  label="Examination"
+                  fullWidth
+                  required
+                  value={examination}
+                  name="name"
+                  helperText="Create a new examination"
+                  onChange={(e) => setExamination(e.target.value)}
+                />
+                <br />
+                <Button variant="contained" className="mt-2" type="submit">
+                  {loading ? <Spinner animation="border" /> : "create"}
+                </Button>
+              </form>
+            </div>
+          </div>
+
+          <div className="row mb-5">
+            <div className="col-md-5">
+              <form onSubmit={createExamType}>
+                <TextField
+                  label="Examination Type"
+                  fullWidth
+                  required
+                  value={examType}
+                  helperText="This is the examination type a candidate can select during a registration"
+                  onChange={(e) => setExamType(e.target.value)}
+                />
+                <br />
+                <Button variant="contained" className="mt-2" type="submit">
+                  {loading ? <Spinner animation="border" /> : "create"}
+                </Button>
+              </form>
+            </div>
+            <div className="col-md-7 border-start">
+              <div className="d-flex justify-content-between">
+                <Typography gutterBottom>Created Examination Types</Typography>
+                <Button color="error" onClick={deleteExaminationTypes}>
+                  Delete examination types
+                </Button>
+              </div>
+
+              <Table>
+                <thead border>
+                  <tr>
+                    <th>Exam Type</th>
+                    <th>Sets</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {examinationTypes.map((c, i) => (
+                    <tr
+                      key={i}
+                      onClick={() =>
+                        window.location.assign(`/questionBank/${c._id}`)
+                      }
+                      className="myTable"
+                    >
+                      <td>{c.examType}</td>
+                      <td>{c.questionBanks.length}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </div>
+          </div>
+
+          <div className="bg-light p-3 mt-3">
+            <Typography variant="body1" fontWeight={600}>
+              Create Examination to download
+            </Typography>
+
+            <div className="mt-4">
+              <Stack direction="row" spacing={2}>
+                <div>
+                  <TextField
+                    label="Examination Title"
+                    helperText="Enter the name of this examination"
+                    onChange={(e) => setExamTitle(e.target.value)}
+                  />
+                </div>
+              </Stack>
+            </div>
+            <div className="mt-3">
+              <div className="col-md-4">
+                <Typography variant="body2" color="GrayText">
+                  Create the questions for this examination from different
+                  question banks under each paper type
                 </Typography>
               </div>
-              <div>{processLoading ? <Spinner animation="grow" /> : null}</div>
-            </div>
-
-            <div className="row">
-              <div className="col-md-5">
-                <form onSubmit={createExamType}>
-                  <TextField
-                    label="Examination Type"
-                    fullWidth
-                    required
-                    value={examType}
-                    onChange={(e) => setExamType(e.target.value)}
-                  />
-                  <br />
-                  <Button variant="contained" className="mt-2" type="submit">
-                    {loading ? <Spinner animation="border" /> : "create"}
-                  </Button>
-                </form>
-              </div>
-              <div className="col-md-7 border-start">
-                <div className="d-flex justify-content-between">
-                  <Typography gutterBottom>
-                    Created Examination Types
-                  </Typography>
-                  <Button color="error" onClick={deleteExaminationTypes}>
-                    Delete examination types
-                  </Button>
-                </div>
-
-                <Table>
-                  <thead border>
-                    <tr>
-                      <th>Exam Type</th>
-                      <th>Sets</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {examinationTypes.map((c, i) => (
-                      <tr
-                        key={i}
-                        onClick={() =>
-                          window.location.assign(`/questionBank/${c._id}`)
-                        }
-                        className="myTable"
-                      >
-                        <td>{c.examType}</td>
-                        <td>{c.questionBanks.length}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </Table>
-              </div>
-            </div>
-
-            <div className="border border-info rounded p-3 mt-3">
-              <Typography textTransform="uppercase" variant="h5">
-                Create Examination to download
-              </Typography>
-
-              <div className="mt-4">
-                <Stack direction="row" spacing={2}>
+              <div className="row mt-4">
+                <div className="col-md-6">
                   <div>
-                    <TextField
-                      label="Examination Title"
-                      helperText="Enter the name of this examination"
-                      onChange={(e) => setExamTitle(e.target.value)}
-                    />
-                  </div>
-                </Stack>
-              </div>
-              <div className="mt-3">
-                <div className="col-md-4">
-                  <Typography variant="body2" color="GrayText">
-                    Create the questions for this examination from different
-                    question banks under each paper type
-                  </Typography>
-                </div>
-                <div className="row mt-4">
-                  <div className="col-md-6">
-                    <div>
-                      {examinationTypes.map((c, i) => (
-                        <div key={i} className="p-3 mb-2 shadow rounded">
-                          <Typography
-                            fontWeight={600}
-                            textTransform={"uppercase"}
-                            gutterBottom
-                          >
-                            {c.examType}
-                          </Typography>
-                          <FormControl>
-                            <FormLabel id="demo-row-radio-buttons-group-label">
-                              Question Banks
-                            </FormLabel>
-                            <FormGroup aria-label="position" row>
-                              {c.questionBanks.map((d, p) => (
-                                <FormControlLabel
-                                  key={p}
-                                  value={d}
-                                  control={
-                                    <Checkbox
-                                      icon={<FavoriteBorder />}
-                                      checkedIcon={<Favorite />}
-                                      onChange={(e) => {
-                                        if (
-                                          e.target.checked &&
-                                          !existed(
-                                            `${c.examType} Bank ${p + 1}`
-                                          )
-                                        ) {
-                                          setQuestionBanks((oldArray) => [
-                                            ...oldArray,
-                                            {
-                                              value: e.target.value,
-                                              text: `${c.examType} Bank ${
-                                                p + 1
-                                              }`,
-                                            },
-                                          ]);
-                                        } else if (
-                                          !e.target.checked &&
-                                          existed(`${c.examType} Bank ${p + 1}`)
-                                        ) {
-                                          const newBank = questionBanks.filter(
-                                            (c) => c.value !== e.target.value
-                                          );
-                                          setQuestionBanks(newBank);
-                                        }
-                                      }}
-                                      sx={{
-                                        color: pink[800],
-                                        "&.Mui-checked": {
-                                          color: pink[600],
-                                        },
-                                      }}
-                                    />
-                                  }
-                                  label={`Bank ${p + 1}`}
-                                  labelPlacement="end"
-                                />
-                              ))}
-                            </FormGroup>
-                          </FormControl>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="col-md-6 border-start">
-                    <div className="p-4 shadow rounded">
-                      <div>
-                        <Typography variant="h3" fontWeight={600}>
-                          {examTitle}
+                    {examinationTypes.map((c, i) => (
+                      <div key={i} className="p-3 mb-2 shadow rounded">
+                        <Typography
+                          fontWeight={600}
+                          textTransform={"uppercase"}
+                          gutterBottom
+                        >
+                          {c.examType}
                         </Typography>
+                        <FormControl>
+                          <FormLabel id="demo-row-radio-buttons-group-label">
+                            Question Banks
+                          </FormLabel>
+                          <FormGroup aria-label="position" row>
+                            {c.questionBanks.map((d, p) => (
+                              <FormControlLabel
+                                key={p}
+                                value={d}
+                                control={
+                                  <Checkbox
+                                    icon={<FavoriteBorder />}
+                                    checkedIcon={<Favorite />}
+                                    onChange={(e) => {
+                                      if (
+                                        e.target.checked &&
+                                        !existed(`${c.examType} Bank ${p + 1}`)
+                                      ) {
+                                        setQuestionBanks((oldArray) => [
+                                          ...oldArray,
+                                          {
+                                            value: e.target.value,
+                                            text: `${c.examType} Bank ${p + 1}`,
+                                          },
+                                        ]);
+                                      } else if (
+                                        !e.target.checked &&
+                                        existed(`${c.examType} Bank ${p + 1}`)
+                                      ) {
+                                        const newBank = questionBanks.filter(
+                                          (c) => c.value !== e.target.value
+                                        );
+                                        setQuestionBanks(newBank);
+                                      }
+                                    }}
+                                    sx={{
+                                      color: pink[800],
+                                      "&.Mui-checked": {
+                                        color: pink[600],
+                                      },
+                                    }}
+                                  />
+                                }
+                                label={`Bank ${p + 1}`}
+                                labelPlacement="end"
+                              />
+                            ))}
+                          </FormGroup>
+                        </FormControl>
                       </div>
-                      <div className="mt-2 mb-5">
-                        <Typography color="GrayText">
-                          Selected Question banks
-                        </Typography>
-                        <div className="mt-4">
-                          {questionBanks.map((c, i) => (
-                            <Typography gutterBottom key={i}>
-                              <i class="fas fa-arrow-right    "></i> {c.text}
-                            </Typography>
-                          ))}
-                        </div>
-                        <div className="mt-4">
-                          <Button
-                            variant="outlined"
-                            disabled={questionBanks.length === 0 ? true : false}
-                            onClick={createExamination}
-                          >
-                            Create examination
-                          </Button>
-                        </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="col-md-6 border-start">
+                  <div className="p-4 shadow rounded">
+                    <div>
+                      <Typography variant="h3" fontWeight={600}>
+                        {examTitle}
+                      </Typography>
+                    </div>
+                    <div className="mt-2 mb-5">
+                      <Typography color="GrayText">
+                        Selected Question banks
+                      </Typography>
+                      <div className="mt-4">
+                        {questionBanks.map((c, i) => (
+                          <Typography gutterBottom key={i}>
+                            <i class="fas fa-arrow-right    "></i> {c.text}
+                          </Typography>
+                        ))}
+                      </div>
+                      <div className="mt-4">
+                        <Button
+                          variant="outlined"
+                          disabled={questionBanks.length === 0 ? true : false}
+                          onClick={createExamination}
+                        >
+                          Create examination
+                        </Button>
                       </div>
                     </div>
                   </div>

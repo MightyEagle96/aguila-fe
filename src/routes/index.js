@@ -14,6 +14,7 @@ import ViewCentre from "../pages/ViewCentre";
 import { loggedInUser } from "../httpService";
 import NotFound from "../pages/NotFound";
 import LoginPage from "../pages/LoginPage";
+import ExaminationHistory from "../pages/ExaminationHistory";
 
 const privateRoutes = [
   { path: "/", component: Dashboard },
@@ -27,6 +28,7 @@ const privateRoutes = [
   { path: "/results", component: ResultsPage },
   { path: "/createdExamination", component: CreatedExamination },
   { path: "/dashboard/:id", component: ExaminationDashboard },
+  { path: "/examinationHistory", component: ExaminationHistory },
   { path: "*", component: NotFound },
 ];
 

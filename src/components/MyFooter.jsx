@@ -7,7 +7,7 @@ function MyFooter() {
     <div className="myFooter d-flex align-items-center">
       <div className="col-12">
         <Typography textAlign={"center"} fontWeight={600} gutterBottom>
-          NMCN
+          AGUILA
         </Typography>
         <Typography textAlign={"center"} gutterBottom>
           All rights reserved{" "}

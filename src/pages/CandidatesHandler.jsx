@@ -94,8 +94,8 @@ export default function CandidatesHandler() {
       {!loading ? (
         <div className="mt-5 mb-5">
           <div className="row">
-            <Typography fontWeight={600} variant="h5">
-              NMCN Candidates
+            <Typography fontWeight={600} variant="h4">
+              Candidates
             </Typography>
             <div className="col-md-9 ">
               <DataTable data={centres} columns={columns} pagination />

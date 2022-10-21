@@ -1,21 +1,18 @@
 import React from "react";
 
 import {
-  Avatar,
   List,
   ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  Typography,
 } from "@mui/material";
 import {
-  Start,
+  Quiz,
   Dashboard,
-  Download,
   Logout,
   People,
-  Upload,
+  History,
   House,
 } from "@mui/icons-material";
 
@@ -41,24 +38,14 @@ export default function SideMenu() {
       redirectTo: `/candidates`,
     },
     {
-      text: "Monitor active exam",
-      icon: <i class="fas fa-binoculars    "></i>,
-      redirectTo: `/subscriberRecords`,
+      text: "Examination Control",
+      icon: <Quiz />,
+      redirectTo: `/examination`,
     },
     {
-      text: "Download Examinations",
-      icon: <Download />,
-      redirectTo: `/downloadExam`,
-    },
-    {
-      text: "Download Candidates",
-      icon: <People />,
-      redirectTo: `/downloadCandidates`,
-    },
-    {
-      text: "Upload Responses",
-      icon: <Upload />,
-      redirectTo: `/uploadResponses`,
+      text: "Examination History",
+      icon: <History />,
+      redirectTo: `/examination`,
     },
   ];
 

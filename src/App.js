@@ -13,7 +13,7 @@ function App() {
       {loggedInUser ? (
         <div>
           <div class="row m-0">
-            <div className="col-md-3 sideMenu">
+            <div className="col-md-3 sideMenu  ">
               <SideMenu />
             </div>
             <div className="col-md-9">
