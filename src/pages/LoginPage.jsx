@@ -51,7 +51,7 @@ export default function LoginPage() {
         JSON.stringify(res.data.user)
       );
 
-      //window.location.assign("/");
+      window.location.assign("/");
     }
     setLoading(false);
   };
