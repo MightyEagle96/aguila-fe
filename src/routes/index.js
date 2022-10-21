@@ -8,7 +8,6 @@ import DownloadExam from "../pages/DownloadExam";
 import ExaminationDashboard from "../pages/ExaminationDashboard";
 import ExaminationHandler from "../pages/ExaminationHandler";
 import ExamQuestionUpload from "../pages/ExamQuestionUpload";
-import HomePage from "../pages/HomePage";
 import QuestionBank from "../pages/QuestionBank";
 import ResultsPage from "../pages/ResultsPage";
 import ViewCentre from "../pages/ViewCentre";

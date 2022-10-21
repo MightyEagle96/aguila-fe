@@ -50,10 +50,6 @@ export default function LoginPage() {
         process.env.REACT_APP_PROJECT_USER,
         JSON.stringify(res.data.user)
       );
-      // setCookie("accessToken", res.data.accessToken, {
-      //   expires: new Date(Date.now() + 3600000),
-      //   secure: process.env.REACT_APP_ENV === "production",sameSite:'none'
-      // });
 
       window.location.assign("/");
     }

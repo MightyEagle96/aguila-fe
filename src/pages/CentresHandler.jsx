@@ -1,18 +1,35 @@
 import React, { useState, useEffect } from "react";
-import { Button, TextField, Typography } from "@mui/material";
+import {
+  Button,
+  MenuItem,
+  TextField,
+  Typography,
+  Checkbox,
+  FormGroup,
+  FormControlLabel,
+} from "@mui/material";
 import { httpService } from "../httpService";
 import Swal from "sweetalert2";
 import DataTable from "react-data-table-component";
 import { colors } from "../util";
 import { Stack } from "@mui/system";
 import { Spinner } from "react-bootstrap";
+import { states } from "../utils";
 
 export default function CentresHandler() {
   const defaultData = { name: "", centreId: "", password: "" };
   const [data, setData] = useState(defaultData);
   const [processing, setProcessing] = useState(false);
   const [centres, setCentres] = useState([]);
+  const [type, setType] = useState("password");
 
+  const handleCheckbox = (e) => {
+    if (e.target.checked) {
+      setType("text");
+    } else {
+      setType("password");
+    }
+  };
   const createCentre = (e) => {
     e.preventDefault();
     Swal.fire({
@@ -91,79 +108,103 @@ export default function CentresHandler() {
   };
   return (
     <div>
-      <div className="mt-3 mb-3">
-        <div className="container">
-          <div className="border p-3">
-            <Stack direction="row" spacing={2}>
-              <div>
-                <Typography fontWeight={600} variant="h4">
-                  NMCN Centres
-                </Typography>
-              </div>
-              <div>{processing ? <Spinner animation="grow" /> : null}</div>
-            </Stack>
-            <div className="row">
-              <div className="col-md-8 ">
-                <DataTable
-                  data={centres}
-                  columns={columns}
-                  pagination
-                  onRowClicked={rowClick}
-                  highlightOnHover
-                  pointerOnHover
-                />
-              </div>
-              <div className="col-md-4 border-start">
-                <Typography fontWeight={600} gutterBottom>
-                  Create centre
-                </Typography>
+      <div className="mt-5 mb-5">
+        <div className="">
+          <Stack direction="row" spacing={2}>
+            <div>
+              <Typography fontWeight={600} variant="h4">
+                CBT Centres
+              </Typography>
+            </div>
+            <div>{processing ? <Spinner animation="grow" /> : null}</div>
+          </Stack>
+          <div className="row">
+            <div className="col-md-8 ">
+              <DataTable
+                data={centres}
+                columns={columns}
+                pagination
+                onRowClicked={rowClick}
+                highlightOnHover
+                pointerOnHover
+              />
+            </div>
+            <div className="col-md-4 border-start">
+              <Typography fontWeight={600} gutterBottom>
+                Create centre
+              </Typography>
 
-                <form onSubmit={createCentre}>
-                  <div className="mb-3 mt-3">
-                    <TextField
-                      label="Centre Name"
-                      helperText="Name for this centre"
-                      name="name"
-                      value={data.name}
-                      multiline
-                      required
-                      fullWidth
-                      onChange={handleChange}
-                    />
-                  </div>
-                  <div className="mb-3">
-                    <TextField
-                      label="Centre ID"
-                      name="centreId"
-                      helperText="ID for this centre"
-                      value={data.centreId}
-                      required
-                      fullWidth
-                      onChange={handleChange}
-                    />
-                  </div>
-                  <div className="mb-3">
-                    <TextField
-                      label="Password"
-                      helperText="Centre's password"
-                      type="password"
-                      value={data.password}
-                      required
-                      name="password"
-                      onChange={handleChange}
-                      fullWidth
-                    />
-                  </div>
-                  <Button variant="contained" type="submit">
-                    Create Centre
-                  </Button>
-                </form>
-
-                <div className="mt-3">
-                  <Button color="error" onClick={deleteCentres}>
-                    delete centres
-                  </Button>
+              <form onSubmit={createCentre}>
+                <div className="mb-3 mt-3">
+                  <TextField
+                    label="Centre Name"
+                    helperText="Name for this centre"
+                    name="name"
+                    value={data.name}
+                    multiline
+                    required
+                    fullWidth
+                    onChange={handleChange}
+                  />
                 </div>
+                <div className="mb-3">
+                  <TextField
+                    label="Centre ID"
+                    name="centreId"
+                    helperText="ID for this centre"
+                    value={data.centreId}
+                    required
+                    fullWidth
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="mb-3">
+                  <TextField
+                    select
+                    fullWidth
+                    name="state"
+                    label="State"
+                    helperText="State for this centre"
+                    value={data.state}
+                    onChange={handleChange}
+                  >
+                    {states.map((c, i) => (
+                      <MenuItem key={i} value={c}>
+                        {c}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </div>
+                <div className="">
+                  <TextField
+                    label="Password"
+                    helperText="Centre's password"
+                    type={type}
+                    value={data.password}
+                    required
+                    name="password"
+                    onChange={handleChange}
+                    fullWidth
+                  />
+                </div>{" "}
+                <div className="mb-2">
+                  <FormGroup>
+                    <FormControlLabel
+                      onChange={handleCheckbox}
+                      control={<Checkbox />}
+                      label="Show Password"
+                    />
+                  </FormGroup>
+                </div>
+                <Button variant="contained" type="submit">
+                  Create Centre
+                </Button>
+              </form>
+
+              <div className="mt-3">
+                <Button color="error" onClick={deleteCentres}>
+                  delete centres
+                </Button>
               </div>
             </div>
           </div>

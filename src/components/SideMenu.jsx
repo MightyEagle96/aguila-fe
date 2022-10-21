@@ -13,10 +13,10 @@ import {
   Start,
   Dashboard,
   Download,
-  HouseOutlined,
   Logout,
   People,
   Upload,
+  House,
 } from "@mui/icons-material";
 
 import { httpService } from "../httpService";
@@ -31,9 +31,9 @@ export default function SideMenu() {
       redirectTo: "/",
     },
     {
-      text: "Activate Exam",
-      icon: <Start />,
-      redirectTo: "/activateExam",
+      text: "CBT Centres",
+      icon: <House />,
+      redirectTo: "/centres",
     },
     {
       text: "Manage active exam",
