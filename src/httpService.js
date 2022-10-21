@@ -4,6 +4,7 @@ import Swal from "sweetalert2";
 export const loggedInUser =
   JSON.parse(localStorage.getItem(process.env.REACT_APP_PROJECT_USER)) || null;
 
+console.log(process.env.REACT_APP_BACKEND_URL);
 const httpService = axios.create({
   baseURL: process.env.REACT_APP_BACKEND_URL,
   timeout: 10000,
