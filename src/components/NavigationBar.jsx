@@ -1,20 +1,42 @@
 import React from "react";
 import { Container, Nav, Navbar } from "react-bootstrap";
+import { loggedInUser } from "../httpService";
+import { Button, Typography, Avatar } from "@mui/material";
+import { logout } from "../httpService";
+import logo from "../images/logo-2.png";
+import { Logout } from "@mui/icons-material";
 
 export default function NavigationBar() {
   return (
-    <Navbar bg="light" expand="lg">
+    <Navbar bg="dark" expand="lg">
       <Container>
-        <Navbar.Brand href="#home">NMCN</Navbar.Brand>
+        <Navbar.Brand href="#home">
+          <Avatar
+            src={logo}
+            className="d-inline-block align-top me-2"
+            sx={{ height: 30, width: 30 }}
+          />
+        </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="me-auto">
-            <Nav.Link href="#home">Home</Nav.Link>
-            <Nav.Link href="/candidates">Candidates Control</Nav.Link>
-            <Nav.Link href="/centres">Centres Control</Nav.Link>
-            <Nav.Link href="/examination">Examination Control</Nav.Link>
-            <Nav.Link href="/createdExamination">Created Examination</Nav.Link>
-            <Nav.Link href="/examDownload">Examination Download</Nav.Link>
+          <Nav className="ms-auto">
+            {loggedInUser ? (
+              <>
+                <div className="d-flex align-items-center">
+                  <Typography color="GrayText" className="me-2">
+                    {loggedInUser.lastName}
+                  </Typography>
+                </div>
+                <Button
+                  variant="outlined"
+                  color="error"
+                  endIcon={<Logout />}
+                  onClick={logout}
+                >
+                  Logout
+                </Button>
+              </>
+            ) : null}
           </Nav>
         </Navbar.Collapse>
       </Container>

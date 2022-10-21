@@ -50,7 +50,7 @@ export default function ExamQuestionUpload() {
     setFetching(true);
     const path = `getExamQuestions/${id}?limit=${query.limit}&page=${query.page}`;
     const res = await httpService.get(path);
-    console.log(res.data);
+
     if (res) {
       setExamType(res.data.examType);
       setLength(res.data.length);

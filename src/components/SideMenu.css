@@ -1,0 +1,9 @@
+.sideMenu {
+  background-image: linear-gradient(
+      to right bottom,
+      rgba(0, 0, 0, 0.94),
+      rgba(0, 0, 0, 0.758)
+    ),
+    url("../images/niclas-illg-wzVQp_NRIHg-unsplash.jpg");
+  background-size: cover;
+}

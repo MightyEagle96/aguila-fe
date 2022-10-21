@@ -12,26 +12,35 @@ import HomePage from "../pages/HomePage";
 import QuestionBank from "../pages/QuestionBank";
 import ResultsPage from "../pages/ResultsPage";
 import ViewCentre from "../pages/ViewCentre";
+import { loggedInUser } from "../httpService";
+import NotFound from "../pages/NotFound";
+import LoginPage from "../pages/LoginPage";
 
-function MainRoutes() {
-  const routes = [
-    { path: "/", component: HomePage },
-    { path: "/dashboard", component: Dashboard },
-    { path: "/candidates", component: CandidatesHandler },
-    { path: "/centres", component: CentresHandler },
-    { path: "/centres/:id", component: ViewCentre },
-    { path: "/examination", component: ExaminationHandler },
-    { path: "/questionBank/:id", component: QuestionBank },
-    { path: "/postExamQuestions/:id", component: ExamQuestionUpload },
-    { path: "/examDownload", component: DownloadExam },
-    { path: "/results", component: ResultsPage },
-    { path: "/createdExamination", component: CreatedExamination },
-    { path: "/dashboard/:id", component: ExaminationDashboard },
-  ];
+const privateRoutes = [
+  { path: "/", component: Dashboard },
+  { path: "/candidates", component: CandidatesHandler },
+  { path: "/centres", component: CentresHandler },
+  { path: "/centres/:id", component: ViewCentre },
+  { path: "/examination", component: ExaminationHandler },
+  { path: "/questionBank/:id", component: QuestionBank },
+  { path: "/postExamQuestions/:id", component: ExamQuestionUpload },
+  { path: "/examDownload", component: DownloadExam },
+  { path: "/results", component: ResultsPage },
+  { path: "/createdExamination", component: CreatedExamination },
+  { path: "/dashboard/:id", component: ExaminationDashboard },
+  { path: "*", component: NotFound },
+];
+
+const publicRoutes = [
+  { path: "/", component: LoginPage },
+
+  { path: "*", component: NotFound },
+];
+function PublicRoutes() {
   return (
     <BrowserRouter>
       <Routes>
-        {routes.map((c, i) => (
+        {publicRoutes.map((c, i) => (
           <Route key={i} path={c.path} element={<c.component />} />
         ))}
       </Routes>
@@ -39,4 +48,17 @@ function MainRoutes() {
   );
 }
 
+function PrivateRoutes() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        {privateRoutes.map((c, i) => (
+          <Route key={i} path={c.path} element={<c.component />} />
+        ))}
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+const MainRoutes = loggedInUser ? PrivateRoutes : PublicRoutes;
 export default MainRoutes;
