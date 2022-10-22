@@ -6,4 +6,5 @@
     ),
     url("../images/niclas-illg-wzVQp_NRIHg-unsplash.jpg");
   background-size: cover;
+  min-height: 70vh;
 }
