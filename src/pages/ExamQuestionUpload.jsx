@@ -35,7 +35,7 @@ export default function ExamQuestionUpload() {
   };
   const [richText, setRichText] = useState(false);
   const [questionData, setQuestionData] = useState(defaultData);
-  const [examType, setExamType] = useState(null);
+  const [subject, setSubject] = useState(null);
   const [questions, setQuestions] = useState([]);
   const [posting, setPosting] = useState(false);
   const [query, setQuery] = useState({ page: 1, limit: 10 });
@@ -52,7 +52,7 @@ export default function ExamQuestionUpload() {
     const res = await httpService.get(path);
 
     if (res) {
-      setExamType(res.data.examType);
+      setSubject(res.data.subject);
       setLength(res.data.length);
       setStartIndex(res.data.startIndex);
       setQuestions(res.data.questions);
@@ -174,16 +174,16 @@ export default function ExamQuestionUpload() {
   ];
   return (
     <div>
-      {examType ? (
-        <div>
-          <div className="container">
+      {subject ? (
+        <div className="mt-5 mb-5">
+          <div>
             <Alert>
               <Typography>
-                Paper Type: <strong>{examType}</strong>
+                Subject: <strong>{subject.name}</strong>
               </Typography>
             </Alert>
           </div>
-          <div className="m-3">
+          <div>
             <div className="d-flex justify-content-end mb-2">
               {richText ? (
                 <Button
@@ -417,7 +417,73 @@ export default function ExamQuestionUpload() {
                 )}
               </fieldset>
             </form>
-            <Table>
+
+            {questions.map((c, i) => (
+              <div className=" mb-2 border-bottom">
+                <Typography variant="subtitle2" color="GrayText" gutterBottom>
+                  Question {i + 1}
+                </Typography>
+                <div className="row">
+                  <div className="col-lg-6">
+                    <div>
+                      <Typography variant="caption" gutterBottom>
+                        Question
+                      </Typography>
+                      <Typography>{parse(c.question)}</Typography>
+                    </div>
+                  </div>
+                  <div className="col-lg-6 gutterBottom">
+                    <div className="row">
+                      <div className="col-md-6">
+                        <Typography variant="caption" gutterBottom>
+                          Option A
+                        </Typography>
+                        <Typography>{parse(c.optionA)}</Typography>
+                      </div>
+                      <div className="col-md-6">
+                        <Typography variant="caption" gutterBottom>
+                          Option B
+                        </Typography>
+                        <Typography>{parse(c.optionB)}</Typography>
+                      </div>
+                    </div>
+                    <div className="row mt-1 ">
+                      <div className="col-md-6">
+                        <Typography variant="caption" gutterBottom>
+                          Option C
+                        </Typography>
+                        <Typography>{parse(c.optionC)}</Typography>
+                      </div>
+                      <div className="col-md-6">
+                        <Typography variant="caption" gutterBottom>
+                          Option D
+                        </Typography>
+                        <Typography>{parse(c.optionD)}</Typography>
+                      </div>
+                    </div>
+                    <div className="row mt-1">
+                      <div className="col-md-6">
+                        <Typography variant="caption" gutterBottom>
+                          Correct Answer
+                        </Typography>
+                        <Typography>{parse(c.correctAns)}</Typography>
+                      </div>
+                      <div className="col-md-6">
+                        <Stack direction="row" spacing={2}>
+                          <IconButton onClick={() => deleteQuestion(c._id)}>
+                            <i class="fas fa-trash    "></i>
+                          </IconButton>
+                          <IconButton>
+                            <i class="fas fa-edit    "></i>
+                          </IconButton>
+                        </Stack>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+            {/* <Table>
               <thead>
                 <tr>
                   <th>S/N</th>
@@ -453,7 +519,7 @@ export default function ExamQuestionUpload() {
                   </tr>
                 ))}
               </tbody>
-            </Table>
+            </Table> */}
             <div className="mt-2">
               <div className="d-flex justify-content-end">
                 <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>

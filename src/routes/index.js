@@ -15,6 +15,8 @@ import { loggedInUser } from "../httpService";
 import NotFound from "../pages/NotFound";
 import LoginPage from "../pages/LoginPage";
 import ExaminationHistory from "../pages/ExaminationHistory";
+import SubjectsControl from "../pages/SubjectsControl";
+import SubjectQuestionBanks from "../pages/SubjectQuestionBanks";
 
 const privateRoutes = [
   { path: "/", component: Dashboard },
@@ -29,6 +31,8 @@ const privateRoutes = [
   { path: "/createdExamination", component: CreatedExamination },
   { path: "/dashboard/:id", component: ExaminationDashboard },
   { path: "/examinationHistory", component: ExaminationHistory },
+  { path: "/subjects", component: SubjectsControl },
+  { path: "/subjects/:id", component: SubjectQuestionBanks },
   { path: "*", component: NotFound },
 ];
 

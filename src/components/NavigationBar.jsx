@@ -3,7 +3,7 @@ import { Container, Nav, Navbar } from "react-bootstrap";
 import { loggedInUser } from "../httpService";
 import { Button, Typography, Avatar } from "@mui/material";
 import { logout } from "../httpService";
-import logo from "../images/logo-2.png";
+import logo from "../images/myLogo.png";
 import { Logout } from "@mui/icons-material";
 
 export default function NavigationBar() {

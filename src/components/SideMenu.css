@@ -1,10 +1,5 @@
 .sideMenu {
-  background-image: linear-gradient(
-      to right bottom,
-      rgba(0, 0, 0, 0.94),
-      rgba(0, 0, 0, 0.758)
-    ),
-    url("../images/niclas-illg-wzVQp_NRIHg-unsplash.jpg");
+  background-image: url("../images/samuel-scalzo-xyuYk9oLA8I-unsplash.jpg");
   background-size: cover;
   min-height: 70vh;
 }

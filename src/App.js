@@ -5,6 +5,7 @@ import MyFooter from "./components/MyFooter";
 import NavigationBar from "./components/NavigationBar";
 import SideMenu from "./components/SideMenu";
 import { loggedInUser } from "./httpService";
+import "./components/SideMenu.css";
 
 function App() {
   return (
@@ -13,10 +14,10 @@ function App() {
       {loggedInUser ? (
         <div>
           <div class="row m-0">
-            <div className="col-md-3 sideMenu  ">
+            <div className="col-md-2 sideMenu  ">
               <SideMenu />
             </div>
-            <div className="col-md-9">
+            <div className="col-md-10">
               <MainRoutes />
             </div>
           </div>
