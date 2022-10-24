@@ -9,6 +9,7 @@ import {
   FormControl,
   FormControlLabel,
   FormLabel,
+  Link,
 } from "@mui/material";
 
 import { pink } from "@mui/material/colors";
@@ -17,8 +18,11 @@ import { httpService } from "../httpService";
 import { useState, useEffect } from "react";
 import { Spinner, Table } from "react-bootstrap";
 import Swal from "sweetalert2";
+import DataTable from "react-data-table-component";
+import { Badge } from "react-bootstrap";
 
 export default function ExaminationHandler() {
+  const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [processLoading, setProcessLoading] = useState(false);
 
@@ -36,7 +40,7 @@ export default function ExaminationHandler() {
       if (result.isConfirmed) {
         const path = "createNewExamination";
 
-        const res = await httpService.post(path, { name: examination });
+        const res = await httpService.post(path, { title: examination });
 
         if (res) {
           Swal.fire({ icon: "success", title: "Success", text: res.data });
@@ -45,8 +49,35 @@ export default function ExaminationHandler() {
     });
   };
 
-  useEffect(() => {}, []);
+  const viewCreatedExaminations = async () => {
+    const path = "viewCreatedExaminations";
 
+    const res = await httpService(path);
+
+    if (res) {
+      setData(res.data);
+    }
+  };
+
+  useEffect(() => {
+    viewCreatedExaminations();
+  }, []);
+  const columns = [
+    { name: "TITLE", selector: (row) => row.title },
+    {
+      name: "DATE CREATED",
+      selector: (row) => new Date(row.createdOn).toDateString(),
+    },
+    {
+      name: "ACTIVE",
+      selector: (row) =>
+        row.active ? <Badge color="success">ACTIVE</Badge> : null,
+    },
+    {
+      name: "WEB PAGE",
+      selector: (row) => <Link href={`/exams/${row.slug}`}>view</Link>,
+    },
+  ];
   return (
     <div>
       <div className="mt-5 mb-5">
@@ -69,7 +100,7 @@ export default function ExaminationHandler() {
                   fullWidth
                   required
                   value={examination}
-                  name="name"
+                  name="title"
                   helperText="Create a new examination"
                   onChange={(e) => setExamination(e.target.value)}
                 />
@@ -78,6 +109,11 @@ export default function ExaminationHandler() {
                   {loading ? <Spinner animation="border" /> : "create"}
                 </Button>
               </form>
+            </div>
+          </div>
+          <div className="mt-2">
+            <div className="mt-2">
+              <DataTable data={data} columns={columns} pagination />
             </div>
           </div>
         </div>

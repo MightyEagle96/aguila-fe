@@ -3,16 +3,16 @@ import { Container, Nav, Navbar } from "react-bootstrap";
 import { loggedInUser } from "../httpService";
 import { Button, Typography, Avatar } from "@mui/material";
 import { logout } from "../httpService";
-import logo from "../images/myLogo.png";
+import aguila from "../images/aguila.png";
 import { Logout } from "@mui/icons-material";
 
 export default function NavigationBar() {
   return (
-    <Navbar bg="dark" expand="lg">
+    <Navbar bg="light" variant="light" expand="lg">
       <Container>
         <Navbar.Brand href="/">
           <Avatar
-            src={logo}
+            src={aguila}
             className="d-inline-block align-top me-2"
             sx={{ height: 30, width: 30 }}
           />
@@ -23,7 +23,7 @@ export default function NavigationBar() {
             {loggedInUser ? (
               <>
                 <div className="d-flex align-items-center">
-                  <Typography color="GrayText" className="me-2">
+                  <Typography className="me-2">
                     {loggedInUser.lastName}
                   </Typography>
                 </div>

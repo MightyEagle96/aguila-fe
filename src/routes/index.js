@@ -17,6 +17,7 @@ import LoginPage from "../pages/LoginPage";
 import ExaminationHistory from "../pages/ExaminationHistory";
 import SubjectsControl from "../pages/SubjectsControl";
 import SubjectQuestionBanks from "../pages/SubjectQuestionBanks";
+import ExaminationRegistrationPage from "../pages/ExaminationRegistrationPage";
 
 const privateRoutes = [
   { path: "/", component: Dashboard },
@@ -34,12 +35,13 @@ const privateRoutes = [
   { path: "/examinationHistory", component: ExaminationHistory },
   { path: "/subjects", component: SubjectsControl },
   { path: "/subjects/:id", component: SubjectQuestionBanks },
+  { path: "/exams/:id", component: ExaminationRegistrationPage },
   { path: "*", component: NotFound },
 ];
 
 const publicRoutes = [
   { path: "/", component: LoginPage },
-
+  { path: "/exams/:id", component: ExaminationRegistrationPage },
   { path: "*", component: NotFound },
 ];
 function PublicRoutes() {
