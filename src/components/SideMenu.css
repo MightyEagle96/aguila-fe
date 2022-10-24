@@ -1,5 +1,10 @@
 .sideMenu {
-  background-image: url("../images/samuel-scalzo-xyuYk9oLA8I-unsplash.jpg");
+  background-image: linear-gradient(
+      to right bottom,
+      rgba(0, 0, 0, 0.696),
+      rgba(26, 45, 114, 0.581)
+    ),
+    url("../images/blueAbstract.jpg");
   background-size: cover;
   min-height: 70vh;
 }

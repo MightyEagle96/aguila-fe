@@ -1,11 +1,15 @@
-import { Typography } from "@mui/material";
+import { Avatar, Typography } from "@mui/material";
 import React from "react";
 import "./MyFooter.css";
+import aguila from "../images/aguila.png";
 
 function MyFooter() {
   return (
     <div className="myFooter d-flex align-items-center">
       <div className="col-12">
+        <div className="mt-2 mb-2 d-flex justify-content-center">
+          <Avatar src={aguila} />
+        </div>
         <Typography
           textAlign={"center"}
           fontWeight={600}

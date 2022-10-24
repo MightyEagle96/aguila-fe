@@ -30,6 +30,7 @@ const privateRoutes = [
   { path: "/results", component: ResultsPage },
   { path: "/createdExamination", component: CreatedExamination },
   { path: "/dashboard/:id", component: ExaminationDashboard },
+  { path: "/examHistory", component: ExaminationHistory },
   { path: "/examinationHistory", component: ExaminationHistory },
   { path: "/subjects", component: SubjectsControl },
   { path: "/subjects/:id", component: SubjectQuestionBanks },

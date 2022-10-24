@@ -42,7 +42,7 @@ export default function SideMenu() {
     {
       text: "Examination History",
       icon: <History />,
-      redirectTo: `/examination`,
+      redirectTo: `/examHistory`,
     },
     {
       text: "Subjects Control",
