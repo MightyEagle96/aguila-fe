@@ -1,19 +1,14 @@
 import React from "react";
 import {
   Button,
-  Stack,
   TextField,
   Typography,
   FormGroup,
   Checkbox,
-  FormControl,
   FormControlLabel,
-  FormLabel,
   Link,
 } from "@mui/material";
 
-import { pink } from "@mui/material/colors";
-import { FavoriteBorder, Favorite } from "@mui/icons-material";
 import { httpService } from "../httpService";
 import { useState, useEffect } from "react";
 import { Spinner } from "react-bootstrap";
@@ -28,10 +23,20 @@ export default function ExaminationHandler() {
 
   const [examination, setExamination] = useState("");
   const [show, setShow] = useState(false);
+  const [subjects, setSubjects] = useState([]);
+
+  const [selectedSubjects, setSelectedSubjects] = useState([]);
+  const [examId, setExamId] = useState("");
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
+  const viewSubjects = async () => {
+    const path = "viewSubjects";
+
+    const res = await httpService.get(path);
+    if (res) setSubjects(res.data);
+  };
   const createNewExamination = async (e) => {
     e.preventDefault();
 
@@ -66,13 +71,41 @@ export default function ExaminationHandler() {
   const expandableComponent = ({ data }) => {
     return (
       <div className="p-2">
-        <Button onClick={handleShow}>Update subjects</Button>
+        {data.subjects.length > 0 ? (
+          <>
+            <Typography variant="caption" gutterBottom>
+              Subjects:
+            </Typography>
+
+            {data.subjects.map((c) => (
+              <Typography gutterBottom>{c.name}</Typography>
+            ))}
+          </>
+        ) : (
+          <Button
+            onClick={() => {
+              setExamId(data._id);
+              handleShow();
+            }}
+          >
+            Update subjects
+          </Button>
+        )}
       </div>
     );
   };
 
+  const addPrograms = (value) => {
+    setSelectedSubjects((old) => [...old, value]);
+  };
+
+  const removeProgram = (value) => {
+    const filtered = selectedSubjects.filter((c) => c !== value);
+    setSelectedSubjects(filtered);
+  };
   useEffect(() => {
     viewCreatedExaminations();
+    viewSubjects();
   }, []);
   const columns = [
     { name: "TITLE", selector: (row) => row.title },
@@ -90,6 +123,29 @@ export default function ExaminationHandler() {
       selector: (row) => <Link href={`/exams/${row.slug}`}>view</Link>,
     },
   ];
+
+  const updateExamWithSubjects = () => {
+    Swal.fire({
+      icon: "question",
+      title: "Confirm",
+      text: "Do you want to update this exam with these selected subjects?",
+      showCancelButton: true,
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const path = "updateExam";
+
+        const res = await httpService.patch(path, {
+          examination: examId,
+          selectedSubjects,
+        });
+        handleClose();
+
+        if (res) {
+          Swal.fire({ icon: "success", title: "Success", text: res.data });
+        }
+      }
+    });
+  };
   return (
     <div>
       <div className="mt-5 mb-5">
@@ -140,12 +196,37 @@ export default function ExaminationHandler() {
           <Modal.Header closeButton>
             <Modal.Title>Add Subjects</Modal.Title>
           </Modal.Header>
-          <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
+          <Modal.Body>
+            <FormGroup>
+              {subjects.map((c) => (
+                <FormControlLabel
+                  control={<Checkbox />}
+                  label={c.name}
+                  value={c._id}
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      addPrograms(e.target.value);
+                    } else removeProgram(e.target.value);
+                  }}
+                />
+              ))}
+            </FormGroup>
+          </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose}>
+            <Button
+              variant="contained"
+              className="me-1"
+              color="error"
+              onClick={handleClose}
+            >
               Close
             </Button>
-            <Button variant="primary" onClick={handleClose}>
+            <Button
+              variant="contained"
+              color="info"
+              disabled={selectedSubjects.length === 0 ? true : false}
+              onClick={updateExamWithSubjects}
+            >
               Save Changes
             </Button>
           </Modal.Footer>
