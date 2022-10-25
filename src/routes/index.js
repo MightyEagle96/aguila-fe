@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import CandidatesHandler from "../pages/CandidatesHandler";
+import CandidatesHandler from "../pages/candidates/CandidatesHandler";
 import CentresHandler from "../pages/centres/CentresHandler";
 import CreatedExamination from "../pages/CreatedExamination";
 import Dashboard from "../pages/Dashboard";
