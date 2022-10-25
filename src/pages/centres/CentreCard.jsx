@@ -26,10 +26,10 @@ export default function CentreCard({ data }) {
           {data.title}
         </Typography>
         <div className="d-flex justify-content-between">
-          <Icon>
+          <Icon sx={{ color: "#00a152" }}>
             <People />
           </Icon>
-          <Avatar>{length || 0}</Avatar>
+          <Avatar sx={{ backgroundColor: "#ab003c" }}>{length || 0}</Avatar>
         </div>
       </div>
     </div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, MenuItem, TextField, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import { httpService } from "../../httpService";
 import CentreCard from "../centres/CentreCard";
 
@@ -11,7 +11,6 @@ export default function CandidatesHandler() {
     const res = await httpService.get(path);
 
     if (res) {
-      console.log(res.data);
       setExaminations(res.data);
     }
   };
@@ -22,7 +21,7 @@ export default function CandidatesHandler() {
   return (
     <div>
       <div className="mt-5 mb-5">
-        <Typography variant="h4" fontWeight={600}>
+        <Typography variant="h4" fontWeight={600} color="#f50057">
           Candidates' Dashboard
         </Typography>
         <div className="mt-3">
