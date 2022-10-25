@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import CandidatesHandler from "../pages/CandidatesHandler";
-import CentresHandler from "../pages/CentresHandler";
+import CentresHandler from "../pages/centres/CentresHandler";
 import CreatedExamination from "../pages/CreatedExamination";
 import Dashboard from "../pages/Dashboard";
 import DownloadExam from "../pages/DownloadExam";
@@ -10,15 +10,15 @@ import ExaminationHandler from "../pages/ExaminationHandler";
 import ExamQuestionUpload from "../pages/ExamQuestionUpload";
 import QuestionBank from "../pages/QuestionBank";
 import ResultsPage from "../pages/ResultsPage";
-import ViewCentre from "../pages/ViewCentre";
+import ViewCentre from "../pages/centres/ViewCentre";
 import { loggedInUser } from "../httpService";
 import NotFound from "../pages/NotFound";
 import LoginPage from "../pages/LoginPage";
 import ExaminationHistory from "../pages/ExaminationHistory";
 import SubjectsControl from "../pages/SubjectsControl";
 import SubjectQuestionBanks from "../pages/SubjectQuestionBanks";
-import ExaminationRegistrationPage from "../pages/ExaminationRegistrationPage";
-import ViewExamRegistrations from "../pages/Registrations/ViewExamRegistrations";
+import ExaminationRegistrationPage from "../pages/registrations/ExaminationRegistrationPage";
+import ViewExamRegistrations from "../pages/registrations/ViewExamRegistrations";
 
 const privateRoutes = [
   { path: "/", component: Dashboard },

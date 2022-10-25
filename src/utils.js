@@ -37,3 +37,5 @@ export const states = [
   "Yobe",
   "Zamfara",
 ];
+
+export const examTowns = ["Town A", "Town B", "Town C"];

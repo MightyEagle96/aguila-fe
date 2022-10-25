@@ -25,12 +25,28 @@ function ViewExamRegistrations() {
   const expandableComponent = ({ data }) => {
     return (
       <div className="alert alert-success">
-        <Typography variant="caption" gutterBottom>
-          Subject Combinations
-        </Typography>
-        <Typography>
-          {data.subjectCombinations.map((c) => c.name).join(", ")}
-        </Typography>
+        <Stack direction="row" spacing={3}>
+          <div>
+            <Typography variant="caption" gutterBottom>
+              Subject Combinations
+            </Typography>
+            <Typography>
+              {data.subjectCombinations.map((c) => c.name).join(", ")}
+            </Typography>
+          </div>
+          <div>
+            <Typography variant="caption" gutterBottom>
+              Exam State
+            </Typography>
+            <Typography>{data.examState}</Typography>
+          </div>
+          <div>
+            <Typography variant="caption" gutterBottom>
+              Exam Town
+            </Typography>
+            <Typography>{data.examTown}</Typography>
+          </div>
+        </Stack>
       </div>
     );
   };
@@ -71,7 +87,7 @@ function ViewExamRegistrations() {
   ];
   return (
     <div>
-      <div className="container">
+      <div className="">
         <div className="mb-5 mt-5">
           {data ? (
             <div>
@@ -90,6 +106,7 @@ function ViewExamRegistrations() {
                 columns={columns}
                 expandableRows
                 expandableRowsComponent={expandableComponent}
+                pagination
               />
             </div>
           ) : (

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { httpService } from "../httpService";
+import { httpService } from "../../httpService";
 import {
   TextField,
   Typography,
@@ -8,8 +8,10 @@ import {
   FormControlLabel,
   Checkbox,
   Button,
+  MenuItem,
 } from "@mui/material";
 import Swal from "sweetalert2";
+import { examTowns, states } from "../../utils";
 
 function ExaminationRegistrationPage() {
   const { id } = useParams();
@@ -113,6 +115,36 @@ function ExaminationRegistrationPage() {
                           />
                         ))}
                       </FormGroup>
+                    </div>
+                    <div className="mb-3">
+                      <TextField
+                        select
+                        fullWidth
+                        label="Exam State"
+                        name="examState"
+                        onChange={handleChange}
+                      >
+                        {states.map((c, i) => (
+                          <MenuItem value={c} key={i}>
+                            {c}
+                          </MenuItem>
+                        ))}
+                      </TextField>
+                    </div>
+                    <div className="mb-3">
+                      <TextField
+                        select
+                        fullWidth
+                        label="Exam Town"
+                        name="examTown"
+                        onChange={handleChange}
+                      >
+                        {examTowns.map((c, i) => (
+                          <MenuItem value={c} key={i}>
+                            {c}
+                          </MenuItem>
+                        ))}
+                      </TextField>
                     </div>
                     <Button variant="contained" type="submit">
                       Register
