@@ -7,6 +7,7 @@ import {
   Checkbox,
   FormControlLabel,
   Link,
+  Stack,
 } from "@mui/material";
 
 import { httpService } from "../httpService";
@@ -73,13 +74,22 @@ export default function ExaminationHandler() {
       <div className="p-2">
         {data.subjects.length > 0 ? (
           <>
-            <Typography variant="caption" gutterBottom>
-              Subjects:
-            </Typography>
-
-            {data.subjects.map((c) => (
-              <Typography gutterBottom>{c.name}</Typography>
-            ))}
+            <Stack direction="row" spacing={2}>
+              <div>
+                <Typography variant="caption" gutterBottom>
+                  Subjects:
+                </Typography>
+                <Typography>
+                  {data.subjects.map((c) => c.name).join(", ")}
+                </Typography>
+              </div>
+              <div className="border-start"></div>
+              <div className="d-flex align-items-center">
+                <Link href={`/registrations/${data._id}`}>
+                  View Registrations
+                </Link>
+              </div>
+            </Stack>
           </>
         ) : (
           <Button
