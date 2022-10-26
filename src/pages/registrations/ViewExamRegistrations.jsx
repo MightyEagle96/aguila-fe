@@ -1,9 +1,17 @@
-import { Button, Skeleton, Stack, TextField, Typography } from "@mui/material";
+import {
+  Button,
+  MenuItem,
+  Skeleton,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import React, { useState, useEffect } from "react";
 import DataTable from "react-data-table-component";
 import { useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import { httpService } from "../../httpService";
+import { states } from "../../utils";
 
 function ViewExamRegistrations() {
   const [data, setData] = useState(null);
@@ -45,28 +53,47 @@ function ViewExamRegistrations() {
   const expandableComponent = ({ data }) => {
     return (
       <div className="alert alert-success">
-        <Stack direction="row" spacing={3}>
-          <div>
+        <div className="row">
+          <div className="col-md-4">
             <Typography variant="caption" gutterBottom>
               Subject Combinations
             </Typography>
-            <Typography>
-              {data.subjectCombinations.map((c) => c.name).join(", ")}
-            </Typography>
+            <table className="table table-striped">
+              <thead>
+                <tr>
+                  <th>Subject</th>
+                  <th>Score</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.subjectCombinations.map((c, i) => (
+                  <tr key={i}>
+                    <td>{c.subject.name}</td>
+                    <td>{c.score}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-          <div>
-            <Typography variant="caption" gutterBottom>
-              Exam State
-            </Typography>
-            <Typography>{data.examState}</Typography>
+          <div className="col-md-4">
+            <div className="mb-2">
+              <Typography variant="caption" gutterBottom>
+                Exam State
+              </Typography>
+              <Typography variant="h5">
+                <strong>{data.examState}</strong>
+              </Typography>
+            </div>
+            <div className="mb-2">
+              <Typography variant="caption" gutterBottom>
+                Exam Town
+              </Typography>
+              <Typography variant="h5">
+                <strong>{data.examTown}</strong>
+              </Typography>
+            </div>
           </div>
-          <div>
-            <Typography variant="caption" gutterBottom>
-              Exam Town
-            </Typography>
-            <Typography>{data.examTown}</Typography>
-          </div>
-        </Stack>
+        </div>
       </div>
     );
   };
@@ -138,30 +165,50 @@ function ViewExamRegistrations() {
               </div>
               <div className="mb-4">
                 <div className="d-flex justify-content-end">
-                  <div className="row">
-                    <div className="col-md-6">
-                      <form onSubmit={createDummyCandidates}>
-                        <div>
-                          <TextField
-                            label="Limit"
-                            type="number"
-                            name="limit"
-                            onChange={(e) => setLimit(e.target.value)}
-                          />
-                        </div>
-                        <div className="">
-                          <Button type="submit">Create dummy Candidates</Button>
-                        </div>
-                      </form>
+                  <div>
+                    <div className="row">
+                      <div className="col-md-6">
+                        <form onSubmit={createDummyCandidates}>
+                          <div>
+                            <TextField
+                              label="Limit"
+                              type="number"
+                              name="limit"
+                              onChange={(e) => setLimit(e.target.value)}
+                            />
+                          </div>
+                          <div className="">
+                            <Button type="submit">
+                              Create dummy Candidates
+                            </Button>
+                          </div>
+                        </form>
+                      </div>
+                      <div className="col-md-6">
+                        <Button
+                          color="error"
+                          variant="outlined"
+                          onClick={deleteAllRegistrations}
+                        >
+                          Delete all registrations
+                        </Button>
+                      </div>
                     </div>
-                    <div className="col-md-6">
-                      <Button
-                        color="error"
-                        variant="outlined"
-                        onClick={deleteAllRegistrations}
+                    <div className="mt-2">
+                      <TextField
+                        fullWidth
+                        label="View data by state"
+                        select
+                        onChange={(e) =>
+                          window.location.assign(`/${id}/${e.target.value}`)
+                        }
                       >
-                        Delete all registrations
-                      </Button>
+                        {states.map((c, i) => (
+                          <MenuItem value={c} key={i}>
+                            {c}
+                          </MenuItem>
+                        ))}
+                      </TextField>
                     </div>
                   </div>
                 </div>

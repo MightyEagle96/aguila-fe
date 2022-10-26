@@ -19,6 +19,7 @@ import SubjectsControl from "../pages/SubjectsControl";
 import SubjectQuestionBanks from "../pages/SubjectQuestionBanks";
 import ExaminationRegistrationPage from "../pages/registrations/ExaminationRegistrationPage";
 import ViewExamRegistrations from "../pages/registrations/ViewExamRegistrations";
+import StateData from "../pages/registrations/StateData";
 
 const privateRoutes = [
   { path: "/", component: Dashboard },
@@ -38,6 +39,7 @@ const privateRoutes = [
   { path: "/subjects/:id", component: SubjectQuestionBanks },
   { path: "/exams/:id", component: ExaminationRegistrationPage },
   { path: "/registrations/:id", component: ViewExamRegistrations },
+  { path: "/:examId/:state", component: StateData },
   { path: "*", component: NotFound },
 ];
 
