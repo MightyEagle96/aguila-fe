@@ -25,15 +25,15 @@ export default function CentreCard({ data }) {
         sx={{ backgroundColor: "#eeeeee" }}
         onClick={() => window.location.assign("/registrations/" + data._id)}
       >
-        <div className="p-2">
+        <div className="p-3">
           <Typography fontWeight={600} gutterBottom>
             {data.title}
           </Typography>
           <div className="d-flex justify-content-between">
-            <Icon sx={{ color: "#00a152" }}>
+            <Icon sx={{ color: "GrayText" }}>
               <People />
             </Icon>
-            <Avatar sx={{ backgroundColor: "#ab003c" }}>{length || 0}</Avatar>
+            <Typography>{length.toLocaleString() || 0}</Typography>
           </div>
         </div>
       </CardActionArea>

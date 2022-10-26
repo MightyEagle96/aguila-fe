@@ -10,6 +10,7 @@ import React, { useState, useEffect } from "react";
 import DataTable from "react-data-table-component";
 import { useParams } from "react-router-dom";
 import Swal from "sweetalert2";
+import CandidateDashboardExpandable from "../../components/CandidateDashboardExpandable";
 import { httpService } from "../../httpService";
 import { states } from "../../utils";
 
@@ -63,51 +64,7 @@ function ViewExamRegistrations() {
     });
   };
   const expandableComponent = ({ data }) => {
-    return (
-      <div className="alert alert-success">
-        <div className="row">
-          <div className="col-md-4">
-            <Typography variant="caption" gutterBottom>
-              Subject Combinations
-            </Typography>
-            <table className="table table-striped">
-              <thead>
-                <tr>
-                  <th>Subject</th>
-                  <th>Score</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data.subjectCombinations.map((c, i) => (
-                  <tr key={i}>
-                    <td>{c.subject.name}</td>
-                    <td>{c.score}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <div className="col-md-4">
-            <div className="mb-2">
-              <Typography variant="caption" gutterBottom>
-                Exam State
-              </Typography>
-              <Typography variant="h5">
-                <strong>{data.examState}</strong>
-              </Typography>
-            </div>
-            <div className="mb-2">
-              <Typography variant="caption" gutterBottom>
-                Exam Town
-              </Typography>
-              <Typography variant="h5">
-                <strong>{data.examTown}</strong>
-              </Typography>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+    return <CandidateDashboardExpandable data={data} />;
   };
 
   const columns = [
@@ -179,10 +136,17 @@ function ViewExamRegistrations() {
                 <div className="d-flex justify-content-between">
                   <div>
                     <div className="alert alert-primary">
-                      States that will conduct this examination:{" "}
-                      <strong style={{ fontSize: 25 }}>
-                        {statesWriting.length}
-                      </strong>
+                      <div>
+                        States that will conduct this examination:{"   "}
+                        <strong style={{ fontSize: 25 }}>
+                          {statesWriting.length}
+                        </strong>
+                      </div>
+                      <div className="mt-2">
+                        <Button variant="contained" color="secondary">
+                          Create CBT Centres
+                        </Button>
+                      </div>
                     </div>
                   </div>
                   <div>
