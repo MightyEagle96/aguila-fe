@@ -9,7 +9,7 @@ function StateData() {
   const { examId, state } = useParams();
   const [data, setData] = useState(null);
   const getData = async () => {
-    const path = `/${examId}/${state}`;
+    const path = `/stateData/${examId}/${state}`;
 
     const res = await httpService.get(path);
     if (res) {

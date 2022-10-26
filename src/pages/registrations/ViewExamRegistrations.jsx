@@ -17,6 +17,7 @@ function ViewExamRegistrations() {
   const [data, setData] = useState(null);
   const { id } = useParams();
   const [limit, setLimit] = useState(0);
+  const [statesWriting, setStatesWriting] = useState([]);
 
   const getData = async () => {
     const path = `registrations/${id}`;
@@ -28,8 +29,19 @@ function ViewExamRegistrations() {
     }
   };
 
+  const getStatesWriting = async () => {
+    const path = `statesWriting/${id}`;
+
+    const res = await httpService.get(path);
+
+    if (res) {
+      setStatesWriting(res.data);
+    }
+  };
+
   useEffect(() => {
     getData();
+    getStatesWriting();
   }, []);
 
   const createDummyCandidates = (e) => {
@@ -164,7 +176,15 @@ function ViewExamRegistrations() {
                 </Typography>
               </div>
               <div className="mb-4">
-                <div className="d-flex justify-content-end">
+                <div className="d-flex justify-content-between">
+                  <div>
+                    <div className="alert alert-primary">
+                      States that will conduct this examination:{" "}
+                      <strong style={{ fontSize: 25 }}>
+                        {statesWriting.length}
+                      </strong>
+                    </div>
+                  </div>
                   <div>
                     <div className="row">
                       <div className="col-md-6">
@@ -203,9 +223,9 @@ function ViewExamRegistrations() {
                           window.location.assign(`/${id}/${e.target.value}`)
                         }
                       >
-                        {states.map((c, i) => (
-                          <MenuItem value={c} key={i}>
-                            {c}
+                        {statesWriting.map((c, i) => (
+                          <MenuItem value={c.state} key={i}>
+                            {c.state}
                           </MenuItem>
                         ))}
                       </TextField>
