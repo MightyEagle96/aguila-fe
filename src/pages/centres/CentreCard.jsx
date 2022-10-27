@@ -1,5 +1,5 @@
 import { People } from "@mui/icons-material";
-import { Avatar, CardActionArea, Icon, Typography } from "@mui/material";
+import { CardActionArea, Icon, Typography } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import { httpService } from "../../httpService";
 

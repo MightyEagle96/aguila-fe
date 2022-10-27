@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Typography } from "@mui/material";
-import { httpService } from "../httpService";
+import { httpService } from "../../httpService";
 import { Badge } from "react-bootstrap";
 import DataTable from "react-data-table-component";
 

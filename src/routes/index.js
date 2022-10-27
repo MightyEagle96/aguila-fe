@@ -5,21 +5,22 @@ import CentresHandler from "../pages/centres/CentresHandler";
 import CreatedExamination from "../pages/CreatedExamination";
 import Dashboard from "../pages/Dashboard";
 import DownloadExam from "../pages/DownloadExam";
-import ExaminationDashboard from "../pages/ExaminationDashboard";
-import ExaminationHandler from "../pages/ExaminationHandler";
-import ExamQuestionUpload from "../pages/ExamQuestionUpload";
-import QuestionBank from "../pages/QuestionBank";
+import ExaminationDashboard from "../pages/examinations/ExaminationDashboard";
+import ExaminationHandler from "../pages/examinations/ExaminationHandler";
+import ExamQuestionUpload from "../pages/examinations/ExamQuestionUpload";
+import QuestionBank from "../pages/examinations/QuestionBank";
 import ResultsPage from "../pages/ResultsPage";
 import ViewCentre from "../pages/centres/ViewCentre";
 import { loggedInUser } from "../httpService";
 import NotFound from "../pages/NotFound";
 import LoginPage from "../pages/LoginPage";
-import ExaminationHistory from "../pages/ExaminationHistory";
-import SubjectsControl from "../pages/SubjectsControl";
-import SubjectQuestionBanks from "../pages/SubjectQuestionBanks";
+import ExaminationHistory from "../pages/examinations/ExaminationHistory";
+import SubjectsControl from "../pages/examinations/SubjectsControl";
+import SubjectQuestionBanks from "../pages/examinations/SubjectQuestionBanks";
 import ExaminationRegistrationPage from "../pages/registrations/ExaminationRegistrationPage";
 import ViewExamRegistrations from "../pages/registrations/ViewExamRegistrations";
 import StateData from "../pages/registrations/StateData";
+import ExaminationSchedule from "../pages/examinations/ExaminationSchedule";
 
 const privateRoutes = [
   { path: "/", component: Dashboard },
@@ -40,6 +41,7 @@ const privateRoutes = [
   { path: "/exams/:id", component: ExaminationRegistrationPage },
   { path: "/registrations/:id", component: ViewExamRegistrations },
   { path: "/:examId/:state", component: StateData },
+  { path: "/examSchedule/:id", component: ExaminationSchedule },
   { path: "*", component: NotFound },
 ];
 

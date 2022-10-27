@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Skeleton, Typography } from "@mui/material";
-import { httpService } from "../httpService";
+import { httpService } from "../../httpService";
 import { Alert, Table } from "react-bootstrap";
 
 export default function ExaminationDashboard() {

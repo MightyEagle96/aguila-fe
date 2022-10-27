@@ -10,8 +10,8 @@ import {
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Swal from "sweetalert2";
-import { httpService } from "../httpService";
-import { Alert, Spinner, Table } from "react-bootstrap";
+import { httpService } from "../../httpService";
+import { Alert, Spinner } from "react-bootstrap";
 
 import "quill/dist/quill.snow.css";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";

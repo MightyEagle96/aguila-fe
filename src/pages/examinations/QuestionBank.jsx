@@ -2,7 +2,7 @@ import { Button, CardActionArea, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { Alert, Badge } from "react-bootstrap";
 import { useParams } from "react-router-dom";
-import { httpService } from "../httpService";
+import { httpService } from "../../httpService";
 import Swal from "sweetalert2";
 
 export default function QuestionBank() {

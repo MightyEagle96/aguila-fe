@@ -60,6 +60,7 @@ function ViewExamRegistrations() {
       if (res) {
         Swal.fire({ icon: "success", title: "SUCCESS", text: res.data });
         getData();
+        getStatesWriting();
       }
     });
   };
@@ -121,6 +122,28 @@ function ViewExamRegistrations() {
       }
     });
   };
+
+  const createDummyCentres = () =>
+    Swal.fire({
+      icon: "question",
+      title: "Confirm",
+      text: "Do you wish to create dummy examinations",
+      showCancelButton: true,
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const path = `createDummyCentres/${id}`;
+
+        const res = await httpService.get(path);
+
+        if (res && res.data) {
+          Swal.fire({ icon: "success", title: "SUCCESS", text: res.data }).then(
+            () => {
+              window.location.assign("/centres");
+            }
+          );
+        }
+      }
+    });
   return (
     <div>
       <div className="">
@@ -142,11 +165,17 @@ function ViewExamRegistrations() {
                           {statesWriting.length}
                         </strong>
                       </div>
-                      <div className="mt-2">
-                        <Button variant="contained" color="secondary">
-                          Create CBT Centres
-                        </Button>
-                      </div>
+                      {statesWriting.length > 0 ? (
+                        <div className="mt-2">
+                          <Button
+                            variant="contained"
+                            color="secondary"
+                            onClick={createDummyCentres}
+                          >
+                            Create dummy CBT Centres
+                          </Button>
+                        </div>
+                      ) : null}
                     </div>
                   </div>
                   <div>

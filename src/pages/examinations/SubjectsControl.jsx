@@ -2,7 +2,7 @@ import { Button, Stack, TextField, Typography } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import DataTable from "react-data-table-component";
 import Swal from "sweetalert2";
-import { httpService } from "../httpService";
+import { httpService } from "../../httpService";
 
 export default function SubjectsControl() {
   const [subjects, setSubjects] = useState([]);

@@ -10,7 +10,7 @@ import {
   Stack,
 } from "@mui/material";
 
-import { httpService } from "../httpService";
+import { httpService } from "../../httpService";
 import { useState, useEffect } from "react";
 import { Spinner } from "react-bootstrap";
 import Swal from "sweetalert2";
@@ -84,9 +84,15 @@ export default function ExaminationHandler() {
                 </Typography>
               </div>
               <div className="border-start"></div>
-              <div className="d-flex align-items-center">
+              <div className="d-flex align-items-end">
                 <Link href={`/registrations/${data._id}`}>
                   View Registrations
+                </Link>
+              </div>
+              <div className="border-start"></div>
+              <div className="d-flex align-items-end">
+                <Link href={`/examSchedule/${data._id}`}>
+                  View Examination schedule
                 </Link>
               </div>
             </Stack>
@@ -126,7 +132,11 @@ export default function ExaminationHandler() {
     {
       name: "ACTIVE",
       selector: (row) =>
-        row.active ? <Badge color="success">ACTIVE</Badge> : null,
+        row.active ? (
+          <Badge color="success">ACTIVE</Badge>
+        ) : (
+          <Button color="error">Make active</Button>
+        ),
     },
     {
       name: "WEB PAGE",
@@ -156,6 +166,7 @@ export default function ExaminationHandler() {
       }
     });
   };
+
   return (
     <div>
       <div className="mt-5 mb-5">

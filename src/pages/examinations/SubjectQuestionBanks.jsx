@@ -1,7 +1,7 @@
 import { Button, Typography, CardActionArea } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { httpService } from "../httpService";
+import { httpService } from "../../httpService";
 import { Alert } from "react-bootstrap";
 import { Badge } from "react-bootstrap";
 import Swal from "sweetalert2";

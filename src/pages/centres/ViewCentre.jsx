@@ -12,6 +12,7 @@ import { useParams } from "react-router-dom";
 import { httpService } from "../../httpService";
 
 import Swal from "sweetalert2";
+import DataTable from "react-data-table-component";
 
 export default function ViewCentre() {
   const { id } = useParams();
@@ -78,6 +79,21 @@ export default function ViewCentre() {
       }
     });
   };
+
+  const columns = [
+    { name: "First Name", selector: (row) => row.firstName },
+    { name: "Last Name", selector: (row) => row.lastName },
+    {
+      name: "Registration Number",
+      selector: (row) => (
+        <Typography variant="body2" textTransform={"uppercase"}>
+          {row.registrationNumber}
+        </Typography>
+      ),
+    },
+    { name: "Session", selector: (row) => row.session },
+    { name: "Seat Number", selector: (row) => row.seatNumber },
+  ];
   return (
     <div>
       <div className="mt-5 mb-5">
@@ -139,6 +155,17 @@ export default function ViewCentre() {
                       Assign to this centre
                     </Button>
                   </div>
+                </div>
+              ) : null}
+
+              {centre.candidates.length > 0 ? (
+                <div className="mt-3">
+                  <DataTable
+                    title={<Typography>CANDIDATES</Typography>}
+                    data={centre.candidates}
+                    columns={columns}
+                    pagination
+                  />
                 </div>
               ) : null}
             </div>
