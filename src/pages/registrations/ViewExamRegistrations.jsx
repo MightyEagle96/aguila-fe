@@ -1,7 +1,7 @@
 import {
   Button,
   Checkbox,
-  IconButton,
+  Pagination,
   MenuItem,
   Skeleton,
   Stack,
@@ -15,7 +15,7 @@ import Swal from "sweetalert2";
 import CandidateDashboardExpandable from "../../components/CandidateDashboardExpandable";
 import { httpService } from "../../httpService";
 import { states } from "../../utils";
-import { Table } from "react-bootstrap";
+import { Table, Spinner } from "react-bootstrap";
 import { ArrowCircleRight, ArrowCircleDown } from "@mui/icons-material";
 
 function ViewExamRegistrations() {
@@ -24,6 +24,8 @@ function ViewExamRegistrations() {
   const [limit, setLimit] = useState(0);
   const [statesWriting, setStatesWriting] = useState([]);
   const [expandedRows, setExpandedRows] = useState([]);
+  const [query, setQuery] = useState({ page: 1, limit: 10 });
+  const [fetching, setFetching] = useState(false);
 
   const expandRow = (row) => {
     setExpandedRows((old) => [...old, row]);
@@ -35,8 +37,39 @@ function ViewExamRegistrations() {
     setExpandedRows(rows);
   };
 
+  const paginationResult = async (e) => {
+    const page = Number(e.target.textContent);
+    setQuery({
+      ...query,
+      page,
+    });
+    setFetching(true);
+    const path = `registrations/${id}?limit=${query.limit}&page=${page}`;
+    const res = await httpService.get(path);
+    if (res) {
+      setData(res.data);
+      setFetching(false);
+    }
+    setFetching(false);
+  };
+  const paginationResult2 = async (e) => {
+    const limit = Number(e.target.value);
+    setQuery({
+      ...query,
+      limit,
+    });
+    setFetching(true);
+    const path = `registrations/${id}?limit=${limit}&page=${query.page}`;
+    const res = await httpService.get(path);
+    if (res) {
+      setData(res.data);
+      setFetching(false);
+    }
+    setFetching(false);
+  };
+
   const getData = async () => {
-    const path = `registrations/${id}`;
+    const path = `registrations/${id}?limit=${query.limit}&page=${query.page}`;
 
     const res = await httpService.get(path);
 
@@ -214,25 +247,36 @@ function ViewExamRegistrations() {
                       <Typography></Typography>
                     </th>
                     <th>
-                      <Typography variant="subtitle2">First Name</Typography>
+                      <Typography variant="subtitle2">S/N</Typography>
+                    </th>
+
+                    <th>
+                      <Typography variant="subtitle2">FIRST NAME</Typography>
                     </th>
                     <th>
-                      <Typography variant="subtitle2">Last Name</Typography>
+                      <Typography variant="subtitle2">LAST NAME</Typography>
                     </th>
                     <th>
                       <Typography variant="subtitle2">
-                        Registration Number
+                        REGISTRATION NUMBER
                       </Typography>
                     </th>
                     <th>
-                      <Typography variant="subtitle2">Total Score</Typography>
+                      <Typography variant="subtitle2">TOTAL SCORE</Typography>
                     </th>
                   </tr>
                 </thead>
                 <tbody>
                   {data.registrations.map((c, i) => (
                     <>
-                      <tr key={i}>
+                      <tr
+                        key={i}
+                        className={
+                          expandedRows.includes(i.toString())
+                            ? "table-success"
+                            : ""
+                        }
+                      >
                         <td>
                           <Checkbox
                             value={i.toString()}
@@ -245,18 +289,19 @@ function ViewExamRegistrations() {
                             sx={{ "& .MuiSvgIcon-root": { fontSize: 28 } }}
                           />
                         </td>
-                        <td>{c.firstName}</td>
-                        <td>{c.lastName}</td>
-                        <td>
+                        <td className="align-middle">{data.startIndex + i}</td>
+                        <td className="align-middle">{c.firstName}</td>
+                        <td className="align-middle">{c.lastName}</td>
+                        <td className="align-middle">
                           <Typography textTransform={"uppercase"}>
                             {c.registrationNumber}
                           </Typography>
                         </td>
-                        <td>{c.totalScore}</td>
+                        <td className="align-middle">{c.totalScore}</td>
                       </tr>
                       {expandedRows.includes(i.toString()) ? (
                         <tr>
-                          <td colSpan={5}>
+                          <td colSpan={6}>
                             <ExpandableComponent data={c} />
                           </td>
                         </tr>
@@ -265,6 +310,45 @@ function ViewExamRegistrations() {
                   ))}
                 </tbody>
               </Table>
+              <div className="mt-2">
+                <div className="d-flex justify-content-end">
+                  <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+                    <div className="d-flex align-items-center">
+                      {fetching ? (
+                        <Spinner size="sm" animation="border" />
+                      ) : null}
+                    </div>
+                    <div className="d-flex align-items-center">
+                      <Typography variant="caption">Rows per page</Typography>
+                      <TextField
+                        value={query.limit}
+                        select
+                        variant="standard"
+                        className="ms-2"
+                        onChange={paginationResult2}
+                      >
+                        <MenuItem value={10}>10</MenuItem>
+                        <MenuItem value={20}>20</MenuItem>
+                        <MenuItem value={50}>50</MenuItem>
+                        <MenuItem value={100}>100</MenuItem>
+                      </TextField>
+                    </div>
+
+                    <div className="d-flex align-items-center">
+                      <Typography variant="caption">
+                        Page: {query.page}
+                      </Typography>
+                    </div>
+
+                    <Pagination
+                      count={Math.ceil(data.length / query.limit)}
+                      onClick={paginationResult}
+                      showFirstButton
+                      showLastButton
+                    />
+                  </Stack>
+                </div>
+              </div>
             </div>
           ) : (
             <Stack spacing={2}>
