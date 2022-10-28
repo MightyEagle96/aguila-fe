@@ -86,6 +86,18 @@ export default function ExaminationSchedule() {
                 ))}
               </div>
             </div>
+            <div className="mt-3 col-lg-12">
+              <Typography color="GrayText" gutterBottom>
+                Subjects for this examination
+              </Typography>
+              {/* <div className="d-flex flex-wrap">
+                {sessions.map((c) => (
+                  <div className="col-md-3">
+                    <CentresAndSessions session={c} />
+                  </div>
+                ))}
+              </div> */}
+            </div>
           </div>
         ) : null}
       </div>
