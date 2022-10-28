@@ -2,6 +2,7 @@ import { Typography } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { httpService } from "../../httpService";
+import CentresAndSessions from "./CentresAndSessions";
 import SessionCandidate from "./SessionCandidate";
 
 export default function ExaminationSchedule() {
@@ -50,7 +51,7 @@ export default function ExaminationSchedule() {
         {examination ? (
           <div>
             <Typography variant="h4" fontWeight={600}>
-              {examination.title}
+              {examination.title} examination schedule
             </Typography>
 
             <div className="mt-3">
@@ -62,10 +63,25 @@ export default function ExaminationSchedule() {
               </div>
             </div>
             <div className="mt-3 col-lg-12">
+              <Typography color="GrayText" gutterBottom>
+                All sessions for this examination and the candidates
+              </Typography>
               <div className="d-flex flex-wrap">
                 {sessions.map((c) => (
                   <div className="col-md-3">
                     <SessionCandidate examination={id} session={c} />
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="mt-3 col-lg-12">
+              <Typography color="GrayText" gutterBottom>
+                Centres and sessions
+              </Typography>
+              <div className="d-flex flex-wrap">
+                {sessions.map((c) => (
+                  <div className="col-md-3">
+                    <CentresAndSessions session={c} />
                   </div>
                 ))}
               </div>

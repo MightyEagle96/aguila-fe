@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import { httpService } from "../../httpService";
 import { CardActionArea, Icon, Typography } from "@mui/material";
 import { People } from "@mui/icons-material";
+
 export default function SessionCandidate({ examination, session }) {
-  const [candidates, setCandidates] = useState([]);
+  const [candidates, setCandidates] = useState(0);
   const getCandidates = async () => {
     const path = "getSessionCandidates";
     const res = await httpService.post(path, { examination, session });
@@ -27,7 +28,7 @@ export default function SessionCandidate({ examination, session }) {
               <Icon sx={{ color: "GrayText" }}>
                 <People />
               </Icon>
-              <Typography>{candidates.length.toLocaleString() || 0}</Typography>
+              <Typography>{candidates.toLocaleString() || 0}</Typography>
             </div>
           </div>
         </CardActionArea>

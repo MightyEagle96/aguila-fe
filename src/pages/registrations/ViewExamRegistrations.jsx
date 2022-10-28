@@ -1,5 +1,7 @@
 import {
   Button,
+  Checkbox,
+  IconButton,
   MenuItem,
   Skeleton,
   Stack,
@@ -7,18 +9,31 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useState, useEffect } from "react";
-import DataTable from "react-data-table-component";
+
 import { useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import CandidateDashboardExpandable from "../../components/CandidateDashboardExpandable";
 import { httpService } from "../../httpService";
 import { states } from "../../utils";
+import { Table } from "react-bootstrap";
+import { ArrowCircleRight, ArrowCircleDown } from "@mui/icons-material";
 
 function ViewExamRegistrations() {
   const [data, setData] = useState(null);
   const { id } = useParams();
   const [limit, setLimit] = useState(0);
   const [statesWriting, setStatesWriting] = useState([]);
+  const [expandedRows, setExpandedRows] = useState([]);
+
+  const expandRow = (row) => {
+    setExpandedRows((old) => [...old, row]);
+  };
+
+  const collapseRow = (row) => {
+    const rows = expandedRows.filter((c) => c !== row);
+
+    setExpandedRows(rows);
+  };
 
   const getData = async () => {
     const path = `registrations/${id}`;
@@ -64,44 +79,9 @@ function ViewExamRegistrations() {
       }
     });
   };
-  const expandableComponent = ({ data }) => {
+  const ExpandableComponent = ({ data }) => {
     return <CandidateDashboardExpandable data={data} />;
   };
-
-  const columns = [
-    {
-      name: "First Name",
-      selector: (row) => (
-        <Typography variant="body1" textTransform={"capitalise"}>
-          {row.firstName}
-        </Typography>
-      ),
-    },
-    {
-      name: "Last Name",
-      selector: (row) => (
-        <Typography variant="body1" textTransform={"capitalise"}>
-          {row.lastName}
-        </Typography>
-      ),
-    },
-    {
-      name: "Registration Number",
-      selector: (row) => (
-        <Typography variant="body1" textTransform={"uppercase"}>
-          {row.registrationNumber}
-        </Typography>
-      ),
-    },
-    {
-      name: "Total Score",
-      selector: (row) => (
-        <Typography variant="body1" textTransform={"uppercase"}>
-          {row.totalScore}
-        </Typography>
-      ),
-    },
-  ];
 
   const deleteAllRegistrations = () => {
     Swal.fire({
@@ -226,18 +206,65 @@ function ViewExamRegistrations() {
                   </div>
                 </div>
               </div>
-              <DataTable
-                title={
-                  <Typography textTransform={"uppercase"}>
-                    Candidates' Data
-                  </Typography>
-                }
-                data={data.registrations}
-                columns={columns}
-                expandableRows
-                expandableRowsComponent={expandableComponent}
-                pagination
-              />
+
+              <Table>
+                <thead>
+                  <tr>
+                    <th>
+                      <Typography></Typography>
+                    </th>
+                    <th>
+                      <Typography variant="subtitle2">First Name</Typography>
+                    </th>
+                    <th>
+                      <Typography variant="subtitle2">Last Name</Typography>
+                    </th>
+                    <th>
+                      <Typography variant="subtitle2">
+                        Registration Number
+                      </Typography>
+                    </th>
+                    <th>
+                      <Typography variant="subtitle2">Total Score</Typography>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.registrations.map((c, i) => (
+                    <>
+                      <tr key={i}>
+                        <td>
+                          <Checkbox
+                            value={i.toString()}
+                            onChange={(e) => {
+                              if (e.target.checked) expandRow(e.target.value);
+                              else collapseRow(e.target.value);
+                            }}
+                            icon={<ArrowCircleRight />}
+                            checkedIcon={<ArrowCircleDown />}
+                            sx={{ "& .MuiSvgIcon-root": { fontSize: 28 } }}
+                          />
+                        </td>
+                        <td>{c.firstName}</td>
+                        <td>{c.lastName}</td>
+                        <td>
+                          <Typography textTransform={"uppercase"}>
+                            {c.registrationNumber}
+                          </Typography>
+                        </td>
+                        <td>{c.totalScore}</td>
+                      </tr>
+                      {expandedRows.includes(i.toString()) ? (
+                        <tr>
+                          <td colSpan={5}>
+                            <ExpandableComponent data={c} />
+                          </td>
+                        </tr>
+                      ) : null}
+                    </>
+                  ))}
+                </tbody>
+              </Table>
             </div>
           ) : (
             <Stack spacing={2}>
