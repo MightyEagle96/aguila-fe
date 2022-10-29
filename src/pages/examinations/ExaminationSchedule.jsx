@@ -90,13 +90,15 @@ export default function ExaminationSchedule() {
               <Typography color="GrayText" gutterBottom>
                 Subjects for this examination
               </Typography>
-              {/* <div className="d-flex flex-wrap">
-                {sessions.map((c) => (
-                  <div className="col-md-3">
-                    <CentresAndSessions session={c} />
-                  </div>
-                ))}
-              </div> */}
+              <div className="mt-2">
+                <Typography variant="h5" fontStyle={"italic"} fontWeight={600}>
+                  {examination.subjects
+                    .map(({ name }) => {
+                      return name;
+                    })
+                    .join(", ")}
+                </Typography>
+              </div>
             </div>
           </div>
         ) : null}
