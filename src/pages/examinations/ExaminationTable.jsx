@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { httpService } from "../../httpService";
-import { Link, Typography } from "@mui/material";
+import { IconButton, Link, Typography } from "@mui/material";
+import { Add } from "@mui/icons-material";
+import ExamSessionComponent from "../../components/ExamSessionComponent";
 function ExaminationTable() {
   const { id } = useParams();
   const [examination, setExamination] = useState(null);
@@ -47,7 +49,14 @@ function ExaminationTable() {
                     <Typography variant="overline">subjects</Typography>
                     <div className="d-flex flex-wrap">
                       {examination.subjects.map((d) => (
-                        <div className="col-md-2">{d.name}</div>
+                        <div className="col-md-2">
+                          <ExamSessionComponent
+                            subject={d.name}
+                            examination={examination._id}
+                            session={c}
+                            subjectId={d._id}
+                          />
+                        </div>
                       ))}
                     </div>
                   </div>

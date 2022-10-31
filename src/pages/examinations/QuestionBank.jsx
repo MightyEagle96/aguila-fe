@@ -7,14 +7,17 @@ import Swal from "sweetalert2";
 
 export default function QuestionBank() {
   const { id } = useParams();
-  const [examType, setExamType] = useState(null);
+
+  const [subject, setSubject] = useState(null);
   const [questionBanks, setQuestionBanks] = useState([]);
 
-  const getExamType = async () => {
-    const path = `viewExamType/${id}`;
+  const viewSubject = async () => {
+    const path = `viewSubject/${id}`;
+
     const res = await httpService.get(path);
+
     if (res) {
-      setExamType(res.data);
+      setSubject(res.data);
     }
   };
 
@@ -29,7 +32,7 @@ export default function QuestionBank() {
   };
 
   useEffect(() => {
-    getExamType();
+    viewSubject();
     viewQuestionBanks();
   }, []);
 
@@ -44,7 +47,7 @@ export default function QuestionBank() {
         const path = "createQuestionBank";
 
         const res = await httpService.post(path, { examType: id });
-        getExamType();
+
         viewQuestionBanks();
         if (res) {
           Swal.fire({
@@ -61,15 +64,11 @@ export default function QuestionBank() {
   return (
     <div>
       <div className="container">
-        {examType ? (
+        {subject ? (
           <div className="mb-3">
             <Alert>
-              <Typography variant="h4" gutterBottom>
-                {examType.examType}
-              </Typography>
-              <Typography>
-                Question Banks: {examType.questionBanks.length}
-              </Typography>
+              <Typography variant="h4" gutterBottom></Typography>
+              <Typography>Question Banks:</Typography>
             </Alert>
             <div className="mt-2">
               <Button
