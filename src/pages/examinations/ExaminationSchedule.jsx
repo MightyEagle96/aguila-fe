@@ -1,4 +1,4 @@
-import { Typography } from "@mui/material";
+import { Link, Typography } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { httpService } from "../../httpService";
@@ -99,6 +99,11 @@ export default function ExaminationSchedule() {
                     .join(", ")}
                 </Typography>
               </div>
+            </div>
+            <div className="mt-3">
+              <Link href={`/examinationTable/${id}`}>
+                View Examination table
+              </Link>
             </div>
           </div>
         ) : null}

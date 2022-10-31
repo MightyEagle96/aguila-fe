@@ -21,6 +21,7 @@ import ExaminationRegistrationPage from "../pages/registrations/ExaminationRegis
 import ViewExamRegistrations from "../pages/registrations/ViewExamRegistrations";
 import StateData from "../pages/registrations/StateData";
 import ExaminationSchedule from "../pages/examinations/ExaminationSchedule";
+import ExaminationTable from "../pages/examinations/ExaminationTable";
 
 const privateRoutes = [
   { path: "/", component: Dashboard },
@@ -42,6 +43,7 @@ const privateRoutes = [
   { path: "/registrations/:id", component: ViewExamRegistrations },
   { path: "/:examId/:state", component: StateData },
   { path: "/examSchedule/:id", component: ExaminationSchedule },
+  { path: "/examinationTable/:id", component: ExaminationTable },
   { path: "*", component: NotFound },
 ];
 
