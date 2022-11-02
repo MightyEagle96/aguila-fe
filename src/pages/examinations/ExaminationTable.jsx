@@ -49,7 +49,7 @@ function ExaminationTable() {
                     <Typography variant="overline">subjects</Typography>
                     <div className="d-flex flex-wrap">
                       {examination.subjects.map((d) => (
-                        <div className="col-md-2">
+                        <div className="col-md-2 border-end">
                           <ExamSessionComponent
                             subject={d.name}
                             examination={examination._id}

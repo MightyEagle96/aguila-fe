@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import { httpService } from "../httpService";
-import { Modal } from "react-bootstrap";
+import { Badge, Modal } from "react-bootstrap";
 import Swal from "sweetalert2";
 
 function ExamSessionComponent({ examination, subject, session, subjectId }) {
@@ -77,14 +77,17 @@ function ExamSessionComponent({ examination, subject, session, subjectId }) {
     getQuestionBanks();
   }, []);
   return (
-    <div>
+    <div className="p-2">
       <Typography variant="h6">{subject}</Typography>
       {!examData ? (
-        <IconButton color="error" onClick={handleShow}>
-          <Add />
-        </IconButton>
+        <>
+          <Badge bg="danger">No question bank added</Badge>
+          <IconButton color="error" onClick={handleShow}>
+            <Add />
+          </IconButton>
+        </>
       ) : (
-        <Typography variant="subtitle2">Question bank added</Typography>
+        <Badge bg="success">Question bank added</Badge>
       )}
 
       <div>
