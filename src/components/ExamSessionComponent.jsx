@@ -78,10 +78,15 @@ function ExamSessionComponent({ examination, subject, session, subjectId }) {
             </div>
           </Modal.Body>
           <Modal.Footer>
-            <Button color="error" onClick={handleClose}>
+            <Button
+              color="error"
+              variant="contained"
+              className="me-2"
+              onClick={handleClose}
+            >
               Close
             </Button>
-            <Button color="primary" onClick={handleClose}>
+            <Button color="primary" variant="contained" onClick={handleClose}>
               Save Changes
             </Button>
           </Modal.Footer>

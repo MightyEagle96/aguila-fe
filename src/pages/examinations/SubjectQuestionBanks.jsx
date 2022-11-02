@@ -67,7 +67,7 @@ export default function SubjectQuestionBanks() {
             </div>
           </div>
           <div className="mt-2">
-            <div className="container">
+            <div className="">
               {data.questionBanks ? (
                 <div className="mb-3">
                   <div className="mt-2">
