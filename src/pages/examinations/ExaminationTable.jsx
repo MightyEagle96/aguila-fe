@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { httpService } from "../../httpService";
-import { IconButton, Link, Typography } from "@mui/material";
-import { Add } from "@mui/icons-material";
+import { Link, Typography } from "@mui/material";
+
 import ExamSessionComponent from "../../components/ExamSessionComponent";
 function ExaminationTable() {
   const { id } = useParams();

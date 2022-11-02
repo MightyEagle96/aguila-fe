@@ -1,11 +1,9 @@
-import { Add, Label } from "@mui/icons-material";
+import { Add } from "@mui/icons-material";
 import {
   IconButton,
   Typography,
   Button,
-  FormGroup,
   FormControlLabel,
-  Checkbox,
   FormControl,
   FormLabel,
   RadioGroup,
@@ -14,10 +12,12 @@ import {
 import React, { useState, useEffect } from "react";
 import { httpService } from "../httpService";
 import { Modal } from "react-bootstrap";
+import Swal from "sweetalert2";
 
 function ExamSessionComponent({ examination, subject, session, subjectId }) {
   const [show, setShow] = useState(false);
   const [questionBanks, setQuestionBanks] = useState([]);
+  const [questionBank, setQuestionBank] = useState("");
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -36,24 +36,56 @@ function ExamSessionComponent({ examination, subject, session, subjectId }) {
   const getData = async () => {
     const path = `viewExamSession?examination=${examination}&session=${session}`;
 
-    const res = await httpService.get(path);
+    const res = await httpService.post(path, {
+      subjectId,
+      examination,
+      session,
+    });
 
     if (res) {
       setExamData(res.data);
     }
   };
+
+  const addQuestionBank = async () => {
+    Swal.fire({
+      icon: "question",
+      title: "Add to exam",
+      text: "Do you want to add this question bank?",
+      showCancelButton: true,
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const path = "addQuestionBankToExam";
+
+        const res = await httpService.patch(path, {
+          questionBank,
+          examination,
+          session,
+        });
+
+        if (res && res.data) {
+          handleClose();
+          getData();
+          Swal.fire({ icon: "success", title: "SUCCESS", text: res.data });
+        } else handleClose();
+      }
+    });
+  };
+
   useEffect(() => {
     getData();
     getQuestionBanks();
   }, []);
   return (
     <div>
-      <Typography variant="subtitle1">{subject}</Typography>
+      <Typography variant="h6">{subject}</Typography>
       {!examData ? (
         <IconButton color="error" onClick={handleShow}>
           <Add />
         </IconButton>
-      ) : null}
+      ) : (
+        <Typography variant="subtitle2">Question bank added</Typography>
+      )}
 
       <div>
         <Modal show={show} onHide={handleClose}>
@@ -68,6 +100,7 @@ function ExamSessionComponent({ examination, subject, session, subjectId }) {
                 <RadioGroup>
                   {questionBanks.map((c, i) => (
                     <FormControlLabel
+                      onChange={(e) => setQuestionBank(e.target.value)}
                       value={c._id}
                       control={<Radio />}
                       label={`${c.subject.name} bank ${i + 1}`}
@@ -86,7 +119,12 @@ function ExamSessionComponent({ examination, subject, session, subjectId }) {
             >
               Close
             </Button>
-            <Button color="primary" variant="contained" onClick={handleClose}>
+            <Button
+              color="primary"
+              disabled={questionBank === "" ? true : false}
+              variant="contained"
+              onClick={addQuestionBank}
+            >
               Save Changes
             </Button>
           </Modal.Footer>
