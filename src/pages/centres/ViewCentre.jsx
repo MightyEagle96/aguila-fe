@@ -104,7 +104,7 @@ export default function ViewCentre() {
                 <div className="col-md-4">
                   <div className="alert alert-info">
                     <Typography variant="h5" fontWeight={600} gutterBottom>
-                      {centre.name}. ({centre.centreId})
+                      {centre.name}.
                     </Typography>
                     <Typography variant="body1" gutterBottom>
                       Town: <strong>{centre.examTown}</strong>
@@ -122,6 +122,21 @@ export default function ViewCentre() {
                     <Typography>
                       Total Candidates assigned:{" "}
                       <strong>{centre.candidates.length}</strong>
+                    </Typography>
+                  </div>
+                </div>
+                <div className="col-md-4">
+                  <div className="alert alert-secondary">
+                    <Typography variant="caption" gutterBottom>
+                      Credentials
+                    </Typography>
+                    <hr />
+
+                    <Typography gutterBottom>
+                      Centre ID: {centre.centreId}
+                    </Typography>
+                    <Typography gutterBottom>
+                      Password: {centre.password}
                     </Typography>
                   </div>
                 </div>
