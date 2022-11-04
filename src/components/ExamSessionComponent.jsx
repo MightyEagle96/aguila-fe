@@ -66,7 +66,6 @@ function ExamSessionComponent({ examination, subject, session, subjectId }) {
         if (res && res.data) {
           handleClose();
           getData();
-          Swal.fire({ icon: "success", title: "SUCCESS", text: res.data });
         } else handleClose();
       }
     });
@@ -137,4 +136,57 @@ function ExamSessionComponent({ examination, subject, session, subjectId }) {
   );
 }
 
-export default ExamSessionComponent;
+function ExaminationSessionDetails({ examination, session }) {
+  const [data, setData] = useState(null);
+
+  const getData = async () => {
+    const path = "viewExamSessionMin";
+    const res = await httpService.post(path, { examination, session });
+
+    if (res) {
+      setData(res.data);
+    }
+  };
+  useEffect(() => {
+    getData();
+  }, []);
+
+  const makeSessionAvailable = () => {
+    Swal.fire({
+      icon: "question",
+      title: "ACTIVATE?",
+      text: "Do you want to make this session available for download",
+      showCancelButton: true,
+    }).then(async () => {
+      const path = `activateSession/${data._id}`;
+
+      const res = await httpService.patch(path, {});
+      if (res) {
+        getData();
+      }
+    });
+  };
+  return (
+    <>
+      {data ? (
+        <div className="alert alert-primary">
+          {data.available ? (
+            <div>
+              <Typography>Exam is available for download</Typography>
+            </div>
+          ) : (
+            <Button
+              color="error"
+              variant="contained"
+              onClick={makeSessionAvailable}
+            >
+              Make exam available for download
+            </Button>
+          )}
+        </div>
+      ) : null}
+    </>
+  );
+}
+
+export { ExamSessionComponent, ExaminationSessionDetails };

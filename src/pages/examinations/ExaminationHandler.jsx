@@ -123,6 +123,24 @@ export default function ExaminationHandler() {
     viewCreatedExaminations();
     viewSubjects();
   }, []);
+
+  const activateExam = (id) => {
+    Swal.fire({
+      icon: "question",
+      title: "ACTIVATE?",
+      text: "Do you wish to activate this examination?",
+      showCancelButton: true,
+    }).then(async () => {
+      const path = `activateExam/${id}`;
+
+      const res = await httpService.post(path, {});
+
+      if (res) {
+        viewCreatedExaminations();
+      }
+    });
+  };
+
   const columns = [
     { name: "TITLE", selector: (row) => row.title },
     {
@@ -135,7 +153,9 @@ export default function ExaminationHandler() {
         row.active ? (
           <Badge color="success">ACTIVE</Badge>
         ) : (
-          <Button color="error">Make active</Button>
+          <Button color="error" onClick={() => activateExam(row._id)}>
+            activate
+          </Button>
         ),
     },
     {
@@ -219,8 +239,9 @@ export default function ExaminationHandler() {
           </Modal.Header>
           <Modal.Body>
             <FormGroup>
-              {subjects.map((c) => (
+              {subjects.map((c, i) => (
                 <FormControlLabel
+                  key={i}
                   control={<Checkbox />}
                   label={c.name}
                   value={c._id}

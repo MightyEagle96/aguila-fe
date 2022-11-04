@@ -3,7 +3,10 @@ import { useParams } from "react-router-dom";
 import { httpService } from "../../httpService";
 import { Link, Typography } from "@mui/material";
 
-import ExamSessionComponent from "../../components/ExamSessionComponent";
+import {
+  ExaminationSessionDetails,
+  ExamSessionComponent,
+} from "../../components/ExamSessionComponent";
 function ExaminationTable() {
   const { id } = useParams();
   const [examination, setExamination] = useState(null);
@@ -58,6 +61,9 @@ function ExaminationTable() {
                           />
                         </div>
                       ))}
+                    </div>
+                    <div className="mt-1">
+                      <ExaminationSessionDetails examination={id} session={c} />
                     </div>
                   </div>
                 </div>
