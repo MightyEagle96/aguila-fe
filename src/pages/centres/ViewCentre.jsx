@@ -100,7 +100,7 @@ export default function ViewCentre() {
         <div className="">
           {centre ? (
             <div className="">
-              <Stack direction="row" spacing={2}>
+              <div className="row">
                 <div className="col-md-4">
                   <div className="alert alert-info">
                     <Typography variant="h5" fontWeight={600} gutterBottom>
@@ -140,7 +140,7 @@ export default function ViewCentre() {
                     </Typography>
                   </div>
                 </div>
-              </Stack>
+              </div>
 
               {availableCandidates.length > 0 ? (
                 <div className="mt-5">
