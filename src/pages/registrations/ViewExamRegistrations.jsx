@@ -140,13 +140,13 @@ function ViewExamRegistrations() {
     Swal.fire({
       icon: "question",
       title: "Confirm",
-      text: "Do you wish to create dummy examinations",
+      text: "Do you wish to create dummy centres for this examination",
       showCancelButton: true,
     }).then(async (result) => {
       if (result.isConfirmed) {
         const path = `createDummyCentres/${id}`;
 
-        const res = await httpService.get(path);
+        const res = await httpService.post(path, { examination: id });
 
         if (res && res.data) {
           Swal.fire({ icon: "success", title: "SUCCESS", text: res.data }).then(

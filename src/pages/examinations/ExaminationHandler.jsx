@@ -53,6 +53,7 @@ export default function ExaminationHandler() {
         const res = await httpService.post(path, { title: examination });
 
         if (res) {
+          viewCreatedExaminations();
           Swal.fire({ icon: "success", title: "Success", text: res.data });
         }
       }
@@ -181,6 +182,7 @@ export default function ExaminationHandler() {
         handleClose();
 
         if (res) {
+          viewCreatedExaminations();
           Swal.fire({ icon: "success", title: "Success", text: res.data });
         }
       }
