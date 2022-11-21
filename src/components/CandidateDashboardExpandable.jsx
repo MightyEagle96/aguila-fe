@@ -9,22 +9,11 @@ export default function CandidateDashboardExpandable({ data }) {
           <Typography variant="caption" gutterBottom>
             Subject Combinations
           </Typography>
-          <table className="table table-striped">
-            <thead>
-              <tr>
-                <th>Subject</th>
-                <th>Score</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.subjectCombinations.map((c, i) => (
-                <tr key={i}>
-                  <td>{c.subject.name}</td>
-                  <td>{c.score}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          {data.subjectCombinations.map((c, i) => (
+            <div key={i}>
+              <h6>{c.name}</h6>
+            </div>
+          ))}
         </div>
         <div className="col-md-3">
           <div className="mb-2">

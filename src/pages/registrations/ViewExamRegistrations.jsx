@@ -14,7 +14,7 @@ import { useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import CandidateDashboardExpandable from "../../components/CandidateDashboardExpandable";
 import { httpService } from "../../httpService";
-import { states } from "../../utils";
+
 import { Table, Spinner } from "react-bootstrap";
 import { ArrowCircleRight, ArrowCircleDown } from "@mui/icons-material";
 
@@ -26,6 +26,7 @@ function ViewExamRegistrations() {
   const [expandedRows, setExpandedRows] = useState([]);
   const [query, setQuery] = useState({ page: 1, limit: 10 });
   const [fetching, setFetching] = useState(false);
+  const [candidateFile, setCandidateFile] = useState(null);
 
   const expandRow = (row) => {
     setExpandedRows((old) => [...old, row]);
@@ -157,6 +158,20 @@ function ViewExamRegistrations() {
         }
       }
     });
+
+  const handleFileUpload = async (e) => {
+    e.preventDefault();
+
+    let formData = new FormData();
+
+    formData.append("candidateFile", candidateFile, candidateFile.name);
+    const path = `uploadCandidateFile/${id}`;
+    const res = await httpService.post(path, formData);
+
+    if (res) {
+      getData(); // ViewExamRegistrations();
+    }
+  };
   return (
     <div>
       <div className="">
@@ -165,7 +180,7 @@ function ViewExamRegistrations() {
             <div>
               <div className="mb-4">
                 <Typography variant="h4" fontWeight={600}>
-                  {data.examination.title} Data dashboard
+                  {data.examination.title}
                 </Typography>
               </div>
               <div className="mb-4">
@@ -189,6 +204,37 @@ function ViewExamRegistrations() {
                           </Button>
                         </div>
                       ) : null}
+                    </div>
+                    <div className="mt-1">
+                      <div className="card p-3">
+                        <div class="mb-3">
+                          <form
+                            encType="multipart/form-data"
+                            onSubmit={handleFileUpload}
+                          >
+                            <label for="formFile" class="form-label">
+                              Upload candidate file
+                            </label>
+                            <input
+                              class="form-control"
+                              type="file"
+                              id="candidateFile"
+                              accept=".xlsx, .csv"
+                              name="candidateFile"
+                              onChange={(e) =>
+                                setCandidateFile(e.target.files[0])
+                              }
+                            />
+                            <Button
+                              type="submit"
+                              className="mt-2"
+                              startIcon={<i class="fas fa-file-excel    "></i>}
+                            >
+                              upload file
+                            </Button>
+                          </form>
+                        </div>
+                      </div>
                     </div>
                   </div>
                   <div>
