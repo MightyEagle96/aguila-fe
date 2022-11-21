@@ -177,11 +177,45 @@ export default function ExamQuestionUpload() {
       {subject ? (
         <div className="mt-5 mb-5">
           <div>
-            <Alert>
-              <Typography>
-                Subject: <strong>{subject.name}</strong>
-              </Typography>
-            </Alert>
+            <div className="d-flex justify-content-between">
+              <div className="col-lg-4">
+                <Alert>
+                  <Typography>
+                    Subject: <strong>{subject.name}</strong>
+                  </Typography>
+                </Alert>
+              </div>
+              <div className="col-lg-4">
+                {" "}
+                <div>
+                  <div>
+                    <form
+                      encType="multipart/form-data"
+                      //  onSubmit={handleFileUpload}
+                    >
+                      <label for="formFile" class="form-label">
+                        Upload examination questions
+                      </label>
+                      <input
+                        class="form-control"
+                        type="file"
+                        id="candidateFile"
+                        accept=".xlsx, .csv"
+                        name="candidateFile"
+                        //onChange={(e) => setCandidateFile(e.target.files[0])}
+                      />
+                      <Button
+                        type="submit"
+                        className="mt-2"
+                        startIcon={<i class="fas fa-file-excel    "></i>}
+                      >
+                        upload questions
+                      </Button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
           <div>
             <div className="d-flex justify-content-end mb-2">

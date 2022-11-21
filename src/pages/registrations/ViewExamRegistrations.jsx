@@ -167,13 +167,13 @@ function ViewExamRegistrations() {
 
     formData.append("candidateFile", candidateFile, candidateFile.name);
     const path = `uploadCandidateFile/${id}`;
-    const res = await httpService.post(path, formData);
+    await httpService.post(path, formData);
 
-    if (res) {
+    setTimeout(() => {
       setCandidateFile(null);
       getData();
       getStatesWriting();
-    }
+    }, 3000);
   };
   return (
     <div>
