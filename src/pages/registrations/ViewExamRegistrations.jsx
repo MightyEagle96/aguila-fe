@@ -209,17 +209,17 @@ function ViewExamRegistrations() {
                       ) : null}
                     </div>
                     <div className="mt-1">
-                      <div className="card p-3">
+                      <div className="">
                         <div class="mb-3">
                           <form
                             encType="multipart/form-data"
                             onSubmit={handleFileUpload}
                           >
-                            <label for="formFile" class="form-label">
+                            <label for="formFile" className="form-label">
                               Upload candidate file
                             </label>
                             <input
-                              class="form-control"
+                              className="form-control"
                               type="file"
                               id="candidateFile"
                               accept=".xlsx, .csv"
