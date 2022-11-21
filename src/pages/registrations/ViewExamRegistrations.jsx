@@ -131,6 +131,7 @@ function ViewExamRegistrations() {
 
         if (res) {
           getData();
+          getStatesWriting();
           Swal.fire({ icon: "success", text: res.data });
         }
       }
@@ -169,7 +170,9 @@ function ViewExamRegistrations() {
     const res = await httpService.post(path, formData);
 
     if (res) {
-      getData(); // ViewExamRegistrations();
+      setCandidateFile(null);
+      getData();
+      getStatesWriting();
     }
   };
   return (
