@@ -198,6 +198,11 @@ export default function ExamQuestionUpload() {
                     Subject: <strong>{subject.name}</strong>
                   </Typography>
                 </Alert>
+                <div className="mt-1">
+                  <Button onClick={(e) => setManualQuestion(!manualQuestion)}>
+                    toggle manual question upload
+                  </Button>
+                </div>
               </div>
               <div className="col-lg-4">
                 {" "}
