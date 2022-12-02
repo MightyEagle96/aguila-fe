@@ -24,6 +24,12 @@ httpService.interceptors.response.use(
         await httpService.post(path, { id: loggedInUser._id });
 
         return httpService(error.config);
+      } else if (error.response.status === 500) {
+        return Swal.fire({
+          icon: "error",
+          title: "Server Error",
+          text: error.response.data,
+        });
       }
       return { type: "error", message: error.response.data };
     } else {

@@ -24,7 +24,7 @@ function ViewExamRegistrations() {
   const [limit, setLimit] = useState(0);
   const [statesWriting, setStatesWriting] = useState([]);
   const [expandedRows, setExpandedRows] = useState([]);
-  const [query, setQuery] = useState({ page: 1, limit: 10 });
+  const [query, setQuery] = useState({ page: 1, limit: 100 });
   const [fetching, setFetching] = useState(false);
   const [candidateFile, setCandidateFile] = useState(null);
 
@@ -106,7 +106,7 @@ function ViewExamRegistrations() {
 
       const res = await httpService.post(path, { limit, examination: id });
 
-      if (res) {
+      if (res && res.data) {
         Swal.fire({ icon: "success", title: "SUCCESS", text: res.data });
         getData();
         getStatesWriting();
@@ -376,10 +376,10 @@ function ViewExamRegistrations() {
                         className="ms-2"
                         onChange={paginationResult2}
                       >
-                        <MenuItem value={10}>10</MenuItem>
-                        <MenuItem value={20}>20</MenuItem>
-                        <MenuItem value={50}>50</MenuItem>
                         <MenuItem value={100}>100</MenuItem>
+                        <MenuItem value={200}>200</MenuItem>
+                        <MenuItem value={300}>300</MenuItem>
+                        <MenuItem value={500}>500</MenuItem>
                       </TextField>
                     </div>
 
