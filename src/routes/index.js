@@ -22,6 +22,7 @@ import ViewExamRegistrations from "../pages/registrations/ViewExamRegistrations"
 import StateData from "../pages/registrations/StateData";
 import ExaminationSchedule from "../pages/examinations/ExaminationSchedule";
 import ExaminationTable from "../pages/examinations/ExaminationTable";
+import AdminResults from "../pages/results/AdminResults";
 
 const privateRoutes = [
   { path: "/", component: Dashboard },
@@ -41,9 +42,10 @@ const privateRoutes = [
   { path: "/subjects/:id", component: SubjectQuestionBanks },
   { path: "/exams/:id", component: ExaminationRegistrationPage },
   { path: "/registrations/:id", component: ViewExamRegistrations },
-  { path: "/:examId/:state", component: StateData },
+  { path: "/statedata/:examId/:state", component: StateData },
   { path: "/examSchedule/:id", component: ExaminationSchedule },
   { path: "/examinationTable/:id", component: ExaminationTable },
+  { path: "/results/admin/:id", component: AdminResults },
   { path: "*", component: NotFound },
 ];
 

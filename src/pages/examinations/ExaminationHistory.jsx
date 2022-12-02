@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Typography } from "@mui/material";
+import { Link, Typography } from "@mui/material";
 import { httpService } from "../../httpService";
 import { Badge } from "react-bootstrap";
 import DataTable from "react-data-table-component";
@@ -25,12 +25,18 @@ function ExaminationHistory() {
     { name: "TITLE", selector: (row) => row.title },
     {
       name: "DATE CREATED",
-      selector: (row) => new Date(row.dateCreated).toDateString(),
+      selector: (row) => new Date(row.createdOn).toDateString(),
     },
     {
-      name: "ACTIVE",
+      name: "STATUS",
       selector: (row) =>
         row.active ? <Badge color="success">ACTIVE</Badge> : null,
+    },
+    {
+      name: "ACTION",
+      selector: (row) => (
+        <Link href={`/results/admin/${row._id}`}>view results</Link>
+      ),
     },
   ];
   return (
