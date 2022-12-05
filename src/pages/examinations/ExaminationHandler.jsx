@@ -228,6 +228,9 @@ export default function ExaminationHandler() {
                 </Button>
               </form>
             </div>
+            <div className="col-md-6">
+              {fetchingData ? <Spinner animation="border" /> : null}
+            </div>
           </div>
           <div className="mt-2">
             <div className="mt-2">
