@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Link, Typography } from "@mui/material";
 import { httpService } from "../../httpService";
-import { Badge } from "react-bootstrap";
+import { Badge, Spinner } from "react-bootstrap";
 import DataTable from "react-data-table-component";
 
 function ExaminationHistory() {
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const viewCreatedExaminations = async () => {
+    setLoading(true);
     const path = "viewCreatedExaminations";
 
     const res = await httpService(path);
@@ -15,6 +17,7 @@ function ExaminationHistory() {
     if (res) {
       setData(res.data);
     }
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -42,9 +45,16 @@ function ExaminationHistory() {
   return (
     <div>
       <div className="mt-5 mb-5">
-        <Typography variant="h4" fontWeight={600}>
-          Examination History
-        </Typography>
+        <div className="row">
+          <div className="col-lg-3">
+            <Typography variant="h4" fontWeight={600}>
+              Examination History
+            </Typography>
+          </div>
+          <div className="col-lg-3">
+            {loading ? <Spinner animation="border" /> : null}
+          </div>
+        </div>
 
         <div className="mt-2">
           <DataTable data={data} columns={columns} pagination />
