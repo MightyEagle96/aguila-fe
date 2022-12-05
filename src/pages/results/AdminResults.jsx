@@ -10,18 +10,17 @@ export default function AdminResults() {
   const [candidates, setCandidates] = useState([]);
   const [loading, setLoading] = useState(false);
   const { id } = useParams();
+
   const GetData = async () => {
     setLoading(true);
     const path = `viewExamination/${id}`;
 
     httpService(path).then((res) => {
       setExam(res.data);
-      console.log(res.data);
     });
 
     httpService(`adminViewResult/${id}`).then((res) => {
       setCandidates(res.data);
-      console.log(res.data);
     });
 
     setLoading(false);
