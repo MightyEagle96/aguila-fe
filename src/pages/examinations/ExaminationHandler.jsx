@@ -19,6 +19,7 @@ import { Badge, Modal } from "react-bootstrap";
 
 export default function ExaminationHandler() {
   const [data, setData] = useState([]);
+  const [fetchingData, setFetchingData] = useState(false);
   const [loading, setLoading] = useState(false);
   const [processLoading, setProcessLoading] = useState(false);
 
@@ -33,10 +34,13 @@ export default function ExaminationHandler() {
   const handleShow = () => setShow(true);
 
   const viewSubjects = async () => {
+    setFetchingData(true);
     const path = "viewSubjects";
 
     const res = await httpService.get(path);
     if (res) setSubjects(res.data);
+
+    setFetchingData(false);
   };
   const createNewExamination = async (e) => {
     e.preventDefault();
@@ -48,6 +52,7 @@ export default function ExaminationHandler() {
       showCancelButton: true,
     }).then(async (result) => {
       if (result.isConfirmed) {
+        setLoading(true);
         const path = "createNewExamination";
 
         const res = await httpService.post(path, { title: examination });
@@ -56,11 +61,13 @@ export default function ExaminationHandler() {
           viewCreatedExaminations();
           Swal.fire({ icon: "success", title: "Success", text: res.data });
         }
+        setLoading(false);
       }
     });
   };
 
   const viewCreatedExaminations = async () => {
+    setFetchingData(true);
     const path = "viewCreatedExaminations";
 
     const res = await httpService(path);
@@ -68,6 +75,7 @@ export default function ExaminationHandler() {
     if (res) {
       setData(res.data);
     }
+    setFetchingData(false);
   };
 
   const expandableComponent = ({ data }) => {
