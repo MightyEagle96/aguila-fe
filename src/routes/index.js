@@ -23,6 +23,7 @@ import StateData from "../pages/registrations/StateData";
 import ExaminationSchedule from "../pages/examinations/ExaminationSchedule";
 import ExaminationTable from "../pages/examinations/ExaminationTable";
 import AdminResults from "../pages/results/AdminResults";
+import SideMenu from "../components/SideMenu";
 
 const privateRoutes = [
   { path: "/", component: Dashboard },
@@ -54,29 +55,33 @@ const publicRoutes = [
   { path: "/exams/:id", component: ExaminationRegistrationPage },
   { path: "*", component: NotFound },
 ];
-function PublicRoutes() {
+function MainRoutes() {
   return (
     <BrowserRouter>
-      <Routes>
-        {publicRoutes.map((c, i) => (
-          <Route key={i} path={c.path} element={<c.component />} />
-        ))}
-      </Routes>
+      {loggedInUser ? (
+        <>
+          <div className="row m-0">
+            <div className="col-lg-2 sideMenu">
+              <SideMenu />
+            </div>
+            <div className="col-lg-10">
+              <Routes>
+                {privateRoutes.map((c, i) => (
+                  <Route key={i} path={c.path} element={<c.component />} />
+                ))}
+              </Routes>
+            </div>
+          </div>
+        </>
+      ) : (
+        <Routes>
+          {publicRoutes.map((c, i) => (
+            <Route key={i} path={c.path} element={<c.component />} />
+          ))}
+        </Routes>
+      )}
     </BrowserRouter>
   );
 }
 
-function PrivateRoutes() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        {privateRoutes.map((c, i) => (
-          <Route key={i} path={c.path} element={<c.component />} />
-        ))}
-      </Routes>
-    </BrowserRouter>
-  );
-}
-
-const MainRoutes = loggedInUser ? PrivateRoutes : PublicRoutes;
 export default MainRoutes;
