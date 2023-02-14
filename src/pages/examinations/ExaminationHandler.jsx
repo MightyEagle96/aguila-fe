@@ -181,10 +181,9 @@ export default function ExaminationHandler() {
       showCancelButton: true,
     }).then(async (result) => {
       if (result.isConfirmed) {
-        const path = "updateExam";
+        const path = `updateExamWithSubjects/${examId}`;
 
         const res = await httpService.patch(path, {
-          examination: examId,
           selectedSubjects,
         });
         handleClose();
