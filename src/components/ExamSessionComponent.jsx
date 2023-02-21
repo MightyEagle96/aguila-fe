@@ -18,10 +18,9 @@ function ExamSessionComponent({ examination, subject, session, subjectId }) {
   const [show, setShow] = useState(false);
   const [questionBanks, setQuestionBanks] = useState([]);
   const [questionBank, setQuestionBank] = useState("");
-
+  const [examData, setExamData] = useState(null);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  const [examData, setExamData] = useState(null);
 
   const getQuestionBanks = async () => {
     const path = `viewQuestionBanks/${subjectId}`;
@@ -137,19 +136,18 @@ function ExamSessionComponent({ examination, subject, session, subjectId }) {
 }
 
 function ExaminationSessionDetails({ examination, session }) {
-  const [data, setData] = useState(null);
-  console.log({ examination, session });
+  const [examData, setExamData] = useState(null);
 
   const getData = async () => {
-    const path = "viewExamSessionMin";
-    const res = await httpService.post(path, { examination, session });
+    const path = "viewExamSession";
+    const { data } = await httpService.post(path, { examination, session });
 
-    if (res) {
-      setData(res.data);
+    if (data) {
+      setExamData(data);
     }
   };
   useEffect(() => {
-    //getData();
+    getData();
   }, []);
 
   const makeSessionAvailable = () => {
@@ -158,35 +156,30 @@ function ExaminationSessionDetails({ examination, session }) {
       title: "ACTIVATE?",
       text: "Do you want to make this session available for download",
       showCancelButton: true,
-    }).then(async () => {
-      const path = `activateSession/${data._id}`;
-
-      const res = await httpService.patch(path, {});
-      if (res) {
-        getData();
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const path = `activateSession/${examData._id}`;
+        const { data } = await httpService(path);
+        if (data) setExamData(data);
       }
     });
   };
   return (
-    <>
-      {data ? (
-        <div className="alert alert-primary">
-          {data.available ? (
-            <div>
+    <div className="d-flex align-items-center">
+      {examData ? (
+        <>
+          {examData.available ? (
+            <div className="alert alert-light">
               <Typography>Exam is available for download</Typography>
             </div>
           ) : (
-            <Button
-              color="error"
-              variant="contained"
-              onClick={makeSessionAvailable}
-            >
+            <Button color="error" onClick={makeSessionAvailable}>
               Make exam available for download
             </Button>
           )}
-        </div>
+        </>
       ) : null}
-    </>
+    </div>
   );
 }
 

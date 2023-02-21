@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { httpService } from "../../httpService";
-import { Link, Typography } from "@mui/material";
+import { Button, Link, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import {
   ExaminationSessionDetails,
@@ -46,8 +46,8 @@ function ExaminationTable() {
             </Typography>
 
             <div className="mt-4">
-              {sessions.map((c) => (
-                <div className="border rounded p-3 mb-1">
+              {sessions.map((c, index) => (
+                <div key={index} className="border rounded p-3 mb-1">
                   <Typography fontWeight={600}>{c}</Typography>
                   <div className="mt-1">
                     <Typography variant="overline">subjects</Typography>
@@ -64,13 +64,11 @@ function ExaminationTable() {
                         </div>
                       ))}
                       <div>
-                        {/* <LoadingButton endIcon={<Create />}>
-                          <span>create exam session</span>
-                        </LoadingButton> */}
+                        <ExaminationSessionDetails
+                          examination={examination._id}
+                          session={c}
+                        />
                       </div>
-                    </div>
-                    <div className="mt-1">
-                      <ExaminationSessionDetails examination={id} session={c} />
                     </div>
                   </div>
                 </div>
