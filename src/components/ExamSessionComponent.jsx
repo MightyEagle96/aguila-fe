@@ -138,6 +138,7 @@ function ExamSessionComponent({ examination, subject, session, subjectId }) {
 
 function ExaminationSessionDetails({ examination, session }) {
   const [data, setData] = useState(null);
+  console.log({ examination, session });
 
   const getData = async () => {
     const path = "viewExamSessionMin";
@@ -148,7 +149,7 @@ function ExaminationSessionDetails({ examination, session }) {
     }
   };
   useEffect(() => {
-    getData();
+    //getData();
   }, []);
 
   const makeSessionAvailable = () => {

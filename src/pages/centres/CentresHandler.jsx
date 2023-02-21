@@ -10,10 +10,10 @@ import {
 } from "@mui/material";
 import { httpService } from "../../httpService";
 import Swal from "sweetalert2";
-import DataTable from "react-data-table-component";
+
 import { colors } from "../../util";
 import { Stack } from "@mui/system";
-import { Alert, Spinner } from "react-bootstrap";
+import { Alert, Spinner, Table } from "react-bootstrap";
 import { examTowns, states } from "../../utils";
 
 export default function CentresHandler() {
@@ -78,14 +78,9 @@ export default function CentresHandler() {
   const handleChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
   };
-  const columns = [
-    { name: "Centre Name", selector: (row) => row.name },
-    { name: "Centre Id", selector: (row) => row.centreId },
-    { name: "Candidates", selector: (row) => row.candidates.length },
-  ];
 
   const rowClick = (e) => {
-    window.location.assign(`/centres/${e._id}`);
+    window.location.assign(`/centres/${e}`);
   };
 
   const deleteCentres = () => {
@@ -107,34 +102,11 @@ export default function CentresHandler() {
     });
   };
 
-  const expandableComponent = ({ data }) => {
-    return (
-      <Alert>
-        <Stack direction="row" spacing={2}>
-          <div>
-            <Typography>
-              State: <strong>{data.examState}</strong>
-            </Typography>
-          </div>
-          <div>
-            <Typography>
-              Town: <strong>{data.examTown}</strong>
-            </Typography>
-          </div>
-          <div>
-            <Typography>
-              Password: <strong>{data.password}</strong>
-            </Typography>
-          </div>
-        </Stack>
-      </Alert>
-    );
-  };
   return (
     <div>
       <div className="mt-5 mb-5">
         <div className="">
-          <Stack direction="row" spacing={2}>
+          <Stack direction="row" spacing={2} className="mb-4">
             <div>
               <Typography fontWeight={600} variant="h4">
                 CBT Centres
@@ -143,26 +115,64 @@ export default function CentresHandler() {
             <div>{processing ? <Spinner animation="grow" /> : null}</div>
           </Stack>
           <div className="row">
-            <div className="col-md-5">
-              <DataTable
-                data={centres}
-                columns={columns}
-                pagination
-                onRowClicked={rowClick}
-                expandableRows
-                expandableRowsComponent={expandableComponent}
-                highlightOnHover
-                pointerOnHover
-              />
+            <div className="col-lg-8">
+              <Table hover>
+                <thead>
+                  <tr>
+                    <th>
+                      <Typography fontWeight={600}>Name</Typography>
+                    </th>
+                    <th>
+                      <Typography fontWeight={600}>Centre Id</Typography>
+                    </th>
+                    <th>
+                      <Typography fontWeight={600}>Password</Typography>
+                    </th>
+                    <th>
+                      <Typography fontWeight={600}>Candidates</Typography>
+                    </th>
+                    <th>
+                      <Typography fontWeight={600}>Capacity</Typography>
+                    </th>
+                    <th>
+                      <Typography fontWeight={600}>Sessions</Typography>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {centres.map((c, i) => (
+                    <tr onClick={() => rowClick(c._id)} key={i}>
+                      <td>
+                        <Typography>{c.name}</Typography>
+                      </td>
+                      <td>
+                        <Typography>{c.centreId}</Typography>
+                      </td>
+                      <td>
+                        <Typography>{c.password}</Typography>
+                      </td>
+                      <td>
+                        <Typography>{c.totalCandidates}</Typography>
+                      </td>
+                      <td>
+                        <Typography>{c.capacity}</Typography>
+                      </td>
+                      <td>
+                        <Typography>{c.sessions}</Typography>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
             </div>
-            <div className="border-start col-md-7">
+            <div className="border-start col-lg-4">
               <Typography fontWeight={600} gutterBottom>
                 Create centre
               </Typography>
 
               <form onSubmit={createCentre}>
-                <div className="row">
-                  <div className="col-md-6">
+                <div className="">
+                  <div className="">
                     <div className="mb-3">
                       <TextField
                         label="Centre Name"
@@ -205,7 +215,7 @@ export default function CentresHandler() {
                       </TextField>
                     </div>
                   </div>
-                  <div className="col-md-6">
+                  <div className="">
                     <div className="mb-3">
                       <TextField
                         select

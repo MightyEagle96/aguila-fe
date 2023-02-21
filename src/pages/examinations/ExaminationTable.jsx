@@ -2,11 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { httpService } from "../../httpService";
 import { Link, Typography } from "@mui/material";
-
+import { LoadingButton } from "@mui/lab";
 import {
   ExaminationSessionDetails,
   ExamSessionComponent,
 } from "../../components/ExamSessionComponent";
+import { Create } from "@mui/icons-material";
 function ExaminationTable() {
   const { id } = useParams();
   const [examination, setExamination] = useState(null);
@@ -46,14 +47,15 @@ function ExaminationTable() {
 
             <div className="mt-4">
               {sessions.map((c) => (
-                <div className="alert alert-light shadow mb-1">
+                <div className="border rounded p-3 mb-1">
                   <Typography fontWeight={600}>{c}</Typography>
                   <div className="mt-1">
                     <Typography variant="overline">subjects</Typography>
                     <div className="d-flex flex-wrap">
-                      {examination.subjects.map((d) => (
+                      {examination.subjects.map((d, i) => (
                         <div className="col-md-2 border-end">
                           <ExamSessionComponent
+                            key={i}
                             subject={d.name}
                             examination={examination._id}
                             session={c}
@@ -61,6 +63,11 @@ function ExaminationTable() {
                           />
                         </div>
                       ))}
+                      <div>
+                        {/* <LoadingButton endIcon={<Create />}>
+                          <span>create exam session</span>
+                        </LoadingButton> */}
+                      </div>
                     </div>
                     <div className="mt-1">
                       <ExaminationSessionDetails examination={id} session={c} />
