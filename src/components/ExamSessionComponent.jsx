@@ -164,13 +164,34 @@ function ExaminationSessionDetails({ examination, session }) {
       }
     });
   };
+  const makeSessionUnavailable = () => {
+    Swal.fire({
+      icon: "question",
+      title: "DEACTIVATE?",
+      text: "Do you want to make this session unavailable for download",
+      showCancelButton: true,
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const path = `activateSession/${examData._id}`;
+        const { data } = await httpService(path);
+        if (data) setExamData(data);
+      }
+    });
+  };
   return (
     <div className="d-flex align-items-center">
       {examData ? (
         <>
           {examData.available ? (
             <div className="alert alert-light">
-              <Typography>Exam is available for download</Typography>
+              <Typography fontWeight={600}>
+                Exam is available for download
+              </Typography>
+              <div className="d-flex justify-content-end">
+                <Button color="success" onClick={makeSessionUnavailable}>
+                  make unavailable
+                </Button>
+              </div>
             </div>
           ) : (
             <Button color="error" onClick={makeSessionAvailable}>
