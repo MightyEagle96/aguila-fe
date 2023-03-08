@@ -24,6 +24,7 @@ import ExaminationSchedule from "../pages/examinations/ExaminationSchedule";
 import ExaminationTable from "../pages/examinations/ExaminationTable";
 import AdminResults from "../pages/results/AdminResults";
 import SideMenu from "../components/SideMenu";
+import EbubeCV from "../pages/EbubeCV";
 
 const privateRoutes = [
   { path: "/", component: Dashboard },
@@ -53,6 +54,7 @@ const privateRoutes = [
 const publicRoutes = [
   { path: "/", component: LoginPage },
   { path: "/exams/:id", component: ExaminationRegistrationPage },
+  { path: "/ebube", component: EbubeCV },
   { path: "*", component: NotFound },
 ];
 function MainRoutes() {

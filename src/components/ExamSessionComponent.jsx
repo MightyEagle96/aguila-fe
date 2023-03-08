@@ -1,4 +1,4 @@
-import { Add } from "@mui/icons-material";
+import { Add, Delete } from "@mui/icons-material";
 import {
   IconButton,
   Typography,
@@ -13,6 +13,8 @@ import React, { useState, useEffect } from "react";
 import { httpService } from "../httpService";
 import { Badge, Modal } from "react-bootstrap";
 import Swal from "sweetalert2";
+import { LoadingButton } from "@mui/lab";
+import MySnackBar from "./MySnackBar";
 
 function ExamSessionComponent({ examination, subject, session, subjectId }) {
   const [show, setShow] = useState(false);
@@ -204,4 +206,79 @@ function ExaminationSessionDetails({ examination, session }) {
   );
 }
 
-export { ExamSessionComponent, ExaminationSessionDetails };
+function ExamQuestionBankDelete({ examination, session, getExamSessions }) {
+  const [examData, setExamData] = useState(null);
+  const [deleting, setDeleting] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [message, setMessage] = useState("");
+  const [severity, setSeverity] = useState("");
+
+  const getData = async () => {
+    const path = "viewExamSession";
+    const { data } = await httpService.post(path, { examination, session });
+
+    if (data) {
+      setExamData(data);
+    }
+  };
+
+  const removeQuestionBank = () => {
+    Swal.fire({
+      icon: "question",
+      title: "Remove question bank?",
+      text: `Are you sure you want to remove the question banks for ${session}`,
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        setDeleting(true);
+        const { data, error } = await httpService.post("removeQuestionBank", {
+          examination,
+          session,
+        });
+
+        if (data) {
+          setOpen(true);
+          setMessage(data);
+          setSeverity("success");
+          getExamSessions();
+        }
+        if (error) {
+          setOpen(true);
+          setMessage(error);
+          setSeverity("danger");
+        }
+        setDeleting(false);
+      }
+    });
+  };
+  useEffect(() => {
+    getData();
+  }, []);
+  return (
+    <div>
+      {examData ? (
+        <div alert alert-light>
+          <LoadingButton
+            size="sm"
+            endIcon={<Delete />}
+            loadingPosition="end"
+            loading={deleting}
+            onClick={removeQuestionBank}
+          >
+            remove question banks
+          </LoadingButton>
+        </div>
+      ) : null}
+      <MySnackBar
+        open={open}
+        setOpen={setOpen}
+        message={message}
+        severity={severity}
+      />
+    </div>
+  );
+}
+export {
+  ExamSessionComponent,
+  ExaminationSessionDetails,
+  ExamQuestionBankDelete,
+};

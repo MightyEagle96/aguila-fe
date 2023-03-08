@@ -31,7 +31,7 @@ httpService.interceptors.response.use(
           text: error.response.data,
         });
       }
-      return { type: "error", message: error.response.data };
+      return { error: error.response.data };
     } else {
       return Swal.fire({
         icon: "error",

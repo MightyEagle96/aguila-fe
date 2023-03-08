@@ -5,13 +5,16 @@ import { Button, Link, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import {
   ExaminationSessionDetails,
+  ExamQuestionBankDelete,
   ExamSessionComponent,
 } from "../../components/ExamSessionComponent";
 import { Create } from "@mui/icons-material";
+import { Spinner } from "react-bootstrap";
 function ExaminationTable() {
   const { id } = useParams();
   const [examination, setExamination] = useState(null);
   const [sessions, setSessions] = useState([]);
+  const [loading, setLoading] = useState(false);
   const getExamination = async () => {
     const path = `viewExamination/${id}`;
 
@@ -23,12 +26,14 @@ function ExaminationTable() {
   };
 
   const getExamSessions = async () => {
+    setLoading(true);
     const path = `getExamSessions/${id}`;
     const res = await httpService(path);
 
     if (res) {
       setSessions(res.data);
     }
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -46,6 +51,7 @@ function ExaminationTable() {
             </Typography>
 
             <div className="mt-4">
+              {loading ? <Spinner animation="border" /> : null}
               {sessions.map((c, index) => (
                 <div key={index} className="border rounded p-3 mb-1">
                   <Typography fontWeight={600}>{c}</Typography>
@@ -63,10 +69,17 @@ function ExaminationTable() {
                           />
                         </div>
                       ))}
-                      <div>
+                      <div className="border-end">
                         <ExaminationSessionDetails
                           examination={examination._id}
                           session={c}
+                        />
+                      </div>
+                      <div className="d-flex align-items-center p-3">
+                        <ExamQuestionBankDelete
+                          examination={examination._id}
+                          session={c}
+                          getExamSessions={getExamSessions}
                         />
                       </div>
                     </div>
