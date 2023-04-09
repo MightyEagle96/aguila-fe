@@ -1,5 +1,4 @@
 import axios from "axios";
-import Swal from "sweetalert2";
 
 export const loggedInUser =
   JSON.parse(localStorage.getItem(process.env.REACT_APP_PROJECT_USER)) || null;
@@ -18,30 +17,16 @@ httpService.interceptors.response.use(
     return response;
   },
   async (error) => {
-    if (error && error.response.data) {
-      if (error.response.status === 401) {
-        const path = "refreshToken";
-        await httpService.post(path, { id: loggedInUser._id });
+    if (error.response && error.response.status === 401) {
+      const path = "refreshToken";
+      await httpService.post(path, { id: loggedInUser._id });
+      return httpService(error.config);
+    } else if (error.response)
+      return { error: error.response.data, status: error.response.status };
 
-        return httpService(error.config);
-      } else if (error.response.status === 500) {
-        return Swal.fire({
-          icon: "error",
-          title: "Server Error",
-          text: error.response.data,
-        });
-      }
-      return { error: error.response.data };
-    } else {
-      return Swal.fire({
-        icon: "error",
-        title: "Server Error",
-        text: "Cannot get data from the server at this time",
-      });
-    }
+    return { error: "Lost connection to the server" };
   }
 );
-
 const logout = async () => {
   const res = await httpService.get("logout");
   if (res) {

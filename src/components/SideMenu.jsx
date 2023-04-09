@@ -10,11 +10,11 @@ import {
 import {
   Quiz,
   Dashboard,
-  Logout,
   People,
   History,
   House,
   Book,
+  AdminPanelSettings,
 } from "@mui/icons-material";
 
 export default function SideMenu() {
@@ -48,6 +48,11 @@ export default function SideMenu() {
       text: "Subjects Control",
       icon: <Book />,
       redirectTo: `/subjects`,
+    },
+    {
+      text: "Admin Panel",
+      icon: <AdminPanelSettings />,
+      redirectTo: `/adminPanel`,
     },
   ];
 

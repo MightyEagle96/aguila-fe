@@ -4,20 +4,25 @@ import {
   Checkbox,
   FormGroup,
   FormControlLabel,
-  Button,
-  Alert,
-  AlertTitle,
 } from "@mui/material";
 import React, { useState } from "react";
 import { httpService } from "../httpService.js";
-import { Spinner } from "react-bootstrap";
+
+import "./HomePage.css";
+import { LoadingButton } from "@mui/lab";
+import aguilaLogo from "../images/aguilalogo.png";
+import MySnackBar from "../components/MySnackBar.jsx";
+import { Login } from "@mui/icons-material";
 
 export default function LoginPage() {
   const [type, setType] = useState("password");
-  const defaultData = { emailAddress: "", password: "" };
-  const [data, setData] = useState(defaultData);
-  const [error, setError] = useState(null);
+
+  const [loginCredentials, setLoginCredentials] = useState({});
+
   const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [message, setMessage] = useState("");
+  const [severity, setSeverity] = useState("");
 
   const handleCheckbox = (e) => {
     if (e.target.checked) {
@@ -28,223 +33,113 @@ export default function LoginPage() {
   };
 
   const handleChange = (e) => {
-    setData({ ...data, [e.target.name]: e.target.value });
+    setLoginCredentials({
+      ...loginCredentials,
+      [e.target.name]: e.target.value,
+    });
   };
 
   const handleSubmit = async (e) => {
+    setLoading(true);
     e.preventDefault();
     setLoading(true);
-    const path = "login";
-    const res = await httpService.post(path, data);
 
-    if (res.type) {
-      setLoading(false);
-      setError(res);
-      setTimeout(() => {
-        setError(null);
-      }, 5000);
-    }
+    const { data, error } = await httpService.post(
+      "auth/v1/login",
+      loginCredentials
+    );
 
-    if (res.data) {
+    if (data) {
       localStorage.setItem(
         process.env.REACT_APP_PROJECT_USER,
-        JSON.stringify(res.data.user)
+        JSON.stringify(data)
       );
-
       window.location.assign("/");
+    }
+    if (error) {
+      setMessage(error);
+      setOpen(true);
+      setSeverity("error");
     }
     setLoading(false);
   };
   return (
     <div>
-      <div className="mt-5 mb-5">
-        <div className="container">
-          {/* desktop */}
-          <div className="d-none d-lg-block">
-            <div className="d-flex justify-content-center">
-              <div className="col-md-5 ">
-                <Typography textAlign={"center"} variant="h4" fontWeight={600}>
-                  Login Here
-                </Typography>
-                <form onSubmit={handleSubmit}>
-                  <div className="mt-3">
-                    <TextField
-                      fullWidth
-                      label="Email Address"
-                      type="email"
-                      name="emailAddress"
-                      onChange={handleChange}
-                      value={data.emailAddress}
-                      required
-                    />
-                  </div>
-                  <div className="mt-4">
-                    <TextField
-                      fullWidth
-                      required
-                      label="Password"
-                      type={type}
-                      name="password"
-                      onChange={handleChange}
-                      value={data.password}
-                    />
-                  </div>
-                  <div className="mt-1">
-                    <FormGroup>
-                      <FormControlLabel
-                        onChange={handleCheckbox}
-                        control={<Checkbox />}
-                        label="Show Password"
-                      />
-                    </FormGroup>
-                  </div>
-                  <div className="mt-4">
-                    <Button
-                      variant="contained"
-                      type="submit"
-                      fullWidth
-                      color="success"
-                      disabled={loading}
-                    >
-                      {loading ? <Spinner animation="border" /> : "Login"}
-                    </Button>
-                  </div>
-                </form>
-                {error ? (
-                  <div className="mt-1">
-                    <Alert severity="error">
-                      <AlertTitle>Error</AlertTitle>
-                      {error.message}
-                    </Alert>
-                  </div>
-                ) : null}
-              </div>
-            </div>
-          </div>
-          {/* ipad */}
-          <div className="d-none d-md-block d-lg-none">
-            <div className="d-flex justify-content-center">
-              <div className="col-md-6 ">
-                <Typography textAlign={"center"} variant="h4" fontWeight={600}>
-                  Login Here
-                </Typography>
-                <form onSubmit={handleSubmit}>
-                  <div className="mt-3">
-                    <TextField
-                      fullWidth
-                      label="Email Address"
-                      type="email"
-                      name="emailAddress"
-                      onChange={handleChange}
-                      value={data.emailAddress}
-                      required
-                    />
-                  </div>
-                  <div className="mt-4">
-                    <TextField
-                      fullWidth
-                      required
-                      label="Password"
-                      type={type}
-                      name="password"
-                      onChange={handleChange}
-                      value={data.password}
-                    />
-                  </div>
-                  <div className="mt-2">
-                    <FormGroup>
-                      <FormControlLabel
-                        onChange={handleCheckbox}
-                        control={<Checkbox />}
-                        label="Show Password"
-                      />
-                    </FormGroup>
-                  </div>
-                  <div className="mt-4">
-                    <Button
-                      variant="contained"
-                      type="submit"
-                      fullWidth
-                      color="success"
-                      disabled={loading}
-                    >
-                      {loading ? <Spinner animation="border" /> : "Login"}
-                    </Button>
-                  </div>
-                </form>
-                <div className="mt-2">
-                  {error ? (
-                    <div className="mt-1">
-                      <Alert severity="error">
-                        <AlertTitle>Error</AlertTitle>
-                        {error.message}
-                      </Alert>
-                    </div>
-                  ) : null}
+      <div className="row m-0">
+        <div className="col-lg-6 homeBanner"></div>
+        <div className="col-lg-6 d-flex align-items-center justify-content-center">
+          <div className="col-lg-6">
+            {/* desktop */}
+            <div className="d-none d-lg-block">
+              <div className="">
+                <div className="text-center">
+                  <img src={aguilaLogo} alt="aguila" height={100} width={100} />
                 </div>
+                <Typography
+                  textAlign={"center"}
+                  variant="h3"
+                  color="GrayText"
+                  fontWeight={900}
+                >
+                  AGUILA CENTRAL
+                </Typography>
+                <form onSubmit={handleSubmit}>
+                  <div className="mt-3">
+                    <TextField
+                      fullWidth
+                      label="Email Address"
+                      type="email"
+                      name="emailAddress"
+                      onChange={handleChange}
+                      value={loginCredentials.emailAddress}
+                      required
+                    />
+                  </div>
+                  <div className="mt-4">
+                    <TextField
+                      fullWidth
+                      required
+                      label="Password"
+                      type={type}
+                      name="password"
+                      onChange={handleChange}
+                      value={loginCredentials.password}
+                    />
+                  </div>
+                  <div className="mt-1">
+                    <FormGroup>
+                      <FormControlLabel
+                        onChange={handleCheckbox}
+                        control={<Checkbox />}
+                        label="Show Password"
+                      />
+                    </FormGroup>
+                  </div>
+                  <div className="mt-4">
+                    <LoadingButton
+                      variant="contained"
+                      type="submit"
+                      fullWidth
+                      color="success"
+                      loadingPosition="end"
+                      endIcon={<Login />}
+                      loading={loading}
+                    >
+                      login
+                    </LoadingButton>
+                  </div>
+                </form>
               </div>
             </div>
-          </div>
-          {/* mobile */}
-          <div className="d-sm-block d-md-none">
-            <Typography textAlign={"center"} variant="h4" fontWeight={600}>
-              Login Here
-            </Typography>
-            <form onSubmit={handleSubmit}>
-              <div className="mt-3">
-                <TextField
-                  fullWidth
-                  label="Email Address"
-                  type="email"
-                  name="emailAddress"
-                  onChange={handleChange}
-                  value={data.emailAddress}
-                  required
-                />
-              </div>
-              <div className="mt-4">
-                <TextField
-                  fullWidth
-                  required
-                  label="Password"
-                  type={type}
-                  name="password"
-                  onChange={handleChange}
-                  value={data.password}
-                />
-              </div>
-              <div className="mt-1">
-                <FormGroup>
-                  <FormControlLabel
-                    onChange={handleCheckbox}
-                    control={<Checkbox />}
-                    label="Show Password"
-                  />
-                </FormGroup>
-              </div>
-              <div className="mt-4">
-                <Button
-                  variant="contained"
-                  type="submit"
-                  fullWidth
-                  color="success"
-                  disabled={loading}
-                >
-                  {loading ? <Spinner animation="border" /> : "Login"}
-                </Button>
-              </div>
-            </form>
-            {error ? (
-              <div className="mt-1">
-                <Alert severity="error">
-                  <AlertTitle>Error</AlertTitle>
-                  {error.message}
-                </Alert>
-              </div>
-            ) : null}
           </div>
         </div>
       </div>
+      <MySnackBar
+        open={open}
+        setOpen={setOpen}
+        message={message}
+        severity={severity}
+      />
     </div>
   );
 }

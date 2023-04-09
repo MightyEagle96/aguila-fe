@@ -8,3 +8,9 @@
 .sideMenu {
   background-image: linear-gradient(to right bottom, #f8f8f8, #ebebeb);
 }
+
+.homeBanner {
+  background-image: url("../images/backgroundImage.jpg");
+  height: 94vh;
+  background-size: cover;
+}

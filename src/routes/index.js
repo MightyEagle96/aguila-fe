@@ -15,8 +15,7 @@ import { loggedInUser } from "../httpService";
 import NotFound from "../pages/NotFound";
 import LoginPage from "../pages/LoginPage";
 import ExaminationHistory from "../pages/examinations/ExaminationHistory";
-import SubjectsControl from "../pages/examinations/SubjectsControl";
-import SubjectQuestionBanks from "../pages/examinations/SubjectQuestionBanks";
+
 import ExaminationRegistrationPage from "../pages/registrations/ExaminationRegistrationPage";
 import ViewExamRegistrations from "../pages/registrations/ViewExamRegistrations";
 import StateData from "../pages/registrations/StateData";
@@ -25,6 +24,8 @@ import ExaminationTable from "../pages/examinations/ExaminationTable";
 import AdminResults from "../pages/results/AdminResults";
 import SideMenu from "../components/SideMenu";
 import EbubeCV from "../pages/EbubeCV";
+import MyFooter from "../components/MyFooter";
+import SubjectRoutes from "../pages/subjects/route";
 
 const privateRoutes = [
   { path: "/", component: Dashboard },
@@ -40,14 +41,14 @@ const privateRoutes = [
   { path: "/dashboard/:id", component: ExaminationDashboard },
   { path: "/examHistory", component: ExaminationHistory },
   { path: "/examinationHistory", component: ExaminationHistory },
-  { path: "/subjects", component: SubjectsControl },
-  { path: "/subjects/:id", component: SubjectQuestionBanks },
+
   { path: "/exams/:id", component: ExaminationRegistrationPage },
   { path: "/registrations/:id", component: ViewExamRegistrations },
   { path: "/statedata/:examId/:state", component: StateData },
   { path: "/examSchedule/:id", component: ExaminationSchedule },
   { path: "/examinationTable/:id", component: ExaminationTable },
   { path: "/results/admin/:id", component: AdminResults },
+  { path: "/subjects/*", component: SubjectRoutes },
   { path: "*", component: NotFound },
 ];
 
@@ -55,6 +56,7 @@ const publicRoutes = [
   { path: "/", component: LoginPage },
   { path: "/exams/:id", component: ExaminationRegistrationPage },
   { path: "/ebube", component: EbubeCV },
+  { path: "/subjects/*", component: SubjectRoutes },
   { path: "*", component: NotFound },
 ];
 function MainRoutes() {
@@ -63,7 +65,7 @@ function MainRoutes() {
       {loggedInUser ? (
         <>
           <div className="row m-0">
-            <div className="col-lg-2 sideMenu">
+            <div className="col-lg-2" style={{ backgroundColor: "#58626c" }}>
               <SideMenu />
             </div>
             <div className="col-lg-10">
@@ -74,6 +76,7 @@ function MainRoutes() {
               </Routes>
             </div>
           </div>
+          <MyFooter />
         </>
       ) : (
         <Routes>
