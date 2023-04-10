@@ -1,8 +1,17 @@
-import { Button, TextField, Typography } from "@mui/material";
+import {
+  Button,
+  Checkbox,
+  Chip,
+  FormControlLabel,
+  FormGroup,
+  Link,
+  TextField,
+  Typography,
+} from "@mui/material";
 import React, { useState, useEffect } from "react";
 import { httpService } from "../../httpService";
 import { LoadingButton } from "@mui/lab";
-import { Save } from "@mui/icons-material";
+import { Save, Update } from "@mui/icons-material";
 import { Table } from "react-bootstrap";
 import MySnackBar from "../../components/MySnackBar";
 import Swal from "sweetalert2";
@@ -99,18 +108,19 @@ export default function ExaminationHandler() {
               </div>
             </form>
           </div>
-          <div className="mt-2 col-lg-8">
+          <div className="mt-2 col-lg-10">
             <Table>
               <thead>
                 <tr>
                   <th>Title</th>
                   <th>Status</th>
                   <th>Subject List</th>
+                  <th>Candidates List</th>
                 </tr>
               </thead>
               <tbody>
-                {examinations.map((c) => (
-                  <tr>
+                {examinations.map((c, i) => (
+                  <tr key={i}>
                     <td>
                       <Typography textTransform={"uppercase"}>
                         {c.title}
@@ -119,8 +129,18 @@ export default function ExaminationHandler() {
                     <td>
                       <ToggleActivation data={c} />
                     </td>
+                    <td className="col-lg-4">
+                      <SubjectsList
+                        examination={c}
+                        subjects={subjects}
+                        setMessage={setMessage}
+                        setOpen={setOpen}
+                        setSeverity={setSeverity}
+                        viewExams={viewExams}
+                      />
+                    </td>
                     <td>
-                      <SubjectsList data={c} />
+                      <Link href={`/candidates/${c._id}/list`}>view list</Link>
                     </td>
                   </tr>
                 ))}
@@ -151,16 +171,75 @@ function ToggleActivation({ data }) {
   );
 }
 
-function SubjectsList({ data }) {
+function SubjectsList({
+  examination,
+  subjects,
+  setOpen,
+  setMessage,
+  setSeverity,
+  viewExams,
+}) {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+  const [updating, setUpdating] = useState(false);
+
+  const [selected, setSelected] = useState([]);
+
+  const selectSubject = (e) => {
+    if (e.target.checked) {
+      setSelected([...selected, e.target.value]);
+    } else {
+      const filtered = selected.filter((c) => c !== e.target.value);
+      setSelected(filtered);
+    }
+  };
+
+  const updateSubjects = () => {
+    Swal.fire({
+      icon: "question",
+      title: "Add these subjects to this exam?",
+      text: "It cannot be changed afterwards",
+      showCancelButton: true,
+    }).then(async (result) => {
+      if (result) {
+        setUpdating(true);
+        const { data, error } = await httpService.patch(
+          `aguila/examination/${examination._id}/update`,
+          { selected }
+        );
+        if (data) {
+          viewExams();
+          handleClose();
+          setMessage(data);
+          setOpen(true);
+          setSeverity("success");
+        }
+        if (error) {
+          setMessage(error);
+          setOpen(true);
+          setSeverity("error");
+        }
+        setUpdating(false);
+      }
+    });
+  };
   return (
     <>
-      {data.subjects.length === 0 ? (
+      {examination.subjects.length === 0 ? (
         <Button onClick={handleShow}>add subjects</Button>
       ) : (
-        <LoadingButton color="error">acivate</LoadingButton>
+        <div className="d-flex flex-wrap">
+          {examination.subjects.map((c, i) => (
+            <Chip
+              className="me-1"
+              key={i}
+              label={
+                <Typography textTransform={"capitalize"}>{c.name}</Typography>
+              }
+            />
+          ))}
+        </div>
       )}
       <Modal
         show={show}
@@ -175,16 +254,38 @@ function SubjectsList({ data }) {
               variant="h5"
               textTransform={"uppercase"}
             >
-              {data.title}
+              {examination.title}
             </Typography>
           </Modal.Title>
         </Modal.Header>
-        <Modal.Body></Modal.Body>
+        <Modal.Body>
+          <FormGroup>
+            {subjects.map((c, i) => (
+              <FormControlLabel
+                key={i}
+                onChange={selectSubject}
+                control={<Checkbox />}
+                value={c._id}
+                label={
+                  <Typography textTransform={"capitalize"}>{c.name}</Typography>
+                }
+              />
+            ))}
+          </FormGroup>
+        </Modal.Body>
         <Modal.Footer>
           <Button color="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button color="primary">update subjects</Button>
+          <LoadingButton
+            loadingPosition="end"
+            loading={updating}
+            endIcon={<Update />}
+            color="primary"
+            onClick={updateSubjects}
+          >
+            update subjects
+          </LoadingButton>
         </Modal.Footer>
       </Modal>
     </>

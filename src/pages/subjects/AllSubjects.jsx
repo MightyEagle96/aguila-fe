@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { httpService } from "../../httpService";
 import { Table } from "react-bootstrap";
 import { LoadingButton } from "@mui/lab";
-import { Save } from "@mui/icons-material";
+import { Height, Save } from "@mui/icons-material";
 import MySnackBar from "../../components/MySnackBar";
 
 export default function AllSubjects() {
@@ -47,7 +47,7 @@ export default function AllSubjects() {
   };
   return (
     <div>
-      <div className="mt-5">
+      <div className="mt-5 mb-5">
         <div className="mb-3">
           <Typography variant="h4" fontWeight={600}>
             Subjects Control
@@ -73,7 +73,7 @@ export default function AllSubjects() {
           </div>
           <div
             className="col-lg-4 p-4 rounded-3"
-            style={{ backgroundColor: "#f5f1ee" }}
+            style={{ backgroundColor: "#f5f1ee", height: 200 }}
           >
             <div className="mb-2">
               <Typography variant="h6">Create a new subject</Typography>

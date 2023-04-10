@@ -1,12 +1,12 @@
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import CandidatesHandler from "../pages/candidates/CandidatesHandler";
+
 import CentresHandler from "../pages/centres/CentresHandler";
 import CreatedExamination from "../pages/CreatedExamination";
 import Dashboard from "../pages/Dashboard";
 import DownloadExam from "../pages/DownloadExam";
 import ExaminationDashboard from "../pages/examinations/ExaminationDashboard";
-import ExaminationHandler from "../pages/examinations/ExaminationHandler";
+
 import ExamQuestionUpload from "../pages/examinations/ExamQuestionUpload";
 import QuestionBank from "../pages/examinations/QuestionBank";
 import ResultsPage from "../pages/ResultsPage";
@@ -27,10 +27,11 @@ import EbubeCV from "../pages/EbubeCV";
 import MyFooter from "../components/MyFooter";
 import SubjectRoutes from "../pages/subjects/route";
 import ExaminationRoutes from "../pages/examinations/route";
+import CandidatesRoutes from "../pages/candidates/route";
 
 const privateRoutes = [
   { path: "/", component: Dashboard },
-  { path: "/candidates", component: CandidatesHandler },
+  { path: "/candidates/*", component: CandidatesRoutes },
   { path: "/centres", component: CentresHandler },
   { path: "/centres/:id", component: ViewCentre },
   { path: "/examination/*", component: ExaminationRoutes },
