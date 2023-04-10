@@ -10,7 +10,6 @@ import {
 import {
   Quiz,
   Dashboard,
-  People,
   History,
   House,
   Book,
@@ -27,13 +26,9 @@ export default function SideMenu() {
     {
       text: "CBT Centres",
       icon: <House />,
-      redirectTo: "/centres",
+      redirectTo: "/centres/all",
     },
-    {
-      text: "Candidates",
-      icon: <People />,
-      redirectTo: `/candidates`,
-    },
+
     {
       text: "Examination Control",
       icon: <Quiz />,

@@ -1,7 +1,6 @@
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-import CentresHandler from "../pages/centres/CentresHandler";
 import CreatedExamination from "../pages/CreatedExamination";
 import Dashboard from "../pages/Dashboard";
 import DownloadExam from "../pages/DownloadExam";
@@ -10,7 +9,7 @@ import ExaminationDashboard from "../pages/examinations/ExaminationDashboard";
 import ExamQuestionUpload from "../pages/examinations/ExamQuestionUpload";
 import QuestionBank from "../pages/examinations/QuestionBank";
 import ResultsPage from "../pages/ResultsPage";
-import ViewCentre from "../pages/centres/ViewCentre";
+
 import { loggedInUser } from "../httpService";
 import NotFound from "../pages/NotFound";
 import LoginPage from "../pages/LoginPage";
@@ -28,12 +27,12 @@ import MyFooter from "../components/MyFooter";
 import SubjectRoutes from "../pages/subjects/route";
 import ExaminationRoutes from "../pages/examinations/route";
 import CandidatesRoutes from "../pages/candidates/route";
+import CentresRoutes from "../pages/centres/route";
 
 const privateRoutes = [
   { path: "/", component: Dashboard },
   { path: "/candidates/*", component: CandidatesRoutes },
-  { path: "/centres", component: CentresHandler },
-  { path: "/centres/:id", component: ViewCentre },
+  { path: "/centres/*", component: CentresRoutes },
   { path: "/examination/*", component: ExaminationRoutes },
   { path: "/questionBank/:id", component: QuestionBank },
   { path: "/postExamQuestions/:id", component: ExamQuestionUpload },

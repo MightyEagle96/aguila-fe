@@ -6,16 +6,18 @@ import {
   FormGroup,
   Link,
   TextField,
+  ToggleButton,
   Typography,
 } from "@mui/material";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { httpService } from "../../httpService";
 import { LoadingButton } from "@mui/lab";
-import { Save, Update } from "@mui/icons-material";
+import { Save, ToggleOff, ToggleOn, Update } from "@mui/icons-material";
 import { Table } from "react-bootstrap";
 import MySnackBar from "../../components/MySnackBar";
 import Swal from "sweetalert2";
 import { Modal } from "react-bootstrap";
+import { AlertContext } from "../../contexts/AlertContext";
 
 export default function ExaminationHandler() {
   const [examinations, setExaminations] = useState([]);
@@ -25,7 +27,7 @@ export default function ExaminationHandler() {
   const [severity, setSeverity] = useState("");
   const [creating, setCreating] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [activating, setActivating] = useState(false);
+
   const [subjects, setSubjects] = useState([]);
 
   const createExam = (e) => {
@@ -80,7 +82,7 @@ export default function ExaminationHandler() {
 
   return (
     <div>
-      <div className="mt-5">
+      <div className="mt-5 mb-5 p-3">
         <div>
           <Typography variant="h4" fontWeight={700} gutterBottom>
             Examination Control
@@ -108,8 +110,8 @@ export default function ExaminationHandler() {
               </div>
             </form>
           </div>
-          <div className="mt-2 col-lg-10">
-            <Table>
+          <div className="mt-4 col-lg-10">
+            <Table bordered>
               <thead>
                 <tr>
                   <th>Title</th>
@@ -127,7 +129,7 @@ export default function ExaminationHandler() {
                       </Typography>
                     </td>
                     <td>
-                      <ToggleActivation data={c} />
+                      <ToggleActivation examination={c} viewExams={viewExams} />
                     </td>
                     <td className="col-lg-4">
                       <SubjectsList
@@ -159,13 +161,55 @@ export default function ExaminationHandler() {
   );
 }
 
-function ToggleActivation({ data }) {
+function ToggleActivation({ examination, viewExams }) {
+  const [activating, setActivating] = useState(false);
+
+  const { setAlertData } = useContext(AlertContext);
+
+  const toggleActivate = (action) => {
+    Swal.fire({
+      icon: "question",
+      title: `${action} this exam?`,
+      showCancelButton: true,
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        setActivating(true);
+        const { data, error } = await httpService.patch(
+          `aguila/examination/${examination._id}/toggleactivate`,
+          { action }
+        );
+
+        if (data) {
+          viewExams();
+          setAlertData({ open: true, severity: "success", message: data });
+        }
+        if (error) {
+          setAlertData({ open: true, severity: "error", message: data });
+        }
+        setActivating(false);
+      }
+    });
+  };
   return (
     <>
-      {data.active ? (
-        <LoadingButton color="error">deactivate</LoadingButton>
+      {examination.active ? (
+        <LoadingButton
+          color="error"
+          loading={activating}
+          loadingPosition="end"
+          endIcon={<ToggleOff />}
+          onClick={() => toggleActivate("deactivate")}
+        >
+          deactivate
+        </LoadingButton>
       ) : (
-        <LoadingButton color="error">acivate</LoadingButton>
+        <LoadingButton
+          loading={activating}
+          endIcon={<ToggleOn />}
+          onClick={() => toggleActivate("activate")}
+        >
+          activate
+        </LoadingButton>
       )}
     </>
   );

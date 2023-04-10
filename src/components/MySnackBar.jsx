@@ -27,3 +27,29 @@ export default function MySnackBar({ open, setOpen, message, severity }) {
     </Snackbar>
   );
 }
+
+export function MySnackBarContext({ alertData, setAlertData }) {
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setAlertData({ ...alertData, open: false });
+  };
+  return (
+    <Snackbar
+      anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      open={alertData.open}
+      autoHideDuration={6000}
+      onClose={handleClose}
+    >
+      <Alert
+        onClose={handleClose}
+        severity={alertData.severity}
+        sx={{ width: "100%" }}
+      >
+        {alertData.message}
+      </Alert>
+    </Snackbar>
+  );
+}
