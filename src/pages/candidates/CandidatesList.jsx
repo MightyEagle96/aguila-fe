@@ -27,7 +27,7 @@ export default function CandidatesList() {
   const getExamination = async () => {
     setLoading(true);
 
-    const { data } = await httpService(`aguila/examination/${id}`);
+    const { data } = await httpService(`aguila/examination/${id}/view`);
     if (data) {
       setExamination(data);
     }
@@ -65,7 +65,7 @@ export default function CandidatesList() {
 
   const getCandidates = async () => {
     const { data } = await httpService(
-      `aguila/candidates/${id}?page=${1}&limit=${50}`
+      `aguila/candidates/${id}/view?page=${1}&limit=${50}`
     );
 
     if (data) {
@@ -222,7 +222,7 @@ export default function CandidatesList() {
         severity={severity}
       />
       <MyPagination
-        rootPath={`aguila/candidates/${id}?`}
+        rootPath={`aguila/candidates/${id}/view?`}
         setResults={setResults}
         setStartIndex={setStartIndex}
       />

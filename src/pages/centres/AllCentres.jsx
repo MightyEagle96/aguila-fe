@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
-import { CircularProgress, TextField, Typography } from "@mui/material";
+import { CircularProgress, Stack, TextField, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
-import { Home } from "@mui/icons-material";
+import { Home, People, Person } from "@mui/icons-material";
 import Swal from "sweetalert2";
 import MySnackBar from "../../components/MySnackBar";
 import { httpService } from "../../httpService";
@@ -153,20 +153,80 @@ export default function AllCentres() {
 
 function CandidateDistribution() {
   //get examinations
-  const { alertData, setAlertData } = useContext(AlertContext);
+  const { setAlertData } = useContext(AlertContext);
+  const [examination, setExamination] = useState(null);
+  const [analysis, setAnalysis] = useState({
+    total: 0,
+    assigned: 0,
+    unassigned: 0,
+  });
+
+  const getActiveExam = async () => {
+    const { data } = await httpService("aguila/examination/active");
+
+    if (data) {
+      setExamination(data);
+      getAnalysis(data._id);
+    }
+  };
 
   function showAlert() {
     setAlertData({ open: true, severity: "success", message: "Hello" });
   }
+
+  async function getAnalysis(id) {
+    const { data } = await httpService(`aguila/candidates/${id}/analysis`);
+
+    if (data) {
+      setAnalysis(data);
+    }
+  }
+
+  useEffect(() => {
+    getActiveExam();
+  }, []);
   return (
-    <div
-      className="col-lg-4 p-3"
-      style={{ backgroundColor: "#efefef", maxHeight: 200 }}
-    >
-      <Typography variant="h6" gutterBottom>
-        Candidates Distribution
-      </Typography>
-      <LoadingButton onClick={showAlert}>show alert</LoadingButton>
-    </div>
+    <>
+      {examination && (
+        <div className="col-lg-4 ">
+          <div
+            className="p-4"
+            style={{ backgroundColor: "#f5f5f5", color: "#3d7c98" }}
+          >
+            <Typography variant="caption" gutterBottom>
+              Active Examination
+            </Typography>
+            <Typography
+              variant="h4"
+              fontWeight={600}
+              textTransform={"uppercase"}
+            >
+              {examination.title}
+            </Typography>
+            <hr />
+            <div>
+              <Typography gutterBottom>
+                Registered candidates analysis
+              </Typography>
+              <div className="mb-1">
+                <Typography>
+                  Total: <strong>{analysis.total}</strong>
+                </Typography>
+              </div>
+              <div className="mb-1" style={{ color: "#c2528b" }}>
+                <Typography>
+                  Unassigned: <strong>{analysis.total}</strong>
+                </Typography>
+              </div>
+              <div className="mb-1" style={{ color: "#b0e1a2" }}>
+                <Typography>
+                  Assigned: <strong>{analysis.total}</strong>
+                </Typography>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
