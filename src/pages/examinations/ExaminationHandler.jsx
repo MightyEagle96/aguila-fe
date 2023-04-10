@@ -1,291 +1,192 @@
-import React from "react";
-import {
-  Button,
-  TextField,
-  Typography,
-  FormGroup,
-  Checkbox,
-  FormControlLabel,
-  Link,
-  Stack,
-} from "@mui/material";
-
+import { Button, TextField, Typography } from "@mui/material";
+import React, { useState, useEffect } from "react";
 import { httpService } from "../../httpService";
-import { useState, useEffect } from "react";
-import { Spinner } from "react-bootstrap";
+import { LoadingButton } from "@mui/lab";
+import { Save } from "@mui/icons-material";
+import { Table } from "react-bootstrap";
+import MySnackBar from "../../components/MySnackBar";
 import Swal from "sweetalert2";
-import DataTable from "react-data-table-component";
-import { Badge, Modal } from "react-bootstrap";
+import { Modal } from "react-bootstrap";
 
 export default function ExaminationHandler() {
-  const [data, setData] = useState([]);
-  const [fetchingData, setFetchingData] = useState(false);
+  const [examinations, setExaminations] = useState([]);
+  const [title, setTitle] = useState("");
+  const [message, setMessage] = useState("");
+  const [open, setOpen] = useState(false);
+  const [severity, setSeverity] = useState("");
+  const [creating, setCreating] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [processLoading, setProcessLoading] = useState(false);
-
-  const [examination, setExamination] = useState("");
-  const [show, setShow] = useState(false);
+  const [activating, setActivating] = useState(false);
   const [subjects, setSubjects] = useState([]);
 
-  const [selectedSubjects, setSelectedSubjects] = useState([]);
-  const [examId, setExamId] = useState("");
-
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-
-  const viewSubjects = async () => {
-    setFetchingData(true);
-    const path = "viewSubjects";
-
-    const res = await httpService.get(path);
-    if (res) setSubjects(res.data);
-
-    setFetchingData(false);
-  };
-  const createNewExamination = async (e) => {
+  const createExam = (e) => {
     e.preventDefault();
-
     Swal.fire({
       icon: "question",
-      title: "Confirm",
-      text: "Create new examination",
+      title: "Create new exam?",
       showCancelButton: true,
     }).then(async (result) => {
       if (result.isConfirmed) {
-        setLoading(true);
-        const path = "createNewExamination";
-
-        const res = await httpService.post(path, { title: examination });
-
-        if (res) {
-          viewCreatedExaminations();
-          Swal.fire({ icon: "success", title: "Success", text: res.data });
+        setCreating(true);
+        const { data, error } = await httpService.post(
+          `aguila/examination/create`,
+          {
+            title,
+          }
+        );
+        if (data) {
+          viewExams();
+          setSeverity("success");
+          setOpen(true);
+          setMessage(data);
         }
-        setLoading(false);
+        if (error) {
+          setSeverity("error");
+          setOpen(true);
+          setMessage(error);
+        }
+        setCreating(false);
       }
     });
   };
+  const viewExams = async () => {
+    const { data } = await httpService(`aguila/examination/all`);
 
-  const viewCreatedExaminations = async () => {
-    setFetchingData(true);
-    const path = "viewCreatedExaminations";
-
-    const res = await httpService(path);
-
-    if (res) {
-      setData(res.data);
+    if (data) {
+      setExaminations(data);
     }
-    setFetchingData(false);
   };
 
-  const expandableComponent = ({ data }) => {
-    return (
-      <div className="p-2">
-        {data.subjects.length > 0 ? (
-          <>
-            <Stack direction="row" spacing={2}>
-              <div>
-                <Typography variant="caption" gutterBottom>
-                  Subjects:
-                </Typography>
-                <Typography>
-                  {data.subjects.map((c) => c.name).join(", ")}
-                </Typography>
-              </div>
-              <div className="border-start"></div>
-              <div className="d-flex align-items-end">
-                <Link href={`/registrations/${data._id}`}>
-                  View Registrations
-                </Link>
-              </div>
-              <div className="border-start"></div>
-              <div className="d-flex align-items-end">
-                <Link href={`/examSchedule/${data._id}`}>
-                  View Examination schedule
-                </Link>
-              </div>
-            </Stack>
-          </>
-        ) : (
-          <Button
-            onClick={() => {
-              setExamId(data._id);
-              handleShow();
-            }}
-          >
-            Update subjects
-          </Button>
-        )}
-      </div>
-    );
-  };
+  const getSubjects = async () => {
+    const { data } = await httpService("aguila/subject/all");
 
-  const addPrograms = (value) => {
-    setSelectedSubjects((old) => [...old, value]);
-  };
-
-  const removeProgram = (value) => {
-    const filtered = selectedSubjects.filter((c) => c !== value);
-    setSelectedSubjects(filtered);
+    if (data) {
+      setSubjects(data);
+    }
   };
   useEffect(() => {
-    viewCreatedExaminations();
-    viewSubjects();
+    viewExams();
+    getSubjects();
   }, []);
-
-  const activateExam = (id) => {
-    Swal.fire({
-      icon: "question",
-      title: "ACTIVATE?",
-      text: "Do you wish to activate this examination?",
-      showCancelButton: true,
-    }).then(async () => {
-      const path = `activateExam/${id}`;
-
-      const res = await httpService.post(path, {});
-
-      if (res) {
-        viewCreatedExaminations();
-      }
-    });
-  };
-
-  const columns = [
-    { name: "TITLE", selector: (row) => row.title },
-    {
-      name: "DATE CREATED",
-      selector: (row) => new Date(row.createdOn).toDateString(),
-    },
-    {
-      name: "ACTIVE",
-      selector: (row) =>
-        row.active ? (
-          <Badge color="success">ACTIVE</Badge>
-        ) : (
-          <Button color="error" onClick={() => activateExam(row._id)}>
-            activate
-          </Button>
-        ),
-    },
-    {
-      name: "WEB PAGE",
-      selector: (row) => <Link href={`/exams/${row.slug}`}>view</Link>,
-    },
-  ];
-
-  const updateExamWithSubjects = () => {
-    Swal.fire({
-      icon: "question",
-      title: "Confirm",
-      text: "Do you want to update this exam with these selected subjects?",
-      showCancelButton: true,
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        const path = `updateExamWithSubjects/${examId}`;
-
-        const res = await httpService.patch(path, {
-          selectedSubjects,
-        });
-        handleClose();
-
-        if (res) {
-          viewCreatedExaminations();
-          Swal.fire({ icon: "success", title: "Success", text: res.data });
-        }
-      }
-    });
-  };
 
   return (
     <div>
-      <div className="mt-5 mb-5">
+      <div className="mt-5">
         <div>
-          <div className="d-flex justify-content-between">
-            <div>
-              <Typography fontWeight={600} variant="h4" gutterBottom>
-                Examination Control
-              </Typography>
-            </div>
-            <div>{processLoading ? <Spinner animation="grow" /> : null}</div>
-          </div>
+          <Typography variant="h4" fontWeight={700} gutterBottom>
+            Examination Control
+          </Typography>
 
-          <div className="row">
-            <div className="col-md-6">
-              <form onSubmit={createNewExamination}>
-                <TextField
-                  label="Examination"
-                  fullWidth
-                  required
-                  value={examination}
-                  name="title"
-                  helperText="Create a new examination"
-                  onChange={(e) => setExamination(e.target.value)}
-                />
-                <br />
-                <Button variant="contained" className="mt-2" type="submit">
-                  {loading ? <Spinner animation="border" /> : "create"}
-                </Button>
-              </form>
-            </div>
-            <div className="col-md-6">
-              {fetchingData ? <Spinner animation="border" /> : null}
-            </div>
-          </div>
-          <div className="mt-2">
-            <div className="mt-2">
-              <DataTable
-                data={data}
-                columns={columns}
-                pagination
-                expandableRows
-                expandableRowsComponent={expandableComponent}
+          <div className="col-lg-4">
+            <Typography>Create new exam</Typography>
+
+            <form onSubmit={createExam}>
+              <TextField
+                fullWidth
+                required
+                onChange={(e) => setTitle(e.target.value)}
               />
-            </div>
+              <div className="mt-2">
+                <LoadingButton
+                  variant="contained"
+                  loadingPosition="end"
+                  endIcon={<Save />}
+                  type="submit"
+                  loading={creating}
+                >
+                  create
+                </LoadingButton>
+              </div>
+            </form>
+          </div>
+          <div className="mt-2 col-lg-8">
+            <Table>
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Status</th>
+                  <th>Subject List</th>
+                </tr>
+              </thead>
+              <tbody>
+                {examinations.map((c) => (
+                  <tr>
+                    <td>
+                      <Typography textTransform={"uppercase"}>
+                        {c.title}
+                      </Typography>
+                    </td>
+                    <td>
+                      <ToggleActivation data={c} />
+                    </td>
+                    <td>
+                      <SubjectsList data={c} />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
           </div>
         </div>
       </div>
-      <>
-        <Modal show={show} onHide={handleClose}>
-          <Modal.Header closeButton>
-            <Modal.Title>Add Subjects</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <FormGroup>
-              {subjects.map((c, i) => (
-                <FormControlLabel
-                  key={i}
-                  control={<Checkbox />}
-                  label={c.name}
-                  value={c._id}
-                  onChange={(e) => {
-                    if (e.target.checked) {
-                      addPrograms(e.target.value);
-                    } else removeProgram(e.target.value);
-                  }}
-                />
-              ))}
-            </FormGroup>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              variant="contained"
-              className="me-1"
-              color="error"
-              onClick={handleClose}
-            >
-              Close
-            </Button>
-            <Button
-              variant="contained"
-              color="info"
-              disabled={selectedSubjects.length === 0 ? true : false}
-              onClick={updateExamWithSubjects}
-            >
-              Save Changes
-            </Button>
-          </Modal.Footer>
-        </Modal>
-      </>
+      <MySnackBar
+        open={open}
+        setOpen={setOpen}
+        message={message}
+        severity={severity}
+      />
     </div>
+  );
+}
+
+function ToggleActivation({ data }) {
+  return (
+    <>
+      {data.active ? (
+        <LoadingButton color="error">deactivate</LoadingButton>
+      ) : (
+        <LoadingButton color="error">acivate</LoadingButton>
+      )}
+    </>
+  );
+}
+
+function SubjectsList({ data }) {
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+  return (
+    <>
+      {data.subjects.length === 0 ? (
+        <Button onClick={handleShow}>add subjects</Button>
+      ) : (
+        <LoadingButton color="error">acivate</LoadingButton>
+      )}
+      <Modal
+        show={show}
+        onHide={handleClose}
+        backdrop="static"
+        keyboard={false}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>
+            <Typography
+              fontWeight={700}
+              variant="h5"
+              textTransform={"uppercase"}
+            >
+              {data.title}
+            </Typography>
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body></Modal.Body>
+        <Modal.Footer>
+          <Button color="secondary" onClick={handleClose}>
+            Close
+          </Button>
+          <Button color="primary">update subjects</Button>
+        </Modal.Footer>
+      </Modal>
+    </>
   );
 }

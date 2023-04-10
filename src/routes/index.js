@@ -26,13 +26,14 @@ import SideMenu from "../components/SideMenu";
 import EbubeCV from "../pages/EbubeCV";
 import MyFooter from "../components/MyFooter";
 import SubjectRoutes from "../pages/subjects/route";
+import ExaminationRoutes from "../pages/examinations/route";
 
 const privateRoutes = [
   { path: "/", component: Dashboard },
   { path: "/candidates", component: CandidatesHandler },
   { path: "/centres", component: CentresHandler },
   { path: "/centres/:id", component: ViewCentre },
-  { path: "/examination", component: ExaminationHandler },
+  { path: "/examination/*", component: ExaminationRoutes },
   { path: "/questionBank/:id", component: QuestionBank },
   { path: "/postExamQuestions/:id", component: ExamQuestionUpload },
   { path: "/examDownload", component: DownloadExam },
