@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { httpService } from "../../httpService";
-import { CircularProgress, Typography } from "@mui/material";
+import { CircularProgress, IconButton, Link, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
-import { AddTask } from "@mui/icons-material";
+import { AddTask, Delete } from "@mui/icons-material";
 import { AlertContext } from "../../contexts/AlertContext";
 import { Table } from "react-bootstrap";
 
@@ -84,18 +84,30 @@ export default function ViewSubject() {
               add question bank
             </LoadingButton>
           </div>
-          <div className="mt-2 col-lg-4">
+          <div className="mt-2 col-lg-6">
             <Table bordered>
               <thead>
                 <tr>
-                  <th>Name</th>
+                  <th>Question Banks</th>
+                  <th>Questions</th>
+                  <th>View</th>
+                  <th>Delete</th>
                 </tr>
               </thead>
               <tbody>
                 {questionBanks.map((c, i) => (
-                  <tr>
+                  <tr key={i}>
                     <td>
-                      <Typography>Question bank {i + 1}</Typography>
+                      <Typography>Bank {i + 1}</Typography>
+                    </td>
+                    <td>
+                      <Typography>{c.questions}</Typography>
+                    </td>
+                    <td>
+                      <Link>view</Link>
+                    </td>
+                    <td>
+                      <DeleteQuestionBank />
                     </td>
                   </tr>
                 ))}
@@ -105,5 +117,13 @@ export default function ViewSubject() {
         </>
       )}
     </div>
+  );
+}
+
+function DeleteQuestionBank() {
+  return (
+    <IconButton>
+      <Delete />
+    </IconButton>
   );
 }
