@@ -6,6 +6,7 @@ import { LoadingButton } from "@mui/lab";
 import { AddTask, Delete } from "@mui/icons-material";
 import { AlertContext } from "../../contexts/AlertContext";
 import { Table } from "react-bootstrap";
+import Swal from "sweetalert2";
 
 export default function ViewSubject() {
   const { setAlertData } = useContext(AlertContext);
@@ -107,7 +108,10 @@ export default function ViewSubject() {
                       <Link>view</Link>
                     </td>
                     <td>
-                      <DeleteQuestionBank />
+                      <DeleteQuestionBank
+                        id={c._id}
+                        viewQuestionBanks={viewQuestionBanks}
+                      />
                     </td>
                   </tr>
                 ))}
@@ -120,10 +124,37 @@ export default function ViewSubject() {
   );
 }
 
-function DeleteQuestionBank() {
+function DeleteQuestionBank({ id, viewQuestionBanks }) {
+  const { setAlertData } = useContext(AlertContext);
+  const [loading, setLoading] = useState(false);
+  const deleteQuestionBank = () => {
+    Swal.fire({
+      icon: "question",
+      title: "Delete Question bank",
+      text: "Are you sure you want to delete this question bank?",
+      showCancelButton: true,
+    }).then(async () => {
+      setLoading(true);
+      const { data } = await httpService.delete(
+        `aguila/subject/questionbank/delete/${id}`
+      );
+
+      if (data) {
+        viewQuestionBanks();
+        setAlertData({ message: data, open: true, severity: "success" });
+      }
+      setLoading(false);
+    });
+  };
   return (
-    <IconButton>
-      <Delete />
-    </IconButton>
+    <>
+      {loading ? (
+        <CircularProgress size={20} />
+      ) : (
+        <IconButton onClick={deleteQuestionBank}>
+          <Delete />
+        </IconButton>
+      )}
+    </>
   );
 }
