@@ -1,7 +1,12 @@
 import React, { useState, useEffect, useContext } from "react";
-import { CircularProgress, TextField, Typography } from "@mui/material";
+import {
+  CircularProgress,
+  IconButton,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { LoadingButton } from "@mui/lab";
-import { Home, People, Restore } from "@mui/icons-material";
+import { Home, People, Refresh, Restore } from "@mui/icons-material";
 import Swal from "sweetalert2";
 import MySnackBar from "../../components/MySnackBar";
 import { httpService } from "../../httpService";
@@ -281,6 +286,14 @@ function CandidateDistribution() {
                 <Typography>
                   Assigned: <strong>{analysis.assigned}</strong>
                 </Typography>
+              </div>
+              <div className="mt-2 d-flex justify-content-end">
+                <IconButton
+                  onClick={() => getAnalysis(examination._id)}
+                  color="success"
+                >
+                  <Refresh />
+                </IconButton>
               </div>
               <hr />
               <div className="mb-1">
