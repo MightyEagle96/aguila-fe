@@ -9,10 +9,14 @@ export default function ExaminationSchedule() {
   const { id } = useParams();
   const [examination, setExamination] = useState(null);
   const [sessions, setSessions] = useState([]);
-  const [totalCandidates, setTotalCandidates] = useState(0);
+  const [analysis, setAnalysis] = useState({
+    total: 0,
+    assigned: 0,
+    unassigned: 0,
+  });
 
   const getExamination = async () => {
-    const path = `viewExamination/${id}`;
+    const path = `aguila/examination/${id}/view`;
 
     const res = await httpService.get(path);
 
@@ -30,39 +34,60 @@ export default function ExaminationSchedule() {
     }
   };
 
-  const getTotalCandidates = async () => {
-    const path = `getTotalCandidates/${id}`;
+  async function getAnalysis() {
+    const { data } = await httpService(`aguila/candidates/${id}/analysis`);
 
-    const res = await httpService(path);
-
-    if (res) {
-      setTotalCandidates(res.data);
+    if (data) {
+      setAnalysis(data);
     }
-  };
-
+  }
   useEffect(() => {
     getExamination();
-    getExamSessions();
-    getTotalCandidates();
+
+    getAnalysis();
   }, []);
   return (
     <div>
-      <div className="mt-5 mb-5">
+      <div className="mt-5 mb-5 p-3">
         {examination ? (
           <div>
-            <Typography variant="h4" fontWeight={600}>
+            <Typography
+              variant="h4"
+              textTransform={"capitalize"}
+              fontWeight={600}
+            >
               {examination.title} examination schedule
             </Typography>
-
             <div className="mt-3">
-              <div className="col-md-3">
-                <div className="alert alert-success">
-                  Total Candidates:{" "}
-                  <strong>{totalCandidates.toLocaleString()}</strong>
+              <div className="row">
+                <div
+                  className="col-lg-3 p-3"
+                  style={{ backgroundColor: "#fdb874" }}
+                >
+                  <Typography>
+                    Total Candidates: {analysis.total.toLocaleString()}
+                  </Typography>
+                </div>
+                <div
+                  className="col-lg-3 p-3"
+                  style={{ backgroundColor: "#b088ad", color: "white" }}
+                >
+                  <Typography>
+                    Unassigned: {analysis.unassigned.toLocaleString()}
+                  </Typography>
+                </div>
+                <div
+                  className="col-lg-3 p-3"
+                  style={{ backgroundColor: "#1d2b67", color: "white" }}
+                >
+                  <Typography>
+                    Assigned: {analysis.assigned.toLocaleString()}
+                  </Typography>
                 </div>
               </div>
             </div>
-            <div className="mt-3 col-lg-12">
+
+            {/* <div className="mt-3 col-lg-12">
               <Typography color="GrayText" gutterBottom>
                 All sessions for this examination and the candidates
               </Typography>
@@ -73,8 +98,8 @@ export default function ExaminationSchedule() {
                   </div>
                 ))}
               </div>
-            </div>
-            <div className="mt-3 col-lg-12">
+            </div> */}
+            {/* <div className="mt-3 col-lg-12">
               <Typography color="GrayText" gutterBottom>
                 Centres and sessions
               </Typography>
@@ -104,7 +129,7 @@ export default function ExaminationSchedule() {
               <Link href={`/examinationTable/${id}`}>
                 View Examination table
               </Link>
-            </div>
+            </div>   */}
           </div>
         ) : null}
       </div>

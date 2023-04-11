@@ -56,20 +56,28 @@ export default function AllSubjects() {
         {loading && <CircularProgress />}
         <div className="row">
           <div className="col-lg-6">
-            {subjects.map((c, i) => (
-              <div key={i} className="alert alert-light mb-2 shadow-sm">
-                <Typography
-                  variant="h6"
-                  textTransform={"uppercase"}
-                  gutterBottom
-                >
-                  {c.name}
-                </Typography>
-                <div className="d-flex justify-content-end">
-                  <Link href={`/subjects/view/${c._id}`}>question banks</Link>
-                </div>
-              </div>
-            ))}
+            <Table bordered>
+              <thead>
+                <tr>
+                  <th>Subject</th>
+                  <th>Question Bank</th>
+                </tr>
+              </thead>
+              <tbody>
+                {subjects.map((c, i) => (
+                  <tr key={i}>
+                    <td>
+                      <Typography textTransform={"capitalize"}>
+                        {c.name}
+                      </Typography>
+                    </td>
+                    <td>
+                      <Link href={`/subjects/view/${c._id}`}>view</Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
           </div>
           <div
             className="col-lg-4 p-4 rounded-3"

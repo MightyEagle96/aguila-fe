@@ -110,7 +110,7 @@ export default function ExaminationHandler() {
               </div>
             </form>
           </div>
-          <div className="mt-4 col-lg-10">
+          <div className="mt-4">
             <Table bordered>
               <thead>
                 <tr>
@@ -118,6 +118,7 @@ export default function ExaminationHandler() {
                   <th>Status</th>
                   <th>Subject List</th>
                   <th>Candidates List</th>
+                  <th>Schedule</th>
                 </tr>
               </thead>
               <tbody>
@@ -143,6 +144,11 @@ export default function ExaminationHandler() {
                     </td>
                     <td>
                       <Link href={`/candidates/${c._id}/list`}>view list</Link>
+                    </td>
+                    <td>
+                      <Link href={`/examination/schedule/${c._id}`}>
+                        schedule
+                      </Link>
                     </td>
                   </tr>
                 ))}

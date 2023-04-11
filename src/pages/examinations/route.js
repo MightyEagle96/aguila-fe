@@ -4,10 +4,11 @@ import { Route, Routes } from "react-router-dom";
 import NotFound from "../NotFound";
 import { loggedInUser } from "../../httpService";
 import ExaminationHandler from "./ExaminationHandler";
+import ExaminationSchedule from "./ExaminationSchedule";
 
 const privateRoutes = [
   { path: "/", component: ExaminationHandler },
-
+  { path: "/schedule/:id", component: ExaminationSchedule },
   { path: "*", component: NotFound },
 ];
 
