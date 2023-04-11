@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
-import { CircularProgress, Stack, TextField, Typography } from "@mui/material";
+import { CircularProgress, TextField, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
-import { Home, People, Person } from "@mui/icons-material";
+import { Home, People, Restore } from "@mui/icons-material";
 import Swal from "sweetalert2";
 import MySnackBar from "../../components/MySnackBar";
 import { httpService } from "../../httpService";
@@ -36,6 +36,7 @@ export default function AllCentres() {
           setSeverity("success");
           setOpen(true);
           setMessage(data);
+          viewCentres();
         }
         if (error) {
           setSeverity("error");
@@ -101,6 +102,9 @@ export default function AllCentres() {
                   <Typography>Centre Name</Typography>
                 </th>
                 <th>
+                  <Typography>Capacity</Typography>
+                </th>
+                <th>
                   <Typography>Centre ID</Typography>
                 </th>
                 <th>
@@ -118,6 +122,9 @@ export default function AllCentres() {
                       </td>
                       <td>
                         <Typography>{c.name}</Typography>
+                      </td>
+                      <td>
+                        <Typography>{c.capacity}</Typography>
                       </td>
                       <td>
                         <Typography>{c.centreId}</Typography>
@@ -155,6 +162,8 @@ function CandidateDistribution() {
   //get examinations
   const { setAlertData } = useContext(AlertContext);
   const [examination, setExamination] = useState(null);
+  const [distributing, setDistributing] = useState(false);
+  const [resetting, setResetting] = useState(false);
   const [analysis, setAnalysis] = useState({
     total: 0,
     assigned: 0,
@@ -170,10 +179,6 @@ function CandidateDistribution() {
     }
   };
 
-  function showAlert() {
-    setAlertData({ open: true, severity: "success", message: "Hello" });
-  }
-
   async function getAnalysis(id) {
     const { data } = await httpService(`aguila/candidates/${id}/analysis`);
 
@@ -182,6 +187,56 @@ function CandidateDistribution() {
     }
   }
 
+  function distributeCandidates() {
+    Swal.fire({
+      icon: "question",
+      title: "Distribute Candidates?",
+      text: "This will share the candidates among the available centres",
+      showCancelButton: true,
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        setDistributing(true);
+        const { data, error, status } = await httpService(
+          `aguila/centres/distributecandidates/${examination._id}`
+        );
+
+        if (status === 202) {
+          getAnalysis(examination._id);
+          setAlertData({ message: data, severity: "info", open: true });
+        }
+
+        if (error) {
+          setAlertData({ message: error, severity: "error", open: true });
+        }
+        setDistributing(false);
+      }
+    });
+  }
+
+  function resetDistribution() {
+    Swal.fire({
+      icon: "question",
+      title: "Reset distribution?",
+      text: "Are you sure you want to reset the distribution?",
+      showCancelButton: true,
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        setResetting(true);
+        const { data, error } = await httpService(
+          `aguila/centres/resetdistribution/${examination._id}`
+        );
+
+        if (data) {
+          getAnalysis(examination._id);
+          setAlertData({ message: data, severity: "info", open: true });
+        }
+        if (error) {
+          setAlertData({ message: error, severity: "error", open: true });
+        }
+        setResetting(false);
+      }
+    });
+  }
   useEffect(() => {
     getActiveExam();
   }, []);
@@ -204,8 +259,12 @@ function CandidateDistribution() {
               {examination.title}
             </Typography>
             <hr />
-            <div>
-              <Typography gutterBottom>
+            <div className="mb-2">
+              <Typography
+                gutterBottom
+                textTransform={"uppercase"}
+                fontWeight={700}
+              >
                 Registered candidates analysis
               </Typography>
               <div className="mb-1">
@@ -215,13 +274,37 @@ function CandidateDistribution() {
               </div>
               <div className="mb-1" style={{ color: "#c2528b" }}>
                 <Typography>
-                  Unassigned: <strong>{analysis.total}</strong>
+                  Unassigned: <strong>{analysis.unassigned}</strong>
                 </Typography>
               </div>
               <div className="mb-1" style={{ color: "#b0e1a2" }}>
                 <Typography>
-                  Assigned: <strong>{analysis.total}</strong>
+                  Assigned: <strong>{analysis.assigned}</strong>
                 </Typography>
+              </div>
+              <hr />
+              <div className="mb-1">
+                <LoadingButton
+                  endIcon={<People />}
+                  loadingPosition="end"
+                  loading={distributing}
+                  onClick={distributeCandidates}
+                  fullWidth
+                >
+                  distribute candidates
+                </LoadingButton>
+              </div>
+              <div className="mb-1">
+                <LoadingButton
+                  endIcon={<Restore />}
+                  loadingPosition="end"
+                  loading={resetting}
+                  onClick={resetDistribution}
+                  fullWidth
+                  color="error"
+                >
+                  reset distribution
+                </LoadingButton>
               </div>
             </div>
           </div>
