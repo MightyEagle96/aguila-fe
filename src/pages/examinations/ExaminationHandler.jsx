@@ -2,6 +2,7 @@ import {
   Button,
   Checkbox,
   Chip,
+  CircularProgress,
   FormControlLabel,
   FormGroup,
   Link,
@@ -61,11 +62,13 @@ export default function ExaminationHandler() {
     });
   };
   const viewExams = async () => {
+    setLoading(true);
     const { data } = await httpService(`aguila/examination/all`);
 
     if (data) {
       setExaminations(data);
     }
+    setLoading(false);
   };
 
   const getSubjects = async () => {
@@ -88,6 +91,7 @@ export default function ExaminationHandler() {
             Examination Control
           </Typography>
 
+          {loading && <CircularProgress />}
           <div className="col-lg-4">
             <Typography>Create new exam</Typography>
 
