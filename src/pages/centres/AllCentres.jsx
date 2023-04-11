@@ -8,17 +8,16 @@ import {
 import { LoadingButton } from "@mui/lab";
 import { Home, People, Refresh, Restore } from "@mui/icons-material";
 import Swal from "sweetalert2";
-import MySnackBar from "../../components/MySnackBar";
+
 import { httpService } from "../../httpService";
 import { Table } from "react-bootstrap";
 import { AlertContext } from "../../contexts/AlertContext";
 
 export default function AllCentres() {
+  const { setAlertData } = useContext(AlertContext);
   const [limit, setLimit] = useState(0);
   const [creating, setCreating] = useState(false);
-  const [message, setMessage] = useState("");
-  const [open, setOpen] = useState(false);
-  const [severity, setSeverity] = useState("");
+
   const [centres, setCentres] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -38,15 +37,14 @@ export default function AllCentres() {
           }
         );
         if (data) {
-          setSeverity("success");
-          setOpen(true);
-          setMessage(data);
+          setAlertData({ severity: "success", message: data, open: true });
+          // setSeverity("success");
+          // setOpen(true);
+          // setMessage(data);
           viewCentres();
         }
         if (error) {
-          setSeverity("error");
-          setOpen(true);
-          setMessage(error);
+          setAlertData({ severity: "error", message: error, open: true });
         }
         setCreating(false);
       }
@@ -100,21 +98,13 @@ export default function AllCentres() {
           <Table bordered>
             <thead>
               <tr>
-                <th>
-                  <Typography>S/N</Typography>
-                </th>
-                <th>
-                  <Typography>Centre Name</Typography>
-                </th>
-                <th>
-                  <Typography>Capacity</Typography>
-                </th>
-                <th>
-                  <Typography>Centre ID</Typography>
-                </th>
-                <th>
-                  <Typography>Password</Typography>
-                </th>
+                <th>S/N</th>
+                <th>Centre Name</th>
+                <th>Capacity</th>
+                <th>Centre ID</th>
+                <th>Password</th>
+                <th>Sessions</th>
+                <th>Candidates</th>
               </tr>
             </thead>
             <tbody>
@@ -137,6 +127,12 @@ export default function AllCentres() {
                       <td>
                         <Typography>{c.password}</Typography>
                       </td>
+                      <td>
+                        <Typography>{c.sessionLength}</Typography>
+                      </td>
+                      <td>
+                        <Typography>{c.candidates}</Typography>
+                      </td>
                     </tr>
                   ))}
                 </>
@@ -150,20 +146,13 @@ export default function AllCentres() {
             </tbody>
           </Table>
         </div>
-        <CandidateDistribution />
+        <CandidateDistribution viewCentres={viewCentres} />
       </div>
-
-      <MySnackBar
-        open={open}
-        setOpen={setOpen}
-        message={message}
-        severity={severity}
-      />
     </div>
   );
 }
 
-function CandidateDistribution() {
+function CandidateDistribution({ viewCentres }) {
   //get examinations
   const { setAlertData } = useContext(AlertContext);
   const [examination, setExamination] = useState(null);
@@ -207,6 +196,7 @@ function CandidateDistribution() {
 
         if (status === 202) {
           getAnalysis(examination._id);
+          viewCentres();
           setAlertData({ message: data, severity: "info", open: true });
         }
 
@@ -233,6 +223,7 @@ function CandidateDistribution() {
 
         if (data) {
           getAnalysis(examination._id);
+          viewCentres();
           setAlertData({ message: data, severity: "info", open: true });
         }
         if (error) {
@@ -289,7 +280,10 @@ function CandidateDistribution() {
               </div>
               <div className="mt-2 d-flex justify-content-end">
                 <IconButton
-                  onClick={() => getAnalysis(examination._id)}
+                  onClick={() => {
+                    getAnalysis(examination._id);
+                    viewCentres();
+                  }}
                   color="success"
                 >
                   <Refresh />
