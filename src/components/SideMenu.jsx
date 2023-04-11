@@ -52,7 +52,7 @@ export default function SideMenu() {
   ];
 
   return (
-    <div>
+    <div className="mt-5 mb-5">
       <List>
         {listItems.map((item, index) => (
           <ListItem key={index} sx={{ color: "white" }}>
