@@ -282,7 +282,7 @@ function SubjectsList({
         <div className="d-flex flex-wrap">
           {examination.subjects.map((c, i) => (
             <Chip
-              className="me-1"
+              className="me-1 mb-1"
               key={i}
               label={
                 <Typography textTransform={"capitalize"}>{c.name}</Typography>

@@ -5,10 +5,12 @@ import NotFound from "../NotFound";
 import { loggedInUser } from "../../httpService";
 import AllSubjects from "./AllSubjects";
 import ViewSubject from "./ViewSubject";
+import SubjectQuestionBank from "./SubjectQuestionBank";
 
 const privateRoutes = [
   { path: "/", component: AllSubjects },
   { path: "/view/:id", component: ViewSubject },
+  { path: "/questionBank/:id", component: SubjectQuestionBank },
   { path: "*", component: NotFound },
 ];
 

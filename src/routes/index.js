@@ -1,26 +1,14 @@
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-import CreatedExamination from "../pages/CreatedExamination";
 import Dashboard from "../pages/Dashboard";
-import DownloadExam from "../pages/DownloadExam";
-import ExaminationDashboard from "../pages/examinations/ExaminationDashboard";
-
-import ExamQuestionUpload from "../pages/examinations/ExamQuestionUpload";
-import QuestionBank from "../pages/examinations/QuestionBank";
-import ResultsPage from "../pages/ResultsPage";
 
 import { loggedInUser } from "../httpService";
 import NotFound from "../pages/NotFound";
 import LoginPage from "../pages/LoginPage";
-import ExaminationHistory from "../pages/examinations/ExaminationHistory";
 
 import ExaminationRegistrationPage from "../pages/registrations/ExaminationRegistrationPage";
-import ViewExamRegistrations from "../pages/registrations/ViewExamRegistrations";
-import StateData from "../pages/registrations/StateData";
-import ExaminationSchedule from "../pages/examinations/ExaminationSchedule";
-import ExaminationTable from "../pages/examinations/ExaminationTable";
-import AdminResults from "../pages/results/AdminResults";
+
 import SideMenu from "../components/SideMenu";
 import EbubeCV from "../pages/EbubeCV";
 import MyFooter from "../components/MyFooter";
@@ -34,21 +22,6 @@ const privateRoutes = [
   { path: "/candidates/*", component: CandidatesRoutes },
   { path: "/centres/*", component: CentresRoutes },
   { path: "/examination/*", component: ExaminationRoutes },
-  { path: "/questionBank/:id", component: QuestionBank },
-  { path: "/postExamQuestions/:id", component: ExamQuestionUpload },
-  { path: "/examDownload", component: DownloadExam },
-  { path: "/results", component: ResultsPage },
-  { path: "/createdExamination", component: CreatedExamination },
-  { path: "/dashboard/:id", component: ExaminationDashboard },
-  { path: "/examHistory", component: ExaminationHistory },
-  { path: "/examinationHistory", component: ExaminationHistory },
-
-  { path: "/exams/:id", component: ExaminationRegistrationPage },
-  { path: "/registrations/:id", component: ViewExamRegistrations },
-  { path: "/statedata/:examId/:state", component: StateData },
-  { path: "/examSchedule/:id", component: ExaminationSchedule },
-  { path: "/examinationTable/:id", component: ExaminationTable },
-  { path: "/results/admin/:id", component: AdminResults },
   { path: "/subjects/*", component: SubjectRoutes },
   { path: "*", component: NotFound },
 ];

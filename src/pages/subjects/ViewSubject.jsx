@@ -91,7 +91,7 @@ export default function ViewSubject() {
                 <tr>
                   <th>Question Banks</th>
                   <th>Questions</th>
-                  <th>View</th>
+                  <th>View Questions</th>
                   <th>Delete</th>
                 </tr>
               </thead>
@@ -105,7 +105,7 @@ export default function ViewSubject() {
                       <Typography>{c.questions}</Typography>
                     </td>
                     <td>
-                      <Link>view</Link>
+                      <Link href={`/subjects/questionbank/${c._id}`}>view</Link>
                     </td>
                     <td>
                       <DeleteQuestionBank
