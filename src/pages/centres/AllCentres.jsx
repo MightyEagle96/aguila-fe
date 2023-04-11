@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import {
+  Button,
   CircularProgress,
   IconButton,
   TextField,
@@ -38,9 +39,7 @@ export default function AllCentres() {
         );
         if (data) {
           setAlertData({ severity: "success", message: data, open: true });
-          // setSeverity("success");
-          // setOpen(true);
-          // setMessage(data);
+
           viewCentres();
         }
         if (error) {
@@ -131,7 +130,9 @@ export default function AllCentres() {
                         <Typography>{c.sessionLength}</Typography>
                       </td>
                       <td>
-                        <Typography>{c.candidates}</Typography>
+                        <Button href={`/centres/participants/${c._id}`}>
+                          {c.candidates}
+                        </Button>
                       </td>
                     </tr>
                   ))}

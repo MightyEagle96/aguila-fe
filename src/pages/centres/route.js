@@ -4,10 +4,11 @@ import { Route, Routes } from "react-router-dom";
 import NotFound from "../NotFound";
 import { loggedInUser } from "../../httpService";
 import AllCentres from "./AllCentres";
+import ParticipantsList from "./ParticipantsList";
 
 const privateRoutes = [
   { path: "/all", component: AllCentres },
-
+  { path: "/participants/:id", component: ParticipantsList },
   { path: "*", component: NotFound },
 ];
 
