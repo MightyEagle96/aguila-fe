@@ -1,7 +1,12 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { httpService } from "../../httpService";
-import { CircularProgress, IconButton, Typography } from "@mui/material";
+import {
+  Button,
+  CircularProgress,
+  IconButton,
+  Typography,
+} from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { AlertContext } from "../../contexts/AlertContext";
 import { Table } from "react-bootstrap";
@@ -126,6 +131,7 @@ export default function SubjectQuestionBank() {
             </div>
           </div>
           <div className="d-flex justify-content-end">
+            <Button href={`/subjects/previewexam/${id}`}>preview exam</Button>
             <LoadingButton
               loading={deleting}
               onClick={deleteAllQuestions}
