@@ -5,9 +5,12 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { httpService } from "../../httpService";
+import { LoadingButton } from "@mui/lab";
+import { SettingsSharp } from "@mui/icons-material";
+import { AlertContext } from "../../contexts/AlertContext";
 
 export default function ExaminationSchedule() {
   const { id } = useParams();
@@ -124,42 +127,98 @@ function ExamSessions({ examination }) {
       <div className="mt-2">
         {sessions.map((c, i) => (
           <div key={i}>
-            <Typography variant="h6" fontWeight={700} gutterBottom>
-              {c}
-            </Typography>
-            <div className="row mt-2 mb-2">
-              <div className="col-lg-4 border-end">
-                <Typography gutterBottom>Subject question banks</Typography>
-                {examination.subjects.map((c, i) => (
-                  <div key={i} className="mb-4">
-                    <Chip
-                      variant="outlined"
-                      label={
-                        <Typography textTransform={"capitalize"}>
-                          {c.name}
-                        </Typography>
-                      }
-                    />
-                  </div>
-                ))}
-              </div>
-              <div className="col-lg-2">
-                <Typography gutterBottom>Exam Duration</Typography>
-                <Stack direction="row" spacing={1}>
-                  <div>
-                    <TextField placeholder="HH" type="number" />
-                  </div>
-                  <div>
-                    <TextField placeholder="MM" type="number" />
-                  </div>
-                  <div>
-                    <TextField placeholder="SS" type="number" />
-                  </div>
-                </Stack>
-              </div>
-            </div>
+            <ExamSessionModelComponent c={c} examination={examination} />
           </div>
         ))}
+      </div>
+    </div>
+  );
+}
+
+function ExamSessionModelComponent({ c, examination }) {
+  const [examSession, setExamSession] = useState(null);
+  const [creating, setCreating] = useState(false);
+
+  const { setAlertData } = useContext(AlertContext);
+
+  const getData = async () => {
+    const { status } = await httpService.post(
+      "aguila/examination/examsession/view",
+      { examination: examination._id, session: c }
+    );
+
+    if (status === 204) {
+      setExamSession("No exam session");
+    } else {
+      setExamSession(null);
+    }
+  };
+
+  const createExamSession = async () => {
+    setCreating(true);
+    const { data } = await httpService.post(
+      "aguila/examination/examsession/create",
+      { examination: examination._id, session: c }
+    );
+
+    if (data) {
+      getData();
+      setAlertData({ severity: "success", message: data, open: true });
+    }
+    setCreating(false);
+  };
+  useEffect(() => {
+    getData();
+  }, []);
+  return (
+    <div>
+      <Typography variant="h6" fontWeight={700} gutterBottom>
+        {c}
+      </Typography>
+      <div className="row mt-2 mb-2">
+        <div className="col-lg-4 border-end">
+          <Typography gutterBottom>Subject question banks</Typography>
+          {examination.subjects.map((c, i) => (
+            <div key={i} className="mb-4">
+              <Chip
+                variant="outlined"
+                label={
+                  <Typography textTransform={"capitalize"}>{c.name}</Typography>
+                }
+              />
+            </div>
+          ))}
+        </div>
+        <div className="col-lg-3 border-end">
+          <Typography gutterBottom>Exam Duration</Typography>
+          <Stack direction="row" spacing={1}>
+            <div>
+              <TextField placeholder="HH" type="number" />
+            </div>
+            <div>
+              <TextField placeholder="MM" type="number" />
+            </div>
+            <div>
+              <TextField placeholder="SS" type="number" />
+            </div>
+          </Stack>
+        </div>
+        <div className="col-lg-3  d-flex align-items-end">
+          <div className="col-lg-12">
+            {examSession && (
+              <div>
+                <LoadingButton
+                  loading={creating}
+                  loadingPosition="end"
+                  endIcon={<SettingsSharp />}
+                  onClick={createExamSession}
+                >
+                  create exam session
+                </LoadingButton>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
