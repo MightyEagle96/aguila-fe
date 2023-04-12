@@ -93,10 +93,36 @@ function SessionPanel({ session, centre, value }) {
         <Table bordered>
           <thead>
             <tr>
+              <th>S/N</th>
               <th>First Name</th>
               <th>Last Name</th>
+              <th>Reg Number</th>
+              <th>Seat Number</th>
             </tr>
           </thead>
+          <tbody>
+            {candidates.map((c, i) => (
+              <tr key={i}>
+                <td>
+                  <Typography>{i + 1}</Typography>
+                </td>
+                <td>
+                  <Typography>{c.firstName}</Typography>
+                </td>
+                <td>
+                  <Typography>{c.lastName}</Typography>
+                </td>
+                <td>
+                  <Typography textTransform={"uppercase"}>
+                    {c.registrationNumber}
+                  </Typography>
+                </td>
+                <td>
+                  <Typography>{c.seatNumber}</Typography>
+                </td>
+              </tr>
+            ))}
+          </tbody>
         </Table>
       </div>
     </TabPanel>
