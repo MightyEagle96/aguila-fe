@@ -1,4 +1,4 @@
-import { Typography } from "@mui/material";
+import { CircularProgress, Typography } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { httpService } from "../../httpService";
@@ -6,7 +6,7 @@ import { httpService } from "../../httpService";
 export default function ExaminationSchedule() {
   const { id } = useParams();
   const [examination, setExamination] = useState(null);
-  const [sessions, setSessions] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [analysis, setAnalysis] = useState({
     total: 0,
     assigned: 0,
@@ -14,6 +14,7 @@ export default function ExaminationSchedule() {
   });
 
   const getExamination = async () => {
+    setLoading(true);
     const path = `aguila/examination/${id}/view`;
 
     const res = await httpService.get(path);
@@ -21,14 +22,18 @@ export default function ExaminationSchedule() {
     if (res) {
       setExamination(res.data);
     }
+    setLoading(false);
   };
 
   async function getAnalysis() {
+    setLoading(true);
     const { data } = await httpService(`aguila/candidates/${id}/analysis`);
 
     if (data) {
       setAnalysis(data);
     }
+
+    setLoading(false);
   }
   useEffect(() => {
     getExamination();
@@ -38,6 +43,7 @@ export default function ExaminationSchedule() {
   return (
     <div>
       <div className="mt-5 mb-5 p-3">
+        {loading && <CircularProgress />}
         {examination ? (
           <div>
             <Typography
