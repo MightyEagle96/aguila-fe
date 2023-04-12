@@ -5,9 +5,7 @@ import {
   CircularProgress,
   FormControlLabel,
   FormGroup,
-  Link,
   TextField,
-  ToggleButton,
   Typography,
 } from "@mui/material";
 import React, { useState, useEffect, useContext } from "react";
@@ -147,12 +145,20 @@ export default function ExaminationHandler() {
                       />
                     </td>
                     <td>
-                      <Link href={`/candidates/${c._id}/list`}>view list</Link>
+                      <Button
+                        disabled={!c.active}
+                        href={`/candidates/${c._id}/list`}
+                      >
+                        view list
+                      </Button>
                     </td>
                     <td>
-                      <Link href={`/examination/schedule/${c._id}`}>
+                      <Button
+                        disabled={!c.active}
+                        href={`/examination/schedule/${c._id}`}
+                      >
                         schedule
-                      </Link>
+                      </Button>
                     </td>
                   </tr>
                 ))}
