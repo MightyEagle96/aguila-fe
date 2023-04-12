@@ -117,7 +117,7 @@ function ExamSessions({ examination }) {
       </div>
       <div className="mt-2">
         {sessions.map((c, i) => (
-          <div key={i}>
+          <div key={i} className="p-3 shadow-sm mb-3">
             <ExamSessionModelComponent c={c} examination={examination} />
           </div>
         ))}

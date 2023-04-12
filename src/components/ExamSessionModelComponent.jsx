@@ -348,6 +348,8 @@ export default function ExamSessionModelComponent({ c, examination }) {
                           onClick={MakeExamAvaialbleForDownload}
                           color="success"
                           variant="contained"
+                          loadingPosition="center"
+                          loading={activating}
                         >
                           MAKE EXAM AVAILABLE FOR DOWNLOAD
                         </LoadingButton>
@@ -356,6 +358,8 @@ export default function ExamSessionModelComponent({ c, examination }) {
                           onClick={MakeExamAvaialbleForDownload}
                           color="error"
                           variant="contained"
+                          loadingPosition="center"
+                          loading={activating}
                         >
                           MAKE EXAM UNAVAILABLE FOR DOWNLOAD
                         </LoadingButton>
