@@ -142,15 +142,13 @@ function ExamSessionModelComponent({ c, examination }) {
   const { setAlertData } = useContext(AlertContext);
 
   const getData = async () => {
-    const { status } = await httpService.post(
+    const { data } = await httpService.post(
       "aguila/examination/examsession/view",
       { examination: examination._id, session: c }
     );
 
-    if (status === 204) {
-      setExamSession("No exam session");
-    } else {
-      setExamSession(null);
+    if (data) {
+      setExamSession(data);
     }
   };
 
@@ -170,6 +168,8 @@ function ExamSessionModelComponent({ c, examination }) {
   useEffect(() => {
     getData();
   }, []);
+
+  const handleClick = () => {};
   return (
     <div>
       <Typography variant="h6" fontWeight={700} gutterBottom>
@@ -177,10 +177,11 @@ function ExamSessionModelComponent({ c, examination }) {
       </Typography>
       <div className="row mt-2 mb-2">
         <div className="col-lg-4 border-end">
-          <Typography gutterBottom>Subject question banks</Typography>
+          <Typography gutterBottom>SUBJECT QUESTION BANKS</Typography>
           {examination.subjects.map((c, i) => (
-            <div key={i} className="mb-4">
+            <div key={i} className="mb-4 mt-3">
               <Chip
+                onClick={handleClick}
                 variant="outlined"
                 label={
                   <Typography textTransform={"capitalize"}>{c.name}</Typography>
@@ -205,7 +206,7 @@ function ExamSessionModelComponent({ c, examination }) {
         </div>
         <div className="col-lg-3  d-flex align-items-end">
           <div className="col-lg-12">
-            {examSession && (
+            {!examSession ? (
               <div>
                 <LoadingButton
                   loading={creating}
@@ -215,6 +216,19 @@ function ExamSessionModelComponent({ c, examination }) {
                 >
                   create exam session
                 </LoadingButton>
+              </div>
+            ) : (
+              <div
+                className="p-3 rounded-3 shadow-sm"
+                style={{ backgroundColor: "#efe9e1", color: "black" }}
+              >
+                <Typography fontWeight={700} gutterBottom>
+                  EXAM SESSION CREATED
+                </Typography>
+                <hr />
+                <Typography color="GrayText">
+                  {examSession.questionBanks.length} question banks
+                </Typography>
               </div>
             )}
           </div>
