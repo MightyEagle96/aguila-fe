@@ -1,9 +1,7 @@
-import { Link, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { httpService } from "../../httpService";
-import CentresAndSessions from "./CentresAndSessions";
-import SessionCandidate from "./SessionCandidate";
 
 export default function ExaminationSchedule() {
   const { id } = useParams();
@@ -22,15 +20,6 @@ export default function ExaminationSchedule() {
 
     if (res) {
       setExamination(res.data);
-    }
-  };
-
-  const getExamSessions = async () => {
-    const path = `getExamSessions/${id}`;
-    const res = await httpService(path);
-
-    if (res) {
-      setSessions(res.data);
     }
   };
 
@@ -58,80 +47,67 @@ export default function ExaminationSchedule() {
             >
               {examination.title} examination schedule
             </Typography>
-            <div className="mt-3">
-              <div className="row">
-                <div
-                  className="col-lg-3 p-3"
-                  style={{ backgroundColor: "#fdb874" }}
-                >
-                  <Typography>
-                    Total Candidates: {analysis.total.toLocaleString()}
-                  </Typography>
-                </div>
-                <div
-                  className="col-lg-3 p-3"
-                  style={{ backgroundColor: "#b088ad", color: "white" }}
-                >
-                  <Typography>
-                    Unassigned: {analysis.unassigned.toLocaleString()}
-                  </Typography>
-                </div>
-                <div
-                  className="col-lg-3 p-3"
-                  style={{ backgroundColor: "#1d2b67", color: "white" }}
-                >
-                  <Typography>
-                    Assigned: {analysis.assigned.toLocaleString()}
-                  </Typography>
-                </div>
-              </div>
-            </div>
 
-            {/* <div className="mt-3 col-lg-12">
-              <Typography color="GrayText" gutterBottom>
-                All sessions for this examination and the candidates
-              </Typography>
-              <div className="d-flex flex-wrap">
-                {sessions.map((c) => (
-                  <div className="col-md-3">
-                    <SessionCandidate examination={id} session={c} />
-                  </div>
-                ))}
+            <div className="row mt-3">
+              <div
+                className="col-lg-3 p-3"
+                style={{ backgroundColor: "#fdb874" }}
+              >
+                <Typography>
+                  Total Candidates: {analysis.total.toLocaleString()}
+                </Typography>
               </div>
-            </div> */}
-            {/* <div className="mt-3 col-lg-12">
-              <Typography color="GrayText" gutterBottom>
-                Centres and sessions
-              </Typography>
-              <div className="d-flex flex-wrap">
-                {sessions.map((c) => (
-                  <div className="col-md-3">
-                    <CentresAndSessions session={c} />
-                  </div>
-                ))}
+              <div
+                className="col-lg-3 p-3"
+                style={{ backgroundColor: "#b088ad", color: "white" }}
+              >
+                <Typography>
+                  Unassigned: {analysis.unassigned.toLocaleString()}
+                </Typography>
               </div>
-            </div>
-            <div className="mt-3 col-lg-12">
-              <Typography color="GrayText" gutterBottom>
-                Subjects for this examination
-              </Typography>
-              <div className="mt-2">
-                <Typography variant="h5" fontStyle={"italic"} fontWeight={600}>
-                  {examination.subjects
-                    .map(({ name }) => {
-                      return name;
-                    })
-                    .join(", ")}
+              <div
+                className="col-lg-3 p-3"
+                style={{ backgroundColor: "#1d2b67", color: "white" }}
+              >
+                <Typography>
+                  Assigned: {analysis.assigned.toLocaleString()}
                 </Typography>
               </div>
             </div>
             <div className="mt-3">
-              <Link href={`/examinationTable/${id}`}>
-                View Examination table
-              </Link>
-            </div>   */}
+              <ExamSessions />
+            </div>
           </div>
         ) : null}
+      </div>
+    </div>
+  );
+}
+
+function ExamSessions() {
+  const [sessions, setSessions] = useState([]);
+
+  const getData = async () => {
+    const { data } = await httpService("aguila/centres/examsessions");
+
+    setSessions(data);
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+  return (
+    <div
+      className="col-lg-3 p-3"
+      style={{ backgroundColor: "#f2f2eb", color: "GrayText" }}
+    >
+      <Typography gutterBottom>
+        Number of sessions available for this exam
+      </Typography>
+      <div className="d-flex justify-content-end">
+        <Typography variant="h3" fontWeight={700}>
+          {sessions.length}
+        </Typography>
       </div>
     </div>
   );
