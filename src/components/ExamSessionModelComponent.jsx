@@ -11,8 +11,14 @@ import {
   Button,
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
-import { SettingsSharp, FavoriteBorder, Favorite } from "@mui/icons-material";
+import {
+  SettingsSharp,
+  FavoriteBorder,
+  Favorite,
+  Timelapse,
+} from "@mui/icons-material";
 import { Modal, Table } from "react-bootstrap";
+import secondsTimeFormatter from "seconds-time-formatter";
 
 export default function ExamSessionModelComponent({ c, examination }) {
   const [examSession, setExamSession] = useState(null);
@@ -24,6 +30,10 @@ export default function ExamSessionModelComponent({ c, examination }) {
   const { setAlertData } = useContext(AlertContext);
   const [selectedBank, setSelectedBank] = useState("");
   const [adding, setAdding] = useState(false);
+  const [duration, setDuration] = useState({ hr: "0", min: "0", sec: "0" });
+  const [errorMin, setErrorMin] = useState(false);
+  const [errorSec, setErrorSec] = useState(false);
+  const [errorHr, setErrorHr] = useState(false);
 
   const getExamSession = async () => {
     const { data } = await httpService.post(
@@ -36,6 +46,16 @@ export default function ExamSessionModelComponent({ c, examination }) {
     }
   };
 
+  const handleChangeDuration = (e) => {
+    setDuration({ ...duration, [e.target.name]: e.target.value });
+  };
+
+  const updateDuration = async () => {
+    const hours = Number(duration.hr) * 60 * 60;
+    const minutes = Number(duration.min) * 60;
+    const seconds = Number(duration.sec);
+    console.log(hours + minutes + seconds);
+  };
   const createExamSession = async () => {
     setCreating(true);
     const { data } = await httpService.post(
@@ -89,6 +109,17 @@ export default function ExamSessionModelComponent({ c, examination }) {
     }
     setAdding(false);
   };
+
+  function hasUpdated(id) {
+    if (examSession) {
+      const index = examSession.questionBanks.findIndex(
+        (c) => c.subject === id
+      );
+
+      return index >= 0 ? true : false;
+    }
+    return false;
+  }
   return (
     <div>
       <Typography variant="h6" fontWeight={700} gutterBottom>
@@ -102,27 +133,134 @@ export default function ExamSessionModelComponent({ c, examination }) {
               <Chip
                 disabled={!examSession}
                 onClick={() => handleClick(c)}
-                variant="outlined"
+                color="info"
+                variant={hasUpdated(c._id) ? "filled" : "outlined"}
                 label={
-                  <Typography textTransform={"capitalize"}>{c.name}</Typography>
+                  <Typography textTransform={"uppercase"}>{c.name}</Typography>
                 }
               />
             </div>
           ))}
+          <Typography variant="subtitle2">
+            Click on any of the subjects to add a question bank
+          </Typography>
         </div>
         <div className="col-lg-3 border-end">
-          <Typography gutterBottom>Exam Duration</Typography>
-          <Stack direction="row" spacing={1}>
+          <Typography variant="caption" gutterBottom>
+            set exam duration
+          </Typography>
+          <Stack direction="row" spacing={1} className="mb-1">
             <div>
-              <TextField placeholder="HH" type="number" />
+              <TextField
+                placeholder="HH"
+                type="number"
+                value={duration.hr}
+                name="hr"
+                onChange={(e) => {
+                  if (e.target.value > 3 || e.target.value < 0) {
+                    setErrorHr(true);
+                  } else {
+                    handleChangeDuration(e);
+                    setErrorHr(false);
+                  }
+                }}
+                onBlue={(e) => {
+                  if (e.target.value > 3 || e.target.value < 0) {
+                    setErrorHr(true);
+                  } else {
+                    handleChangeDuration(e);
+                    setErrorHr(false);
+                  }
+                  if (e.target.value === "") {
+                    e.target.value = 0;
+
+                    handleChangeDuration(e);
+                  }
+                }}
+                error={errorHr}
+                helperText={errorHr ? "Value must be between 0 & 3" : ""}
+              />
             </div>
             <div>
-              <TextField placeholder="MM" type="number" />
+              <TextField
+                placeholder="MM"
+                type="number"
+                value={duration.min}
+                name="min"
+                onChange={(e) => {
+                  if (e.target.value > 59 || e.target.value < 0) {
+                    setErrorMin(true);
+                  } else {
+                    handleChangeDuration(e);
+                    setErrorMin(false);
+                  }
+                }}
+                onBlur={(e) => {
+                  if (e.target.value > 59 || e.target.value < 0) {
+                    setErrorMin(true);
+                  } else {
+                    handleChangeDuration(e);
+                    setErrorMin(false);
+                  }
+                  if (e.target.value === "") {
+                    e.target.value = 0;
+
+                    handleChangeDuration(e);
+                  }
+                }}
+                error={errorMin}
+                helperText={errorMin ? "Value must be between 0 & 59" : ""}
+              />
             </div>
             <div>
-              <TextField placeholder="SS" type="number" />
+              <TextField
+                placeholder="SS"
+                type="number"
+                value={duration.sec}
+                name="sec"
+                onChange={(e) => {
+                  if (e.target.value > 59 || e.target.value < 0) {
+                    setErrorSec(true);
+                  } else {
+                    handleChangeDuration(e);
+                    setErrorSec(false);
+                  }
+                }}
+                onBlur={(e) => {
+                  if (e.target.value > 59 || e.target.value < 0) {
+                    setErrorSec(true);
+                  } else {
+                    handleChangeDuration(e);
+                    setErrorSec(false);
+                  }
+
+                  if (e.target.value === "") {
+                    e.target.value = 0;
+
+                    handleChangeDuration(e);
+                  }
+                }}
+                error={errorSec}
+                helperText={errorSec ? "Value must be between 0 & 59" : ""}
+              />
             </div>
           </Stack>
+          <div
+            className="mt-3 mb-3 p-3"
+            style={{ backgroundColor: "#1d2b67", color: "white" }}
+          >
+            <Typography>
+              {duration.hr} hours, {duration.min} minutes, {duration.sec}{" "}
+              seconds
+            </Typography>
+          </div>
+          <LoadingButton
+            onClick={updateDuration}
+            color="info"
+            endIcon={<Timelapse />}
+          >
+            set duration
+          </LoadingButton>
         </div>
         <div className="col-lg-3  d-flex align-items-end">
           <div className="col-lg-12">
