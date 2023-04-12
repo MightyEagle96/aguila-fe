@@ -11,7 +11,7 @@ import { httpService } from "../../httpService";
 import { LoadingButton } from "@mui/lab";
 import { SettingsSharp } from "@mui/icons-material";
 import { AlertContext } from "../../contexts/AlertContext";
-import { Modal } from "react-bootstrap";
+import { Modal, Table } from "react-bootstrap";
 
 export default function ExaminationSchedule() {
   const { id } = useParams();
@@ -141,6 +141,8 @@ function ExamSessionModelComponent({ c, examination }) {
   const [creating, setCreating] = useState(false);
   const [subject, setSubject] = useState({});
   const [show, setShow] = useState(false);
+  const [questionBanks, setQuestionbanks] = useState([]);
+  const [fetchingBanks, setFetchingBanks] = useState(false);
   const { setAlertData } = useContext(AlertContext);
 
   const getData = async () => {
@@ -173,11 +175,24 @@ function ExamSessionModelComponent({ c, examination }) {
 
   const handleClick = (e) => {
     setSubject(e);
+    getQuestionBanks(e._id);
     setShow(true);
   };
 
   const handleClose = () => {
     setShow(false);
+    setQuestionbanks([]);
+  };
+
+  const getQuestionBanks = async (id) => {
+    setFetchingBanks(true);
+    const { data } = await httpService(
+      `aguila/subject/questionbank/view/${id}`
+    );
+    if (data) {
+      setQuestionbanks(data);
+    }
+    setFetchingBanks(false);
   };
   return (
     <div>
@@ -255,6 +270,47 @@ function ExamSessionModelComponent({ c, examination }) {
         <Modal.Body>
           <h5>Question Banks</h5>
           <p>Select a question bank for this subject</p>
+
+          {fetchingBanks ? (
+            <CircularProgress />
+          ) : (
+            <div className="mt-3">
+              <Table bordered>
+                <thead>
+                  <tr>
+                    <th>Question Banks</th>
+                    <th>Questions</th>
+                    <th>View Questions</th>
+                    <th>Delete</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {questionBanks.length > 0 ? (
+                    <>
+                      {questionBanks.map((c, i) => (
+                        <tr key={i}>
+                          <td>
+                            <Typography>Bank {i + 1}</Typography>
+                          </td>
+                          <td>
+                            <Typography>{c.questions}</Typography>
+                          </td>
+                          <td></td>
+                          <td></td>
+                        </tr>
+                      ))}{" "}
+                    </>
+                  ) : (
+                    <tr>
+                      <td colSpan={12} className="text-center">
+                        NO question bank available
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </Table>
+            </div>
+          )}
         </Modal.Body>
         <Modal.Footer></Modal.Footer>
       </Modal>
