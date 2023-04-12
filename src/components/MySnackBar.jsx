@@ -40,7 +40,7 @@ export function MySnackBarContext({ alertData, setAlertData }) {
     <Snackbar
       anchorOrigin={{ vertical: "top", horizontal: "right" }}
       open={alertData.open}
-      autoHideDuration={6000}
+      autoHideDuration={5000}
       onClose={handleClose}
     >
       <Alert

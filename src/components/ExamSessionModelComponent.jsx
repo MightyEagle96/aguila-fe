@@ -24,7 +24,7 @@ export default function ExamSessionModelComponent({ c, examination }) {
   const { setAlertData } = useContext(AlertContext);
   const [selectedBank, setSelectedBank] = useState("");
 
-  const getData = async () => {
+  const getExamSession = async () => {
     const { data } = await httpService.post(
       "aguila/examination/examsession/view",
       { examination: examination._id, session: c }
@@ -43,13 +43,13 @@ export default function ExamSessionModelComponent({ c, examination }) {
     );
 
     if (data) {
-      getData();
+      getExamSession();
       setAlertData({ severity: "success", message: data, open: true });
     }
     setCreating(false);
   };
   useEffect(() => {
-    getData();
+    getExamSession();
   }, []);
 
   const handleClick = (e) => {
@@ -75,7 +75,16 @@ export default function ExamSessionModelComponent({ c, examination }) {
   };
 
   const addQuestionBank = async () => {
-    console.log({ subject: subject._id, questionBank: selectedBank });
+    const { data } = await httpService.post(
+      `aguila/examination/addtoquestionbank/${examSession._id}`,
+      { subject: subject._id, questionBank: selectedBank }
+    );
+
+    if (data) {
+      handleClose();
+      getExamSession();
+      setAlertData({ message: data, severity: "success", open: true });
+    }
   };
   return (
     <div>
@@ -88,6 +97,7 @@ export default function ExamSessionModelComponent({ c, examination }) {
           {examination.subjects.map((c, i) => (
             <div key={i} className="mb-4 mt-3">
               <Chip
+                disabled={!examSession}
                 onClick={() => handleClick(c)}
                 variant="outlined"
                 label={
@@ -116,6 +126,7 @@ export default function ExamSessionModelComponent({ c, examination }) {
             {!examSession ? (
               <div>
                 <LoadingButton
+                  variant="contained"
                   loading={creating}
                   loadingPosition="end"
                   endIcon={<SettingsSharp />}
