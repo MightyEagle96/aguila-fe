@@ -1,15 +1,17 @@
 import {
   Chip,
   CircularProgress,
+  IconButton,
   Stack,
   TextField,
   Typography,
+  Button,
 } from "@mui/material";
 import React, { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { httpService } from "../../httpService";
 import { LoadingButton } from "@mui/lab";
-import { SettingsSharp } from "@mui/icons-material";
+import { FavoriteBorder, SettingsSharp } from "@mui/icons-material";
 import { AlertContext } from "../../contexts/AlertContext";
 import { Modal, Table } from "react-bootstrap";
 
@@ -278,10 +280,9 @@ function ExamSessionModelComponent({ c, examination }) {
               <Table bordered>
                 <thead>
                   <tr>
-                    <th>Question Banks</th>
+                    <th>Question Bank</th>
                     <th>Questions</th>
-                    <th>View Questions</th>
-                    <th>Delete</th>
+                    <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -295,10 +296,13 @@ function ExamSessionModelComponent({ c, examination }) {
                           <td>
                             <Typography>{c.questions}</Typography>
                           </td>
-                          <td></td>
-                          <td></td>
+                          <td>
+                            <IconButton disabled={c.questions === 0}>
+                              <FavoriteBorder />
+                            </IconButton>
+                          </td>
                         </tr>
-                      ))}{" "}
+                      ))}
                     </>
                   ) : (
                     <tr>
@@ -312,7 +316,12 @@ function ExamSessionModelComponent({ c, examination }) {
             </div>
           )}
         </Modal.Body>
-        <Modal.Footer></Modal.Footer>
+        <Modal.Footer>
+          <Button color="error" onClick={handleClose}>
+            close
+          </Button>
+          <LoadingButton>save changes</LoadingButton>
+        </Modal.Footer>
       </Modal>
     </div>
   );
