@@ -167,9 +167,16 @@ export default function ExamSessionModelComponent({ c, examination }) {
   }
   return (
     <div>
-      <Typography variant="h6" fontWeight={700} gutterBottom>
-        {c}
-      </Typography>
+      <div className="mb-4">
+        <Chip
+          label={c}
+          sx={{
+            textTransform: "uppercase",
+            backgroundColor: "#726286",
+            color: "white",
+          }}
+        />
+      </div>
       <div className="row mt-2 mb-2">
         <div className="col-lg-4 border-end">
           <Typography gutterBottom>SUBJECT QUESTION BANKS</Typography>
