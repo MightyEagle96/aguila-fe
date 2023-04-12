@@ -11,6 +11,7 @@ import { httpService } from "../../httpService";
 import { LoadingButton } from "@mui/lab";
 import { SettingsSharp } from "@mui/icons-material";
 import { AlertContext } from "../../contexts/AlertContext";
+import { Modal } from "react-bootstrap";
 
 export default function ExaminationSchedule() {
   const { id } = useParams();
@@ -138,7 +139,8 @@ function ExamSessions({ examination }) {
 function ExamSessionModelComponent({ c, examination }) {
   const [examSession, setExamSession] = useState(null);
   const [creating, setCreating] = useState(false);
-
+  const [subject, setSubject] = useState({});
+  const [show, setShow] = useState(false);
   const { setAlertData } = useContext(AlertContext);
 
   const getData = async () => {
@@ -169,7 +171,14 @@ function ExamSessionModelComponent({ c, examination }) {
     getData();
   }, []);
 
-  const handleClick = () => {};
+  const handleClick = (e) => {
+    setSubject(e);
+    setShow(true);
+  };
+
+  const handleClose = () => {
+    setShow(false);
+  };
   return (
     <div>
       <Typography variant="h6" fontWeight={700} gutterBottom>
@@ -181,7 +190,7 @@ function ExamSessionModelComponent({ c, examination }) {
           {examination.subjects.map((c, i) => (
             <div key={i} className="mb-4 mt-3">
               <Chip
-                onClick={handleClick}
+                onClick={() => handleClick(c)}
                 variant="outlined"
                 label={
                   <Typography textTransform={"capitalize"}>{c.name}</Typography>
@@ -234,6 +243,21 @@ function ExamSessionModelComponent({ c, examination }) {
           </div>
         </div>
       </div>
+      <Modal size="lg" show={show} centered onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title
+            id="contained-modal-title-vcenter"
+            style={{ textTransform: "uppercase" }}
+          >
+            {subject.name}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <h5>Question Banks</h5>
+          <p>Select a question bank for this subject</p>
+        </Modal.Body>
+        <Modal.Footer></Modal.Footer>
+      </Modal>
     </div>
   );
 }
