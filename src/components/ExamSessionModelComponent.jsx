@@ -11,14 +11,10 @@ import {
   Button,
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
-import {
-  SettingsSharp,
-  FavoriteBorder,
-  Favorite,
-  Timelapse,
-} from "@mui/icons-material";
+import { SettingsSharp, FavoriteBorder, Favorite } from "@mui/icons-material";
 import { Modal, Table } from "react-bootstrap";
-import secondsTimeFormatter, { timeConvert } from "seconds-time-formatter";
+import secondsTimeFormatter from "seconds-time-formatter";
+import Swal from "sweetalert2";
 
 export default function ExamSessionModelComponent({ c, examination }) {
   const [examSession, setExamSession] = useState(null);
@@ -35,6 +31,7 @@ export default function ExamSessionModelComponent({ c, examination }) {
   const [errorSec, setErrorSec] = useState(false);
   const [errorHr, setErrorHr] = useState(false);
   const [updating, setUpdating] = useState(false);
+  const [activating, setActivating] = useState(false);
 
   const getExamSession = async () => {
     const { data } = await httpService.post(
@@ -143,6 +140,31 @@ export default function ExamSessionModelComponent({ c, examination }) {
     }
     return false;
   }
+
+  function MakeExamAvaialbleForDownload() {
+    Swal.fire({
+      icon: "question",
+      title: `${examSession.available ? "Deactivate Exam" : "Activate Exam"}`,
+      text: `${
+        examSession.available
+          ? "This will deactivate this exam and will make it unavaialble for download"
+          : "This will activate this exam and make it available for download, worldwide"
+      }`,
+      showCancelButton: true,
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        setActivating(true);
+        const { data } = await httpService(
+          `aguila/examination/activateexam/${examSession._id}`
+        );
+        if (data) {
+          getExamSession();
+          setAlertData({ message: data, severity: "success", open: true });
+        }
+        setActivating(false);
+      }
+    });
+  }
   return (
     <div>
       <Typography variant="h6" fontWeight={700} gutterBottom>
@@ -154,7 +176,7 @@ export default function ExamSessionModelComponent({ c, examination }) {
           {examination.subjects.map((c, i) => (
             <div key={i} className="mb-4 mt-3">
               <Chip
-                disabled={!examSession}
+                disabled={!examSession || examSession.available}
                 onClick={() => handleClick(c)}
                 color="info"
                 variant={hasUpdated(c._id) ? "filled" : "outlined"}
@@ -177,6 +199,7 @@ export default function ExamSessionModelComponent({ c, examination }) {
               <TextField
                 placeholder="HH"
                 type="number"
+                disabled={examSession.available}
                 value={duration.hr}
                 name="hr"
                 onChange={(e) => {
@@ -208,6 +231,7 @@ export default function ExamSessionModelComponent({ c, examination }) {
               <TextField
                 placeholder="MM"
                 type="number"
+                disabled={examSession.available}
                 value={duration.min}
                 name="min"
                 onChange={(e) => {
@@ -237,6 +261,7 @@ export default function ExamSessionModelComponent({ c, examination }) {
             </div>
             <div>
               <TextField
+                disabled={examSession.available}
                 placeholder="SS"
                 type="number"
                 value={duration.sec}
@@ -279,6 +304,7 @@ export default function ExamSessionModelComponent({ c, examination }) {
           </div>
           <LoadingButton
             onClick={updateDuration}
+            disabled={examSession.available}
             color="info"
             loadingPosition="end"
             loading={updating}
@@ -311,14 +337,30 @@ export default function ExamSessionModelComponent({ c, examination }) {
                 </Typography>
                 <hr />
                 <Typography color="GrayText">
-                  {examSession.questionBanks.length} question banks
+                  {examSession.questionBanks.length} question bank(s) added
                 </Typography>
                 <div className="mt-3">
                   {examSession.questionBanks.length ===
                     examination.subjects.length && (
-                    <LoadingButton color="error" variant="contained">
-                      MAKE EXAM AVAILABLE FOR DOWNLOAD
-                    </LoadingButton>
+                    <>
+                      {!examSession.available ? (
+                        <LoadingButton
+                          onClick={MakeExamAvaialbleForDownload}
+                          color="success"
+                          variant="contained"
+                        >
+                          MAKE EXAM AVAILABLE FOR DOWNLOAD
+                        </LoadingButton>
+                      ) : (
+                        <LoadingButton
+                          onClick={MakeExamAvaialbleForDownload}
+                          color="error"
+                          variant="contained"
+                        >
+                          MAKE EXAM UNAVAILABLE FOR DOWNLOAD
+                        </LoadingButton>
+                      )}
+                    </>
                   )}
                 </div>
               </div>
