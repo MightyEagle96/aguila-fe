@@ -1,4 +1,10 @@
-import { CircularProgress, Typography } from "@mui/material";
+import {
+  Chip,
+  CircularProgress,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { httpService } from "../../httpService";
@@ -81,7 +87,7 @@ export default function ExaminationSchedule() {
               </div>
             </div>
             <div className="mt-3">
-              <ExamSessions />
+              <ExamSessions examination={examination} />
             </div>
           </div>
         ) : null}
@@ -90,7 +96,7 @@ export default function ExaminationSchedule() {
   );
 }
 
-function ExamSessions() {
+function ExamSessions({ examination }) {
   const [sessions, setSessions] = useState([]);
 
   const getData = async () => {
@@ -103,17 +109,57 @@ function ExamSessions() {
     getData();
   }, []);
   return (
-    <div
-      className="col-lg-3 p-3"
-      style={{ backgroundColor: "#f2f2eb", color: "GrayText" }}
-    >
-      <Typography gutterBottom>
-        Number of sessions available for this exam
-      </Typography>
-      <div className="d-flex justify-content-end">
-        <Typography variant="h3" fontWeight={700}>
-          {sessions.length}
-        </Typography>
+    <div>
+      <div
+        className="col-lg-3 p-3"
+        style={{ backgroundColor: "#f2f2eb", color: "GrayText" }}
+      >
+        <Typography gutterBottom>Available sessions for this exam</Typography>
+        <div className="d-flex justify-content-end">
+          <Typography variant="h3" fontWeight={700}>
+            {sessions.length}
+          </Typography>
+        </div>
+      </div>
+      <div className="mt-2">
+        {sessions.map((c, i) => (
+          <div key={i}>
+            <Typography variant="h6" fontWeight={700} gutterBottom>
+              {c}
+            </Typography>
+            <div className="row mt-2 mb-2">
+              <div className="col-lg-4 border-end">
+                <Typography gutterBottom>Subject question banks</Typography>
+                {examination.subjects.map((c, i) => (
+                  <div key={i} className="mb-4">
+                    <Chip
+                      variant="outlined"
+                      label={
+                        <Typography textTransform={"capitalize"}>
+                          {c.name}
+                        </Typography>
+                      }
+                    />
+                  </div>
+                ))}
+              </div>
+              <div className="col-lg-2">
+                <Typography gutterBottom>Exam Duration</Typography>
+                <Stack direction="row" spacing={1}>
+                  <div>
+                    <TextField placeholder="HH" type="number" />
+                  </div>
+                  <div>
+                    <TextField placeholder="MM" type="number" />
+                  </div>
+                  <div>
+                    <TextField placeholder="SS" type="number" />
+                  </div>
+                </Stack>
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
