@@ -199,7 +199,7 @@ export default function ExamSessionModelComponent({ c, examination }) {
               <TextField
                 placeholder="HH"
                 type="number"
-                disabled={examSession.available}
+                disabled={examSession && examSession.available}
                 value={duration.hr}
                 name="hr"
                 onChange={(e) => {
@@ -231,7 +231,7 @@ export default function ExamSessionModelComponent({ c, examination }) {
               <TextField
                 placeholder="MM"
                 type="number"
-                disabled={examSession.available}
+                disabled={examSession && examSession.available}
                 value={duration.min}
                 name="min"
                 onChange={(e) => {
@@ -261,7 +261,7 @@ export default function ExamSessionModelComponent({ c, examination }) {
             </div>
             <div>
               <TextField
-                disabled={examSession.available}
+                disabled={examSession && examSession.available}
                 placeholder="SS"
                 type="number"
                 value={duration.sec}
@@ -304,7 +304,7 @@ export default function ExamSessionModelComponent({ c, examination }) {
           </div>
           <LoadingButton
             onClick={updateDuration}
-            disabled={examSession.available}
+            disabled={examSession && examSession.available}
             color="info"
             loadingPosition="end"
             loading={updating}
