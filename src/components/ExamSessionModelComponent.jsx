@@ -23,6 +23,7 @@ export default function ExamSessionModelComponent({ c, examination }) {
   const [fetchingBanks, setFetchingBanks] = useState(false);
   const { setAlertData } = useContext(AlertContext);
   const [selectedBank, setSelectedBank] = useState("");
+  const [adding, setAdding] = useState(false);
 
   const getExamSession = async () => {
     const { data } = await httpService.post(
@@ -75,6 +76,7 @@ export default function ExamSessionModelComponent({ c, examination }) {
   };
 
   const addQuestionBank = async () => {
+    setAdding(true);
     const { data } = await httpService.post(
       `aguila/examination/addtoquestionbank/${examSession._id}`,
       { subject: subject._id, questionBank: selectedBank }
@@ -85,6 +87,7 @@ export default function ExamSessionModelComponent({ c, examination }) {
       getExamSession();
       setAlertData({ message: data, severity: "success", open: true });
     }
+    setAdding(false);
   };
   return (
     <div>
@@ -220,7 +223,13 @@ export default function ExamSessionModelComponent({ c, examination }) {
           <Button color="error" onClick={handleClose}>
             close
           </Button>
-          <LoadingButton onClick={addQuestionBank}>save changes</LoadingButton>
+          <LoadingButton
+            onClick={addQuestionBank}
+            loadingPosition="center"
+            loading={adding}
+          >
+            save changes
+          </LoadingButton>
         </Modal.Footer>
       </Modal>
     </div>
