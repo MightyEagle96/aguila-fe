@@ -18,7 +18,7 @@ import {
   Timelapse,
 } from "@mui/icons-material";
 import { Modal, Table } from "react-bootstrap";
-import secondsTimeFormatter from "seconds-time-formatter";
+import secondsTimeFormatter, { timeConvert } from "seconds-time-formatter";
 
 export default function ExamSessionModelComponent({ c, examination }) {
   const [examSession, setExamSession] = useState(null);
@@ -34,6 +34,7 @@ export default function ExamSessionModelComponent({ c, examination }) {
   const [errorMin, setErrorMin] = useState(false);
   const [errorSec, setErrorSec] = useState(false);
   const [errorHr, setErrorHr] = useState(false);
+  const [updating, setUpdating] = useState(false);
 
   const getExamSession = async () => {
     const { data } = await httpService.post(
@@ -42,6 +43,16 @@ export default function ExamSessionModelComponent({ c, examination }) {
     );
 
     if (data) {
+      const examTimer = secondsTimeFormatter.timeConvert({
+        seconds: data.duration / 1000,
+        format: "json",
+      });
+
+      setDuration({
+        hr: examTimer.hours,
+        min: examTimer.minutes,
+        sec: examTimer.seconds,
+      });
       setExamSession(data);
     }
   };
@@ -51,10 +62,22 @@ export default function ExamSessionModelComponent({ c, examination }) {
   };
 
   const updateDuration = async () => {
+    setUpdating(true);
     const hours = Number(duration.hr) * 60 * 60;
     const minutes = Number(duration.min) * 60;
     const seconds = Number(duration.sec);
-    console.log(hours + minutes + seconds);
+    const examTimer = (hours + minutes + seconds) * 1000;
+
+    const { data } = await httpService.patch(
+      `aguila/examination/duration/${examSession._id}`,
+      { duration: examTimer }
+    );
+
+    if (data) {
+      getExamSession();
+      setAlertData({ message: data, severity: "success", open: true });
+    }
+    setUpdating(false);
   };
   const createExamSession = async () => {
     setCreating(true);
@@ -257,7 +280,9 @@ export default function ExamSessionModelComponent({ c, examination }) {
           <LoadingButton
             onClick={updateDuration}
             color="info"
-            endIcon={<Timelapse />}
+            loadingPosition="end"
+            loading={updating}
+            endIcon={<i class="fas fa-clock    "></i>}
           >
             set duration
           </LoadingButton>
@@ -288,6 +313,14 @@ export default function ExamSessionModelComponent({ c, examination }) {
                 <Typography color="GrayText">
                   {examSession.questionBanks.length} question banks
                 </Typography>
+                <div className="mt-3">
+                  {examSession.questionBanks.length ===
+                    examination.subjects.length && (
+                    <LoadingButton color="error" variant="contained">
+                      MAKE EXAM AVAILABLE FOR DOWNLOAD
+                    </LoadingButton>
+                  )}
+                </div>
               </div>
             )}
           </div>
