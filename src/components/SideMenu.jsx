@@ -10,7 +10,6 @@ import {
 import {
   Quiz,
   Dashboard,
-  History,
   House,
   Book,
   AdminPanelSettings,
@@ -34,11 +33,7 @@ export default function SideMenu() {
       icon: <Quiz />,
       redirectTo: `/examination`,
     },
-    {
-      text: "Examination History",
-      icon: <History />,
-      redirectTo: `/examHistory`,
-    },
+
     {
       text: "Subjects Control",
       icon: <Book />,

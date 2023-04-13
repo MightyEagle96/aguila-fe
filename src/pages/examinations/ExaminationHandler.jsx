@@ -109,6 +109,13 @@ export default function ExaminationHandler() {
               </div>
             </form>
           </div>
+          <div className="mb-1 mt-1 col-lg-3 alert alert-info">
+            <Typography fontWeight={600}>ATTENTION</Typography>
+            <Typography>
+              Please note when creating a new examination, always update the
+              subject first, before anything else.
+            </Typography>
+          </div>
           <div className="mt-4">
             <Table bordered>
               <thead>
@@ -205,6 +212,7 @@ function ToggleActivation({ examination, viewExams }) {
           color="error"
           loading={activating}
           loadingPosition="end"
+          disabled={examination.subjects.length === 0}
           endIcon={<ToggleOff />}
           onClick={() => toggleActivate("deactivate")}
         >
@@ -213,6 +221,7 @@ function ToggleActivation({ examination, viewExams }) {
       ) : (
         <LoadingButton
           loading={activating}
+          disabled={examination.subjects.length === 0}
           endIcon={<ToggleOn />}
           onClick={() => toggleActivate("activate")}
         >
