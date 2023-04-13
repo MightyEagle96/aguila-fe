@@ -5,29 +5,30 @@ import {
   CircularProgress,
   FormControlLabel,
   FormGroup,
+  IconButton,
   TextField,
   Typography,
 } from "@mui/material";
 import React, { useState, useEffect, useContext } from "react";
 import { httpService } from "../../httpService";
 import { LoadingButton } from "@mui/lab";
-import { Save, ToggleOff, ToggleOn, Update } from "@mui/icons-material";
-import { Table } from "react-bootstrap";
-import MySnackBar from "../../components/MySnackBar";
+import { Save, ToggleOff, ToggleOn, Update, Delete } from "@mui/icons-material";
+import { Modal, Table } from "react-bootstrap";
+
 import Swal from "sweetalert2";
-import { Modal } from "react-bootstrap";
+
 import { AlertContext } from "../../contexts/AlertContext";
 
 export default function ExaminationHandler() {
   const [examinations, setExaminations] = useState([]);
   const [title, setTitle] = useState("");
-  const [message, setMessage] = useState("");
-  const [open, setOpen] = useState(false);
-  const [severity, setSeverity] = useState("");
+
   const [creating, setCreating] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const [subjects, setSubjects] = useState([]);
+
+  const { setAlertData } = useContext(AlertContext);
 
   const createExam = (e) => {
     e.preventDefault();
@@ -46,14 +47,10 @@ export default function ExaminationHandler() {
         );
         if (data) {
           viewExams();
-          setSeverity("success");
-          setOpen(true);
-          setMessage(data);
+          setAlertData({ severity: "success", open: true, message: data });
         }
         if (error) {
-          setSeverity("error");
-          setOpen(true);
-          setMessage(error);
+          setAlertData({ severity: "error", open: true, message: error });
         }
         setCreating(false);
       }
@@ -121,6 +118,7 @@ export default function ExaminationHandler() {
                   <th>Subject List</th>
                   <th>Candidates List</th>
                   <th>Schedule</th>
+                  <th>Delete</th>
                 </tr>
               </thead>
               <tbody>
@@ -138,9 +136,6 @@ export default function ExaminationHandler() {
                       <SubjectsList
                         examination={c}
                         subjects={subjects}
-                        setMessage={setMessage}
-                        setOpen={setOpen}
-                        setSeverity={setSeverity}
                         viewExams={viewExams}
                       />
                     </td>
@@ -160,6 +155,9 @@ export default function ExaminationHandler() {
                         schedule
                       </Button>
                     </td>
+                    <td>
+                      <DeleteExam examination={c} viewExams={viewExams} />
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -167,12 +165,6 @@ export default function ExaminationHandler() {
           </div>
         </div>
       </div>
-      <MySnackBar
-        open={open}
-        setOpen={setOpen}
-        message={message}
-        severity={severity}
-      />
     </div>
   );
 }
@@ -345,6 +337,93 @@ function SubjectsList({
             onClick={updateSubjects}
           >
             update subjects
+          </LoadingButton>
+        </Modal.Footer>
+      </Modal>
+    </>
+  );
+}
+
+function DeleteExam({ examination, viewExams }) {
+  const [show, setShow] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [examName, setExamName] = useState("");
+
+  const { setAlertData } = useContext(AlertContext);
+
+  const handleClose = () => setShow(false);
+
+  const handleShow = () => setShow(true);
+
+  const deleteExamination = async () => {
+    setDeleting(true);
+    const { data, error } = await httpService(
+      `aguila/examination/deleteexam/${examination._id}`
+    );
+
+    if (data) {
+      viewExams();
+      setAlertData({ severity: "success", message: data, open: true });
+    }
+
+    if (error) setAlertData({ severity: "error", message: error, open: true });
+
+    setDeleting(false);
+
+    handleClose();
+  };
+  return (
+    <>
+      <IconButton onClick={handleShow}>
+        <Delete />
+      </IconButton>
+
+      <Modal size="lg" show={show} centered onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title
+            id="contained-modal-title-vcenter"
+            style={{ textTransform: "uppercase" }}
+          >
+            {examination.title}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <h5>Please Note</h5>
+          <p>
+            You are about to delete an examination. This will delete the
+            following alongside:
+          </p>
+
+          <p>1. All the candidates registered for this examination.</p>
+          <p>2. All the examination sessions created for this examination.</p>
+          <p>3. All the candidates responses for this examination.</p>
+          <p>4. All the centres reports for this examination.</p>
+          <p>5. The examination itself.</p>
+
+          <div className="mt-3">
+            <p>I have read the above and understand what I'm doing.</p>
+            <div className="col-lg-8">
+              <TextField
+                fullWidth
+                label="Exam name"
+                onChange={(e) => setExamName(e.target.value.toLowerCase())}
+              />
+            </div>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button color="success" onClick={handleClose}>
+            close
+          </Button>
+          <LoadingButton
+            onClick={deleteExamination}
+            loadingPosition="center"
+            loading={deleting}
+            disabled={examName !== examination.title}
+            color="error"
+            variant="contained"
+          >
+            Delete exam
           </LoadingButton>
         </Modal.Footer>
       </Modal>
