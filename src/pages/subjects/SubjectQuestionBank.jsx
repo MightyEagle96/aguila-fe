@@ -5,12 +5,17 @@ import {
   Button,
   CircularProgress,
   IconButton,
+  MenuItem,
+  TextField,
   Typography,
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { AlertContext } from "../../contexts/AlertContext";
 import { Table } from "react-bootstrap";
-import { Delete } from "@mui/icons-material";
+import { Delete, Edit } from "@mui/icons-material";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import parse from "html-react-parser";
 
 export default function SubjectQuestionBank() {
   const { id } = useParams();
@@ -20,6 +25,7 @@ export default function SubjectQuestionBank() {
   const [questionFile, setQuestionFile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [showQuestionField, setShowQuestionField] = useState(false);
   const getQuestionBank = async () => {
     setLoading(true);
     const { data } = await httpService(
@@ -142,6 +148,14 @@ export default function SubjectQuestionBank() {
               delete all questions
             </LoadingButton>
           </div>
+          <div className="mt-2">
+            <Button onClick={() => setShowQuestionField(!showQuestionField)}>
+              {showQuestionField
+                ? "hide questions field"
+                : "show questions field"}
+            </Button>
+            {showQuestionField && <EnterQuestionText />}
+          </div>
           <div className="mt-3">
             <Table bordered>
               <thead>
@@ -153,6 +167,7 @@ export default function SubjectQuestionBank() {
                   <th>Option C</th>
                   <th>Option D</th>
                   <th>Correct Answer</th>
+                  <th>Edit</th>
                   <th>Delete</th>
                 </tr>
               </thead>
@@ -182,6 +197,9 @@ export default function SubjectQuestionBank() {
                       <Typography>{c.correctAns}</Typography>
                     </td>
                     <td className="col-lg-1">
+                      <EditQuestion />
+                    </td>
+                    <td className="col-lg-1">
                       <DeleteQuestion />
                     </td>
                   </tr>
@@ -200,5 +218,75 @@ function DeleteQuestion() {
     <IconButton>
       <Delete />
     </IconButton>
+  );
+}
+
+function EditQuestion() {
+  return (
+    <IconButton>
+      <Edit />
+    </IconButton>
+  );
+}
+
+function EnterQuestionText() {
+  const optionToolbar = [
+    ["bold", "italic", "underline", "strike"], // toggled buttons
+    ["blockquote", "code-block"],
+
+    [{ header: 1 }, { header: 2 }], // custom button values
+
+    [{ script: "sub" }, { script: "super" }], // superscript/subscript
+  ];
+  const toolbarOptions = [
+    ["bold", "italic", "underline", "strike"], // toggled buttons
+    ["blockquote", "code-block"],
+
+    [{ header: 1 }, { header: 2 }], // custom button values
+    [{ list: "ordered" }, { list: "bullet" }],
+    [{ script: "sub" }, { script: "super" }], // superscript/subscript
+    [{ indent: "-1" }, { indent: "+1" }], // outdent/indent
+    [{ direction: "rtl" }], // text direction
+
+    [{ size: ["small", false, "large", "huge"] }], // custom dropdown
+    [{ header: [1, 2, 3, 4, 5, 6, false] }],
+
+    [{ color: [] }, { background: [] }], // dropdown with defaults from theme
+    [{ font: [] }],
+    [{ align: [] }],
+
+    ["clean"],
+  ];
+  return (
+    <div>
+      <div className="row">
+        <div className="col-lg-4">
+          <Typography variant="caption">Question</Typography>
+          <ReactQuill theme="snow" modules={{ toolbar: toolbarOptions }} />
+        </div>
+        <div className="col-lg-4">
+          <Typography variant="caption">Option A</Typography>
+          <ReactQuill theme="snow" modules={{ toolbar: toolbarOptions }} />
+        </div>
+        <div className="col-lg-4">
+          <Typography variant="caption">Option B</Typography>
+          <ReactQuill theme="snow" modules={{ toolbar: toolbarOptions }} />
+        </div>
+        <div className="col-lg-4">
+          <Typography variant="caption">Option C</Typography>
+          <ReactQuill theme="snow" modules={{ toolbar: toolbarOptions }} />
+        </div>
+        <div className="col-lg-4">
+          <Typography variant="caption">Option D</Typography>
+          <ReactQuill theme="snow" modules={{ toolbar: toolbarOptions }} />
+        </div>
+        <div className="col-lg-4">
+          <Typography variant="caption">Correct Answer</Typography>
+          <TextField select fullWidth>
+            <MenuItem>Hello</MenuItem>
+          </TextField>
+        </div>
+      </div>
+    </div>
   );
 }
