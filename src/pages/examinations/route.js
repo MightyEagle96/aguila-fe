@@ -5,10 +5,12 @@ import NotFound from "../NotFound";
 import { loggedInUser } from "../../httpService";
 import ExaminationHandler from "./ExaminationHandler";
 import ExaminationSchedule from "./ExaminationSchedule";
+import ExamResults from "./ExamResults";
 
 const privateRoutes = [
   { path: "/", component: ExaminationHandler },
   { path: "/schedule/:id", component: ExaminationSchedule },
+  { path: "/results/:id", component: ExamResults },
   { path: "*", component: NotFound },
 ];
 

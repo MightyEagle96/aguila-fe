@@ -125,6 +125,7 @@ export default function ExaminationHandler() {
                   <th>Subject List</th>
                   <th>Candidates List</th>
                   <th>Schedule</th>
+                  <th>Results</th>
                   <th>Delete</th>
                 </tr>
               </thead>
@@ -160,6 +161,11 @@ export default function ExaminationHandler() {
                         href={`/examination/schedule/${c._id}`}
                       >
                         schedule
+                      </Button>
+                    </td>
+                    <td>
+                      <Button href={`/examination/results/${c._id}`}>
+                        view results
                       </Button>
                     </td>
                     <td>
