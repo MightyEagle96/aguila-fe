@@ -25,7 +25,7 @@ export default function SideMenu() {
     {
       text: "CBT Centres",
       icon: <House />,
-      redirectTo: "/centres/all",
+      redirectTo: "/centres/centresmanager",
     },
 
     {

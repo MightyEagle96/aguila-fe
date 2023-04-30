@@ -5,9 +5,11 @@ import NotFound from "../NotFound";
 import { loggedInUser } from "../../httpService";
 import AllCentres from "./AllCentres";
 import ParticipantsList from "./ParticipantsList";
+import ViewAllCentres from "./ViewAllCentres";
 
 const privateRoutes = [
-  { path: "/all", component: AllCentres },
+  { path: "/centresManager", component: AllCentres },
+  { path: "/all", component: ViewAllCentres },
   { path: "/participants/:id", component: ParticipantsList },
   { path: "*", component: NotFound },
 ];
