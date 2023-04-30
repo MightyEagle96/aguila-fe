@@ -1,4 +1,10 @@
-import { CircularProgress, TextField, Typography, Chip } from "@mui/material";
+import {
+  CircularProgress,
+  TextField,
+  Typography,
+  Chip,
+  Link,
+} from "@mui/material";
 import { useParams } from "react-router-dom";
 import { httpService } from "../../httpService";
 import React, { useEffect, useState } from "react";
@@ -146,6 +152,11 @@ export default function CandidatesList() {
                     Assigned Candidates: {assigned.toLocaleString()}
                   </Typography>
                 </div>
+              </div>
+              <div className="mt-2 mb-2">
+                <Link underline="none" href={`/candidates/performsync/${id}`}>
+                  perform a sync operation
+                </Link>
               </div>
               <Table bordered>
                 <thead>

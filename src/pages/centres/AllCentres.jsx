@@ -1,13 +1,15 @@
 import React, { useState, useEffect, useContext } from "react";
 import {
   Button,
+  Chip,
   CircularProgress,
   IconButton,
+  MenuItem,
   TextField,
   Typography,
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
-import { Home, People, Refresh, Restore } from "@mui/icons-material";
+import { Cancel, Home, People, Refresh, Restore } from "@mui/icons-material";
 import Swal from "sweetalert2";
 
 import { httpService } from "../../httpService";
@@ -67,7 +69,7 @@ export default function AllCentres() {
     <div className="mt-5 mb-5 p-3">
       <div className="alert alert-light col-lg-6">
         <Typography variant="h4" fontWeight={700}>
-          ALL CENTRES
+          CENTRES MANAGER
         </Typography>
       </div>
       {loading && <CircularProgress />}
@@ -147,13 +149,13 @@ export default function AllCentres() {
             </tbody>
           </Table>
         </div>
-        <CandidateDistribution viewCentres={viewCentres} />
+        <CandidateDistribution viewCentres={viewCentres} centres={centres} />
       </div>
     </div>
   );
 }
 
-function CandidateDistribution({ viewCentres }) {
+function CandidateDistribution({ viewCentres, centres }) {
   //get examinations
   const { setAlertData } = useContext(AlertContext);
   const [examination, setExamination] = useState(null);
@@ -164,6 +166,8 @@ function CandidateDistribution({ viewCentres }) {
     assigned: 0,
     unassigned: 0,
   });
+  const [selectedCentres, setSelectedCentres] = useState([]);
+  const [assigning, setAssigning] = useState(false);
 
   const getActiveExam = async () => {
     const { data } = await httpService("aguila/examination/active");
@@ -237,6 +241,43 @@ function CandidateDistribution({ viewCentres }) {
   useEffect(() => {
     getActiveExam();
   }, []);
+
+  const handleChange = (input) => {
+    const existing = selectedCentres.findIndex(
+      (c) => c._id === input.target.value._id
+    );
+
+    if (existing === -1) {
+      setSelectedCentres([...selectedCentres, input.target.value]);
+    }
+  };
+
+  const createCentresForExam = async () => {
+    Swal.fire({
+      icon: "question",
+      title: "Use these centres?",
+      text: "Are you sure you want to use these centres for this current examination?",
+      showCancelButton: true,
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        setAssigning(true);
+        const centres = selectedCentres.map((c) => c._id);
+
+        const { data, error } = await httpService.post(
+          "aguila/centres/createcentresforexam",
+          { exam: examination._id, centres }
+        );
+
+        if (data) {
+          setAlertData({ message: data, open: true, severity: "success" });
+        }
+        if (error) {
+          setAlertData({ message: error, open: true, severity: "error" });
+        }
+        setAssigning(false);
+      }
+    });
+  };
   return (
     <>
       {examination && (
@@ -256,6 +297,45 @@ function CandidateDistribution({ viewCentres }) {
               {examination.title}
             </Typography>
             <hr />
+            <div className="mb-5">
+              <div className="mb-4">
+                <Typography gutterBottom>
+                  Select centres for this examination
+                </Typography>
+              </div>
+              <TextField
+                select
+                label="CBT Centres"
+                fullWidth
+                onChange={handleChange}
+              >
+                {centres.map((c, i) => (
+                  <MenuItem key={i} value={c}>
+                    {c.name}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <div className="mt-2 d-flex flex-wrap mb-2">
+                {selectedCentres.map((d, i) => (
+                  <Chip
+                    key={i}
+                    label={d.name}
+                    icon={<Cancel />}
+                    className="me-1 mb-1"
+                    clickable
+                    color="primary"
+                    onClick={() =>
+                      setSelectedCentres(
+                        selectedCentres.filter((e) => e._id !== d._id)
+                      )
+                    }
+                  />
+                ))}
+              </div>
+              <LoadingButton loading={assigning} onClick={createCentresForExam}>
+                use these centres for this exam
+              </LoadingButton>
+            </div>
             <div className="mb-2">
               <Typography
                 gutterBottom

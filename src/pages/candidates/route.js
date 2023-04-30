@@ -4,9 +4,11 @@ import { Route, Routes } from "react-router-dom";
 import NotFound from "../NotFound";
 import { loggedInUser } from "../../httpService";
 import CandidatesList from "./CandidatesList";
+import PerformSyncOperations from "./PerformSyncOperations";
 
 const privateRoutes = [
   { path: "/:id/list", component: CandidatesList },
+  { path: "/performsync/:id", component: PerformSyncOperations },
 
   { path: "*", component: NotFound },
 ];

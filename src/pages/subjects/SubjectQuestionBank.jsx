@@ -12,7 +12,7 @@ import {
 import { LoadingButton } from "@mui/lab";
 import { AlertContext } from "../../contexts/AlertContext";
 import { Table } from "react-bootstrap";
-import { Delete, Edit } from "@mui/icons-material";
+import { Camera, Delete, Edit } from "@mui/icons-material";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import parse from "html-react-parser";
@@ -169,12 +169,13 @@ export default function SubjectQuestionBank() {
                   <th>Correct Answer</th>
                   <th>Edit</th>
                   <th>Delete</th>
+                  <th>Image</th>
                 </tr>
               </thead>
               <tbody>
                 {questionBank.questions.map((c, i) => (
                   <tr key={i}>
-                    <td className="col-sm-1">
+                    <td>
                       <Typography>{i + 1}</Typography>
                     </td>
                     <td className="col-lg-4">
@@ -196,11 +197,14 @@ export default function SubjectQuestionBank() {
                     <td className="col-lg-1">
                       <Typography>{c.correctAns}</Typography>
                     </td>
-                    <td className="col-lg-1">
+                    <td>
                       <EditQuestion />
                     </td>
-                    <td className="col-lg-1">
+                    <td>
                       <DeleteQuestion />
+                    </td>
+                    <td>
+                      <UploadQuestionImage />
                     </td>
                   </tr>
                 ))}
@@ -288,5 +292,13 @@ function EnterQuestionText() {
         </div>
       </div>
     </div>
+  );
+}
+
+function UploadQuestionImage() {
+  return (
+    <IconButton>
+      <Camera />
+    </IconButton>
   );
 }
