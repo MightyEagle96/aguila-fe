@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
 import {
-  Button,
   Chip,
   CircularProgress,
   IconButton,
@@ -10,14 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
-import {
-  Cancel,
-  Delete,
-  Home,
-  People,
-  Refresh,
-  Restore,
-} from "@mui/icons-material";
+import { Cancel, Delete, People, Refresh, Restore } from "@mui/icons-material";
 import Swal from "sweetalert2";
 
 import { httpService } from "../../httpService";
@@ -25,8 +17,6 @@ import { Table } from "react-bootstrap";
 import { AlertContext } from "../../contexts/AlertContext";
 
 export default function AllCentres() {
-  const { setAlertData } = useContext(AlertContext);
-
   const [centres, setCentres] = useState([]);
   const [loading, setLoading] = useState(false);
   const [activeExam, setActiveExam] = useState(null);
@@ -348,6 +338,7 @@ function CandidateDistribution({ viewCentres, centres, examination }) {
                   <th>Centre ID</th>
                   <th>Name</th>
                   <th>Password</th>
+                  <th>Candidates</th>
                   <th>Session Length</th>
                   <th>Capacity</th>
                   <th>Delete</th>
@@ -367,6 +358,9 @@ function CandidateDistribution({ viewCentres, centres, examination }) {
 
                     <td>
                       <Typography>{c.password}</Typography>
+                    </td>
+                    <td>
+                      <Typography>{c.candidates}</Typography>
                     </td>
                     <td>
                       <Typography>{c.sessionLength}</Typography>
