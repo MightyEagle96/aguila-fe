@@ -76,7 +76,7 @@ export default function ViewAllCentres() {
               <th>Centre</th>
               <th>Centre ID</th>
               <th>Password</th>
-              <th>Session Length</th>
+              <th>Capacity</th>
             </tr>
           </thead>
           <tbody>
@@ -94,7 +94,7 @@ export default function ViewAllCentres() {
                   <Typography>{c.password}</Typography>
                 </td>
                 <td>
-                  <Typography>{c.sessionLength}</Typography>
+                  <Typography>{c.capacity}</Typography>
                 </td>
               </tr>
             ))}
