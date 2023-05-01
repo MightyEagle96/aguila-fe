@@ -96,7 +96,7 @@ function ExamSessions({ examination }) {
   const getData = async () => {
     const { data } = await httpService("aguila/centres/examsessions");
 
-    setSessions(data);
+    if (data) setSessions(data);
   };
 
   useEffect(() => {
