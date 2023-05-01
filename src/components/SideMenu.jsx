@@ -13,6 +13,7 @@ import {
   House,
   Book,
   AdminPanelSettings,
+  Chat,
 } from "@mui/icons-material";
 
 export default function SideMenu() {
@@ -33,7 +34,11 @@ export default function SideMenu() {
       icon: <Quiz />,
       redirectTo: `/examination`,
     },
-
+    {
+      text: "Session Report",
+      icon: <Chat />,
+      redirectTo: `/examination/sessionreport`,
+    },
     {
       text: "Subjects Control",
       icon: <Book />,

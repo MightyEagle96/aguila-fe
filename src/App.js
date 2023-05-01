@@ -4,6 +4,8 @@ import "@fortawesome/fontawesome-free/css/all.css";
 import "./App.css";
 import NavigationBar from "./components/NavigationBar";
 import ErrorBoundary from "./components/ErrorBoundary";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 
 import { AlertContext } from "./contexts/AlertContext";
 
@@ -19,13 +21,18 @@ function App() {
   });
   return (
     <>
-      <AlertContext.Provider value={{ alertData, setAlertData }}>
-        <NavigationBar />
-        <ErrorBoundary>
-          <MainRoutes />
-        </ErrorBoundary>
-        <MySnackBarContext alertData={alertData} setAlertData={setAlertData} />
-      </AlertContext.Provider>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <AlertContext.Provider value={{ alertData, setAlertData }}>
+          <NavigationBar />
+          <ErrorBoundary>
+            <MainRoutes />
+          </ErrorBoundary>
+          <MySnackBarContext
+            alertData={alertData}
+            setAlertData={setAlertData}
+          />
+        </AlertContext.Provider>
+      </LocalizationProvider>
     </>
   );
 }

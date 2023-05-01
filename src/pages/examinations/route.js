@@ -6,11 +6,13 @@ import { loggedInUser } from "../../httpService";
 import ExaminationHandler from "./ExaminationHandler";
 import ExaminationSchedule from "./ExaminationSchedule";
 import ExamResults from "./ExamResults";
+import SessionReport from "./SessionReport";
 
 const privateRoutes = [
   { path: "/", component: ExaminationHandler },
   { path: "/schedule/:id", component: ExaminationSchedule },
   { path: "/results/:id", component: ExamResults },
+  { path: "/sessionreport", component: SessionReport },
   { path: "*", component: NotFound },
 ];
 
@@ -33,4 +35,13 @@ export default function ExaminationRoutes() {
       )}
     </>
   );
+}
+
+export function sessionsList() {
+  const sessions = [];
+  for (let i = 0; i < 10; i++) {
+    sessions.push(`Session ${i + 1}`);
+  }
+
+  return sessions;
 }
