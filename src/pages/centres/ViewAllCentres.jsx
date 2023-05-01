@@ -1,146 +1,168 @@
-import React, { useState, useEffect, useContext } from "react";
 import {
-  Button,
-  Chip,
-  CircularProgress,
-  IconButton,
-  Link,
-  MenuItem,
-  TextField,
   Typography,
+  Link,
+  CircularProgress,
+  Button,
+  TextField,
 } from "@mui/material";
-import { LoadingButton } from "@mui/lab";
-import { Cancel, Home, People, Refresh, Restore } from "@mui/icons-material";
-import Swal from "sweetalert2";
-
+import React, { useState, useEffect, useContext } from "react";
 import { httpService } from "../../httpService";
-import { Table } from "react-bootstrap";
+import { Table, Modal } from "react-bootstrap";
+import { LoadingButton } from "@mui/lab";
 import { AlertContext } from "../../contexts/AlertContext";
-export default function ViewAllCentres() {
-  const { setAlertData } = useContext(AlertContext);
-  const [limit, setLimit] = useState(0);
-  const [creating, setCreating] = useState(false);
 
+export default function ViewAllCentres() {
   const [centres, setCentres] = useState([]);
   const [loading, setLoading] = useState(false);
-  const createCentres = (e) => {
-    e.preventDefault();
-    Swal.fire({
-      icon: "question",
-      title: `Create ${limit.toLocaleString()} centres?`,
-      showCancelButton: true,
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        setCreating(true);
-        const { data, error } = await httpService.post(
-          `aguila/centres/create`,
-          {
-            limit,
-          }
-        );
-        if (data) {
-          setAlertData({ severity: "success", message: data, open: true });
-
-          viewCentres();
-        }
-        if (error) {
-          setAlertData({ severity: "error", message: error, open: true });
-        }
-        setCreating(false);
-      }
-    });
-  };
-
-  const viewCentres = async () => {
+  const [show, setShow] = useState(false);
+  const [creating, setCreating] = useState(false);
+  const [centreDetail, setCentreDetail] = useState({});
+  const { setAlertData } = useContext(AlertContext);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+  const getCentres = async () => {
     setLoading(true);
-    const { data } = await httpService("aguila/centres/all");
+    const { data } = await httpService.get("aguila/centres/all");
+    if (data) setCentres(data);
 
-    if (data) {
-      setCentres(data);
-    }
     setLoading(false);
   };
 
+  useEffect(() => {
+    getCentres();
+  }, []);
+
+  const handleChange = (e) =>
+    setCentreDetail({ ...centreDetail, [e.target.name]: e.target.value });
+
+  const createCentre = async (e) => {
+    e.preventDefault();
+    setCreating(true);
+
+    const { data, error } = await httpService.post(
+      "aguila/centres/create",
+      centreDetail
+    );
+    if (data) {
+      handleClose();
+      getCentres();
+      setAlertData({ message: data, open: true, severity: "success" });
+    }
+    if (error) {
+      setAlertData({ message: error, open: true, severity: "error" });
+    }
+    setCreating(false);
+  };
   return (
     <div>
-      {loading && <CircularProgress />}
-      <div className="col-lg-2">
-        <Typography gutterBottom>Create CBT centre</Typography>
-        <form onSubmit={createCentres}>
-          <TextField
-            fullWidth
-            type="number"
-            onChange={(e) => setLimit(e.target.value)}
-          />
-          <div className="mt-2">
+      <div className="mb-5 mt-5">
+        <div className="alert alert-light col-lg-6 mb-2">
+          <Typography variant="h4" fontWeight={700} gutterBottom>
+            ALL CENTRES
+          </Typography>
+          <Link href="/centres/centresmanager">
+            view centres for the active examination
+          </Link>
+        </div>
+        {loading && <CircularProgress />}
+        <div className="  mb-1 d-flex justify-content-end">
+          <Button color="error" onClick={handleShow}>
+            add a new centre
+          </Button>
+        </div>
+        <Table bordered striped>
+          <thead>
+            <tr>
+              <th>Centre</th>
+              <th>Centre ID</th>
+              <th>Password</th>
+              <th>Session Length</th>
+            </tr>
+          </thead>
+          <tbody>
+            {centres.map((c, i) => (
+              <tr key={i}>
+                <td>
+                  <Typography textTransform={"capitalize"}>{c.name}</Typography>
+                </td>
+                <td>
+                  <Typography textTransform={"capitalize"}>
+                    {c.centreId}
+                  </Typography>
+                </td>
+                <td>
+                  <Typography>{c.password}</Typography>
+                </td>
+                <td>
+                  <Typography>{c.sessionLength}</Typography>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      </div>
+      <Modal
+        show={show}
+        onHide={handleClose}
+        centered
+        backdrop="static"
+        size="lg"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Create new centre</Modal.Title>
+        </Modal.Header>
+        <form onSubmit={createCentre}>
+          <Modal.Body>
+            <div className="row">
+              <div className="col-lg-6 mb-4">
+                <TextField
+                  variant="standard"
+                  fullWidth
+                  multiline
+                  label="Centre Name"
+                  required
+                  name="name"
+                  onChange={handleChange}
+                />
+              </div>
+              <div className="col-lg-4 mb-4">
+                <TextField
+                  variant="standard"
+                  required
+                  fullWidth
+                  label="Centre ID"
+                  name="centreId"
+                  onChange={handleChange}
+                />
+              </div>
+              <div className="col-lg-4 mb-4">
+                <TextField
+                  variant="standard"
+                  fullWidth
+                  label="Capacity"
+                  type="number"
+                  required
+                  name="capacity"
+                  onChange={handleChange}
+                />
+              </div>
+            </div>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button color="error" onClick={handleClose}>
+              Close
+            </Button>
             <LoadingButton
               type="submit"
-              variant="contained"
-              endIcon={<Home />}
               loading={creating}
-              loadingPosition="end"
+              color="success"
+              variant="contained"
             >
-              create centres
+              create centre
             </LoadingButton>
-          </div>
+          </Modal.Footer>
         </form>
-      </div>
-      <div className="row mt-3">
-        <div className="col-lg-8">
-          <Table bordered>
-            <thead>
-              <tr>
-                <th>S/N</th>
-                <th>Centre Name</th>
-                <th>Capacity</th>
-                <th>Centre ID</th>
-                <th>Password</th>
-                <th>Sessions</th>
-                <th>Candidates</th>
-              </tr>
-            </thead>
-            <tbody>
-              {centres.length > 0 ? (
-                <>
-                  {centres.map((c, i) => (
-                    <tr key={i}>
-                      <td className="col-lg-1">
-                        <Typography>{i + 1}</Typography>
-                      </td>
-                      <td>
-                        <Typography>{c.name}</Typography>
-                      </td>
-                      <td>
-                        <Typography>{c.capacity}</Typography>
-                      </td>
-                      <td>
-                        <Typography>{c.centreId}</Typography>
-                      </td>
-                      <td>
-                        <Typography>{c.password}</Typography>
-                      </td>
-                      <td>
-                        <Typography>{c.sessionLength}</Typography>
-                      </td>
-                      <td>
-                        <Button href={`/centres/participants/${c._id}`}>
-                          {c.candidates}
-                        </Button>
-                      </td>
-                    </tr>
-                  ))}
-                </>
-              ) : (
-                <tr>
-                  <td colSpan={12} className="mt-5 mb-5">
-                    <Typography textAlign={"center"}>NO DATA FOUND</Typography>
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </Table>
-        </div>
-      </div>
+      </Modal>
     </div>
   );
 }
