@@ -160,6 +160,7 @@ function CandidateDistribution({ viewCentres, centres, examination }) {
         if (data) {
           getAnalysis(examination._id);
           viewCentres();
+          getExamCentres();
           setAlertData({ message: data, severity: "info", open: true });
         }
         if (error) {
@@ -301,6 +302,7 @@ function CandidateDistribution({ viewCentres, centres, examination }) {
                     <IconButton
                       onClick={() => {
                         getAnalysis(examination._id);
+                        getExamCentres();
                         viewCentres();
                       }}
                       color="success"
@@ -367,12 +369,9 @@ function CandidateDistribution({ viewCentres, centres, examination }) {
                       <Typography>{c.password}</Typography>
                     </td>
                     <td>
-                      <Typography>{c.capacity}</Typography>
-                    </td>
-
-                    <td>
                       <Typography>{c.sessionLength}</Typography>
                     </td>
+
                     <td>
                       <Typography>{c.capacity}</Typography>
                     </td>
