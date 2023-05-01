@@ -244,7 +244,7 @@ function CandidateDistribution({ viewCentres, centres, examination }) {
                   >
                     {centres.map((c, i) => (
                       <MenuItem key={i} value={c}>
-                        {c.name}
+                        {c.centreId}
                       </MenuItem>
                     ))}
                   </TextField>
@@ -252,7 +252,7 @@ function CandidateDistribution({ viewCentres, centres, examination }) {
                     {selectedCentres.map((d, i) => (
                       <Chip
                         key={i}
-                        label={d.name}
+                        label={`centre ${d.centreId}`}
                         icon={<Cancel />}
                         className="me-1 mb-1"
                         clickable
