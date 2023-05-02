@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   TextField,
   Typography,
@@ -14,6 +14,7 @@ import { sessionsList } from "./route";
 import { LoadingButton } from "@mui/lab";
 import { Alert, Table } from "react-bootstrap";
 import { DownloadOutlined, UploadOutlined } from "@mui/icons-material";
+import { AlertContext } from "../../contexts/AlertContext";
 
 export default function SessionReport() {
   const [examinations, setExaminations] = useState([]);
@@ -21,6 +22,9 @@ export default function SessionReport() {
   const [searchData, setSearchData] = useState({});
   const [message, setMessage] = useState("");
   const [reports, setReports] = useState([]);
+  const [fetching, setFetching] = useState(false);
+
+  const { setAlertData } = useContext(AlertContext);
 
   const getExaminations = async () => {
     setLoading(true);
@@ -41,16 +45,20 @@ export default function SessionReport() {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setFetching(true);
 
-    const { data } = await httpService.post(
+    const { data, error } = await httpService.post(
       "aguila/examination/examsessionreport",
       searchData
     );
 
     if (data) {
       setReports(data);
-      console.log(data);
     }
+    if (error) {
+      setAlertData({ message: error, open: true, severity: "error" });
+    }
+    setFetching(false);
   };
   return (
     <div>
