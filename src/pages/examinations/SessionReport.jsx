@@ -124,7 +124,11 @@ export default function SessionReport() {
                 </TextField>
               </div>
               <div className="col-lg-2 d-flex align-items-center">
-                <LoadingButton variant="contained" type="submit">
+                <LoadingButton
+                  loading={fetching}
+                  variant="contained"
+                  type="submit"
+                >
                   find report
                 </LoadingButton>
               </div>
@@ -147,33 +151,45 @@ export default function SessionReport() {
               </tr>
             </thead>
             <tbody>
-              {reports.map((c, i) => (
-                <tr>
-                  <td>{i + 1}</td>
-                  <td>
-                    <Typography>{c.centre.centreId}</Typography>
-                  </td>
-                  <td className="col-lg-4">
-                    <Typography textTransform={"uppercase"}>
-                      {c.centre.name}
-                    </Typography>
-                  </td>
-                  <td>
-                    <Typography>
-                      {new Date(c.timeDownloaded).toLocaleTimeString()}
-                    </Typography>
-                  </td>
-                  <td>
-                    {c.timeUploaded ? (
-                      <Typography>
-                        {new Date(c.timeDownloaded).toLocaleTimeString()}
-                      </Typography>
-                    ) : (
-                      <Chip label="pending" color="warning" />
-                    )}
-                  </td>
-                </tr>
-              ))}
+              <>
+                {reports.length > 0 ? (
+                  reports.map((c, i) => (
+                    <tr>
+                      <td>{i + 1}</td>
+                      <td>
+                        <Typography>{c.centre.centreId}</Typography>
+                      </td>
+                      <td className="col-lg-4">
+                        <Typography textTransform={"uppercase"}>
+                          {c.centre.name}
+                        </Typography>
+                      </td>
+                      <td>
+                        <Typography>
+                          {new Date(c.timeDownloaded).toLocaleTimeString()}
+                        </Typography>
+                      </td>
+                      <td>
+                        {c.timeUploaded ? (
+                          <Typography>
+                            {new Date(c.timeDownloaded).toLocaleTimeString()}
+                          </Typography>
+                        ) : (
+                          <Chip label="pending" color="warning" />
+                        )}
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={12}>
+                      <div className="alert alert-danger text-center">
+                        No record avaialable
+                      </div>
+                    </td>
+                  </tr>
+                )}
+              </>
             </tbody>
           </Table>
         </div>
