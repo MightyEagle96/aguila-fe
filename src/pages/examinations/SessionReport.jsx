@@ -5,6 +5,7 @@ import {
   MenuItem,
   Stack,
   CircularProgress,
+  Chip,
 } from "@mui/material";
 
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -31,6 +32,22 @@ export default function SessionReport() {
   useEffect(() => {
     getExaminations();
   }, []);
+
+  const handleChange = (e) => {
+    setSearchData({ ...searchData, [e.target.name]: e.target.value });
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const { data } = await httpService.post(
+      "aguila/examination/examsessionreport",
+      searchData
+    );
+
+    if (data) {
+      console.log(data);
+    }
+  };
   return (
     <div>
       <div className="mt-5 mb-5">
@@ -46,39 +63,61 @@ export default function SessionReport() {
               <Alert variant="danger">{message}</Alert>
             </div>
           )}
-          <div className="row">
-            <div className="col-lg-3">
-              <TextField label="Select Exam" select fullWidth>
-                {examinations.map((c) => (
-                  <MenuItem value={c._id}>
-                    <Typography textTransform={"uppercase"}>
-                      {c.title}
-                    </Typography>
-                  </MenuItem>
-                ))}
-              </TextField>
+          <form onSubmit={handleSubmit}>
+            <div className="row">
+              <div className="col-lg-3">
+                <TextField
+                  label="Select Exam"
+                  name="examination"
+                  onChange={handleChange}
+                  select
+                  fullWidth
+                >
+                  {examinations.map((c) => (
+                    <MenuItem value={c._id}>
+                      <Typography textTransform={"uppercase"}>
+                        {c.title}
+                      </Typography>
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </div>
+              <div className="col-lg-3">
+                <Stack direction="row" spacing={1}>
+                  <div className="d-flex align-items-center">
+                    {/* <Typography variant="caption">select date</Typography> */}
+                    <Chip label="Select Date" color="primary" />
+                  </div>
+                  <DatePicker
+                    onChange={(e) =>
+                      setSearchData({
+                        ...searchData,
+                        dateDownloaded: new Date(e.$d).toDateString(),
+                      })
+                    }
+                  />
+                </Stack>
+              </div>
+              <div className="col-lg-3">
+                <TextField
+                  select
+                  label="Session List"
+                  fullWidth
+                  name="session"
+                  onChange={handleChange}
+                >
+                  {sessionsList().map((c) => (
+                    <MenuItem value={c}>{c}</MenuItem>
+                  ))}
+                </TextField>
+              </div>
+              <div className="col-lg-2 d-flex align-items-center">
+                <LoadingButton variant="contained" type="submit">
+                  find report
+                </LoadingButton>
+              </div>
             </div>
-            <div className="col-lg-3">
-              <Stack direction="row" spacing={1}>
-                <div className="d-flex align-items-center">
-                  <Typography variant="caption">select date</Typography>
-                </div>
-                <DatePicker
-                  onChange={(e) => console.log(new Date(e.$d).toDateString())}
-                />
-              </Stack>
-            </div>
-            <div className="col-lg-3">
-              <TextField select label="Session List" fullWidth>
-                {sessionsList().map((c) => (
-                  <MenuItem value={c}>{c}</MenuItem>
-                ))}
-              </TextField>
-            </div>
-            <div className="col-lg-2">
-              <LoadingButton variant="contained">find report</LoadingButton>
-            </div>
-          </div>
+          </form>
         </div>
       </div>
     </div>
