@@ -12,13 +12,16 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { httpService } from "../../httpService";
 import { sessionsList } from "./route";
 import { LoadingButton } from "@mui/lab";
-import { Alert } from "react-bootstrap";
+import { Alert, Table } from "react-bootstrap";
+import { DownloadOutlined, UploadOutlined } from "@mui/icons-material";
 
 export default function SessionReport() {
   const [examinations, setExaminations] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchData, setSearchData] = useState({});
   const [message, setMessage] = useState("");
+  const [reports, setReports] = useState([]);
+
   const getExaminations = async () => {
     setLoading(true);
     const { data } = await httpService.get("aguila/examination/all");
@@ -45,6 +48,7 @@ export default function SessionReport() {
     );
 
     if (data) {
+      setReports(data);
       console.log(data);
     }
   };
@@ -118,6 +122,52 @@ export default function SessionReport() {
               </div>
             </div>
           </form>
+        </div>
+        <div className="mt-3">
+          <Table striped borderless>
+            <thead>
+              <tr>
+                <th>S/N</th>
+                <th>Centre ID</th>
+                <th>Name</th>
+                <th>
+                  Time Downloaded <DownloadOutlined />
+                </th>
+                <th>
+                  Time Uploaded <UploadOutlined />
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {reports.map((c, i) => (
+                <tr>
+                  <td>{i + 1}</td>
+                  <td>
+                    <Typography>{c.centre.centreId}</Typography>
+                  </td>
+                  <td className="col-lg-4">
+                    <Typography textTransform={"uppercase"}>
+                      {c.centre.name}
+                    </Typography>
+                  </td>
+                  <td>
+                    <Typography>
+                      {new Date(c.timeDownloaded).toLocaleTimeString()}
+                    </Typography>
+                  </td>
+                  <td>
+                    {c.timeUploaded ? (
+                      <Typography>
+                        {new Date(c.timeDownloaded).toLocaleTimeString()}
+                      </Typography>
+                    ) : (
+                      <Chip label="pending" color="warning" />
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
         </div>
       </div>
     </div>
