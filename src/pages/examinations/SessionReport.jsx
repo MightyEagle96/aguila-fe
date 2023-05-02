@@ -1,17 +1,31 @@
 import React, { useState, useEffect } from "react";
-import { TextField, Typography, MenuItem, Stack } from "@mui/material";
+import {
+  TextField,
+  Typography,
+  MenuItem,
+  Stack,
+  CircularProgress,
+} from "@mui/material";
 
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { httpService } from "../../httpService";
 import { sessionsList } from "./route";
 import { LoadingButton } from "@mui/lab";
+import { Alert } from "react-bootstrap";
 
 export default function SessionReport() {
   const [examinations, setExaminations] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [searchData, setSearchData] = useState({});
+  const [message, setMessage] = useState("");
   const getExaminations = async () => {
+    setLoading(true);
     const { data } = await httpService.get("aguila/examination/all");
-    if (data) setExaminations(data);
+    if (data) {
+      setExaminations(data);
+      if (data.length === 0) setMessage("No examination has been created");
+    }
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -26,6 +40,12 @@ export default function SessionReport() {
           </Typography>
         </div>
         <div className="mt-3">
+          {loading && <CircularProgress sx={{ color: "#4b4b4b" }} size={20} />}
+          {message && (
+            <div className="col-lg-4">
+              <Alert variant="danger">{message}</Alert>
+            </div>
+          )}
           <div className="row">
             <div className="col-lg-3">
               <TextField label="Select Exam" select fullWidth>
