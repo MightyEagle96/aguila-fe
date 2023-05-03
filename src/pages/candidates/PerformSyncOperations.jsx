@@ -12,6 +12,7 @@ import { httpService } from "../../httpService";
 import { sessionsList } from "../examinations/route";
 import { House, Person, Schedule } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
+import { AlertContext } from "../../contexts/AlertContext";
 
 export default function PerformSyncOperations() {
   //select the exam
@@ -20,6 +21,8 @@ export default function PerformSyncOperations() {
   const [loading, setLoading] = useState(false);
   const [examCentres, setExamCentres] = useState([]);
   const [selected, setSelected] = useState([]);
+  const [candidateData, setCandidateData] = useState({});
+  const { setAlertData } = useContext(AlertContext);
 
   const selectSubject = (e) => {
     if (e.target.checked) {
@@ -49,6 +52,35 @@ export default function PerformSyncOperations() {
   useEffect(() => {
     getExams();
   }, []);
+
+  const handleChange = (e) =>
+    setCandidateData({
+      ...candidateData,
+      [e.target.name]: e.target.value.trim(),
+    });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const { data, error } = await httpService.post(
+      "aguila/candidates/createsync",
+      {
+        ...candidateData,
+        subjectCombinations: selected,
+        examination: activeExam._id,
+      }
+    );
+
+    if (data) {
+      setAlertData({ message: data, open: true, severity: "success" });
+      setTimeout(() => {
+        window.location.assign(`/candidates/${activeExam._id}/list`);
+      }, 3000);
+    }
+
+    if (error) {
+      setAlertData({ message: error, open: true, severity: "error" });
+    }
+  };
   return (
     <div>
       <div className="mt-5 mb-5">
@@ -73,128 +105,138 @@ export default function PerformSyncOperations() {
               </Typography>
             </div>
             <div>
-              <div className="row">
-                <div className="col-lg-4">
-                  <div className="mb-3">
-                    <Typography variant="caption" gutterBottom>
-                      Candidate's Details
-                    </Typography>
-                  </div>
-
-                  <div className="mb-4">
-                    <TextField
-                      label="First Name"
-                      fullWidth
-                      variant="standard"
-                      required
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <Person />
-                          </InputAdornment>
-                        ),
-                      }}
-                    />
-                  </div>
-                  <div className="mb-4">
-                    <TextField
-                      label="Last Name"
-                      fullWidth
-                      variant="standard"
-                      required
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <Person />
-                          </InputAdornment>
-                        ),
-                      }}
-                    />
-                  </div>
-                  <div className="mb-2">
-                    <Typography variant="caption">
-                      Select the subject combination for this candidate
-                    </Typography>
-                    {activeExam.subjects.map((c, i) => (
-                      <div>
-                        <FormControlLabel
-                          key={i}
-                          onChange={selectSubject}
-                          control={<Checkbox />}
-                          value={c._id}
-                          label={
-                            <Typography textTransform={"capitalize"}>
-                              {c.name}
-                            </Typography>
-                          }
-                        />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                <div className="col-lg-4">
-                  <div className="mb-4">
-                    <TextField
-                      variant="standard"
-                      fullWidth
-                      required
-                      select
-                      label="Select the candidate's centre"
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <House />
-                          </InputAdornment>
-                        ),
-                      }}
-                    >
-                      {examCentres.map((c) => (
-                        <MenuItem value={c._id}>Centre {c.centreId}</MenuItem>
-                      ))}
-                    </TextField>
-                  </div>
-                  <div className="mb-4">
-                    <TextField
-                      variant="standard"
-                      fullWidth
-                      required
-                      select
-                      label="Sessions List"
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <Schedule />
-                          </InputAdornment>
-                        ),
-                      }}
-                    >
-                      {sessionsList().map((c) => (
-                        <MenuItem value={c}>{c}</MenuItem>
-                      ))}
-                    </TextField>
-                  </div>
-                  <div>
-                    <LoadingButton
-                      color="success"
-                      variant="contained"
-                      fullWidth
-                    >
-                      {" "}
-                      create this candidate
-                    </LoadingButton>
-
-                    <div className="mt-2 ">
-                      <Typography variant="body2">
-                        Once the candidate has been created and assigned to a
-                        centre under a particular session, please inform the
-                        techincal officer at that centre to perform a
-                        synchronization to download the new candidate(s)
-                        assigned to that centre{" "}
+              <form onSubmit={handleSubmit}>
+                <div className="row">
+                  <div className="col-lg-4">
+                    <div className="mb-3">
+                      <Typography variant="caption" gutterBottom>
+                        Candidate's Details
                       </Typography>
+                    </div>
+
+                    <div className="mb-4">
+                      <TextField
+                        label="First Name"
+                        fullWidth
+                        name="firstName"
+                        onChange={handleChange}
+                        variant="standard"
+                        required
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              <Person />
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+                    </div>
+                    <div className="mb-4">
+                      <TextField
+                        label="Last Name"
+                        fullWidth
+                        variant="standard"
+                        name="lastName"
+                        onChange={handleChange}
+                        required
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              <Person />
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+                    </div>
+                    <div className="mb-2">
+                      <Typography variant="caption">
+                        Select the subject combination for this candidate
+                      </Typography>
+                      {activeExam.subjects.map((c, i) => (
+                        <div>
+                          <FormControlLabel
+                            key={i}
+                            onChange={selectSubject}
+                            control={<Checkbox />}
+                            value={c._id}
+                            label={
+                              <Typography textTransform={"capitalize"}>
+                                {c.name}
+                              </Typography>
+                            }
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="col-lg-4">
+                    <div className="mb-4">
+                      <TextField
+                        variant="standard"
+                        fullWidth
+                        required
+                        select
+                        name="centre"
+                        onChange={handleChange}
+                        label="Select the candidate's centre"
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              <House />
+                            </InputAdornment>
+                          ),
+                        }}
+                      >
+                        {examCentres.map((c) => (
+                          <MenuItem value={c._id}>Centre {c.centreId}</MenuItem>
+                        ))}
+                      </TextField>
+                    </div>
+                    <div className="mb-4">
+                      <TextField
+                        variant="standard"
+                        fullWidth
+                        required
+                        select
+                        name="session"
+                        onChange={handleChange}
+                        label="Sessions List"
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              <Schedule />
+                            </InputAdornment>
+                          ),
+                        }}
+                      >
+                        {sessionsList().map((c) => (
+                          <MenuItem value={c}>{c}</MenuItem>
+                        ))}
+                      </TextField>
+                    </div>
+                    <div>
+                      <LoadingButton
+                        color="success"
+                        variant="contained"
+                        fullWidth
+                        type="submit"
+                      >
+                        create this candidate
+                      </LoadingButton>
+
+                      <div className="mt-2 ">
+                        <Typography variant="body2">
+                          Once the candidate has been created and assigned to a
+                          centre under a particular session, please inform the
+                          techincal officer at that centre to perform a
+                          synchronization to download the new candidate(s)
+                          assigned to that centre
+                        </Typography>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              </form>
             </div>
           </div>
         )}
