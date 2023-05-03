@@ -13,6 +13,7 @@ import { sessionsList } from "../examinations/route";
 import { House, Person, Schedule } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 import { AlertContext } from "../../contexts/AlertContext";
+import Swal from "sweetalert2";
 
 export default function PerformSyncOperations() {
   //select the exam
@@ -23,6 +24,7 @@ export default function PerformSyncOperations() {
   const [selected, setSelected] = useState([]);
   const [candidateData, setCandidateData] = useState({});
   const { setAlertData } = useContext(AlertContext);
+  const [creating, setCreating] = useState(false);
 
   const selectSubject = (e) => {
     if (e.target.checked) {
@@ -61,25 +63,36 @@ export default function PerformSyncOperations() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { data, error } = await httpService.post(
-      "aguila/candidates/createsync",
-      {
-        ...candidateData,
-        subjectCombinations: selected,
-        examination: activeExam._id,
+    Swal.fire({
+      icon: "question",
+      title: "Perform Sync",
+      text: "Do you wish to proceed with this sync operation on this candidate?",
+      showCancelButton: true,
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        setCreating(true);
+        const { data, error } = await httpService.post(
+          "aguila/candidates/createsync",
+          {
+            ...candidateData,
+            subjectCombinations: selected,
+            examination: activeExam._id,
+          }
+        );
+
+        if (data) {
+          setAlertData({ message: data, open: true, severity: "success" });
+          setTimeout(() => {
+            window.location.assign(`/candidates/${activeExam._id}/list`);
+          }, 3000);
+        }
+
+        if (error) {
+          setAlertData({ message: error, open: true, severity: "error" });
+        }
+        setCreating(false);
       }
-    );
-
-    if (data) {
-      setAlertData({ message: data, open: true, severity: "success" });
-      setTimeout(() => {
-        window.location.assign(`/candidates/${activeExam._id}/list`);
-      }, 3000);
-    }
-
-    if (error) {
-      setAlertData({ message: error, open: true, severity: "error" });
-    }
+    });
   };
   return (
     <div>
@@ -220,6 +233,7 @@ export default function PerformSyncOperations() {
                         variant="contained"
                         fullWidth
                         type="submit"
+                        loading={creating}
                       >
                         create this candidate
                       </LoadingButton>
