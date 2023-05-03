@@ -5,10 +5,13 @@ import {
   FormControlLabel,
   Checkbox,
   MenuItem,
+  InputAdornment,
 } from "@mui/material";
 import React, { useState, useEffect, useContext } from "react";
 import { httpService } from "../../httpService";
 import { sessionsList } from "../examinations/route";
+import { House, Person, Schedule } from "@mui/icons-material";
+import { LoadingButton } from "@mui/lab";
 
 export default function PerformSyncOperations() {
   //select the exam
@@ -84,6 +87,13 @@ export default function PerformSyncOperations() {
                       fullWidth
                       variant="standard"
                       required
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <Person />
+                          </InputAdornment>
+                        ),
+                      }}
                     />
                   </div>
                   <div className="mb-4">
@@ -92,6 +102,13 @@ export default function PerformSyncOperations() {
                       fullWidth
                       variant="standard"
                       required
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <Person />
+                          </InputAdornment>
+                        ),
+                      }}
                     />
                   </div>
                   <div className="mb-2">
@@ -120,8 +137,16 @@ export default function PerformSyncOperations() {
                     <TextField
                       variant="standard"
                       fullWidth
+                      required
                       select
                       label="Select the candidate's centre"
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <House />
+                          </InputAdornment>
+                        ),
+                      }}
                     >
                       {examCentres.map((c) => (
                         <MenuItem value={c._id}>Centre {c.centreId}</MenuItem>
@@ -132,15 +157,42 @@ export default function PerformSyncOperations() {
                     <TextField
                       variant="standard"
                       fullWidth
+                      required
                       select
                       label="Sessions List"
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <Schedule />
+                          </InputAdornment>
+                        ),
+                      }}
                     >
                       {sessionsList().map((c) => (
                         <MenuItem value={c}>{c}</MenuItem>
                       ))}
                     </TextField>
                   </div>
-                  <div></div>
+                  <div>
+                    <LoadingButton
+                      color="success"
+                      variant="contained"
+                      fullWidth
+                    >
+                      {" "}
+                      create this candidate
+                    </LoadingButton>
+
+                    <div className="mt-2 ">
+                      <Typography variant="body2">
+                        Once the candidate has been created and assigned to a
+                        centre under a particular session, please inform the
+                        techincal officer at that centre to perform a
+                        synchronization to download the new candidate(s)
+                        assigned to that centre{" "}
+                      </Typography>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
