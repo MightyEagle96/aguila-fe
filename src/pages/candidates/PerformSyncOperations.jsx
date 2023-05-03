@@ -8,8 +8,11 @@ import {
 } from "@mui/material";
 import React, { useState, useEffect, useContext } from "react";
 import { httpService } from "../../httpService";
+import { sessionsList } from "../examinations/route";
+
 export default function PerformSyncOperations() {
   //select the exam
+
   const [activeExam, setActiveExam] = useState(null);
   const [loading, setLoading] = useState(false);
   const [examCentres, setExamCentres] = useState([]);
@@ -113,16 +116,31 @@ export default function PerformSyncOperations() {
                   </div>
                 </div>
                 <div className="col-lg-4">
-                  <TextField
-                    variant="standard"
-                    fullWidth
-                    select
-                    label="Select the candidate's centre"
-                  >
-                    {examCentres.map((c) => (
-                      <MenuItem value={c._id}>Centre{c.centreId}</MenuItem>
-                    ))}
-                  </TextField>
+                  <div className="mb-4">
+                    <TextField
+                      variant="standard"
+                      fullWidth
+                      select
+                      label="Select the candidate's centre"
+                    >
+                      {examCentres.map((c) => (
+                        <MenuItem value={c._id}>Centre {c.centreId}</MenuItem>
+                      ))}
+                    </TextField>
+                  </div>
+                  <div className="mb-4">
+                    <TextField
+                      variant="standard"
+                      fullWidth
+                      select
+                      label="Sessions List"
+                    >
+                      {sessionsList().map((c) => (
+                        <MenuItem value={c}>{c}</MenuItem>
+                      ))}
+                    </TextField>
+                  </div>
+                  <div></div>
                 </div>
               </div>
             </div>

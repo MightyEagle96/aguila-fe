@@ -35,12 +35,7 @@ export default function NavigationBar() {
                     {loggedInUser.lastName}
                   </Typography>
                 </div>
-                <Button
-                  variant="outlined"
-                  color="error"
-                  endIcon={<Logout />}
-                  onClick={logout}
-                >
+                <Button color="error" endIcon={<Logout />} onClick={logout}>
                   Logout
                 </Button>
               </>
