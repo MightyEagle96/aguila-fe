@@ -14,6 +14,7 @@ import {
   Book,
   AdminPanelSettings,
   Chat,
+  Sync,
 } from "@mui/icons-material";
 
 export default function SideMenu() {
@@ -33,6 +34,11 @@ export default function SideMenu() {
       text: "Examination Control",
       icon: <Quiz />,
       redirectTo: `/examination`,
+    },
+    {
+      text: "Sync Operation",
+      icon: <Sync />,
+      redirectTo: `/candidates/sync`,
     },
     {
       text: "Session Report",

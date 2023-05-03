@@ -8,7 +8,7 @@ import PerformSyncOperations from "./PerformSyncOperations";
 
 const privateRoutes = [
   { path: "/:id/list", component: CandidatesList },
-  { path: "/performsync/:id", component: PerformSyncOperations },
+  { path: "/sync", component: PerformSyncOperations },
 
   { path: "*", component: NotFound },
 ];
