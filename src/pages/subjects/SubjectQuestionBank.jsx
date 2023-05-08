@@ -16,6 +16,7 @@ import { Camera, Delete, Edit } from "@mui/icons-material";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import parse from "html-react-parser";
+import { Editor, EditorState } from "draft-js";
 
 export default function SubjectQuestionBank() {
   const { id } = useParams();
@@ -28,6 +29,8 @@ export default function SubjectQuestionBank() {
   const [showQuestionField, setShowQuestionField] = useState(false);
 
   const [questionData, setQuestionData] = useState(null);
+  const [questionMetaData, setQuestionMetaData] = useState(null);
+
   const getQuestionBank = async () => {
     setLoading(true);
     const { data } = await httpService(
@@ -151,18 +154,11 @@ export default function SubjectQuestionBank() {
             </LoadingButton>
           </div>
           <div className="mt-2">
-            <Button onClick={() => setShowQuestionField(!showQuestionField)}>
-              {showQuestionField
-                ? "hide questions field"
-                : "show questions field"}
-            </Button>
-            {showQuestionField ||
-              (questionData && (
-                <EnterQuestionText
-                  questionData={questionData}
-                  setQuestionData={setQuestionData}
-                />
-              ))}
+            <EnterQuestionText
+              questionData={questionData}
+              setQuestionData={setQuestionData}
+              questionMetaData={questionMetaData}
+            />
           </div>
           <div className="mt-3">
             <Table bordered>
@@ -210,6 +206,7 @@ export default function SubjectQuestionBank() {
                         subject={questionBank.subject}
                         questionId={c._id}
                         setQuestionData={setQuestionData}
+                        setQuestionMetaData={setQuestionMetaData}
                       />
                     </td>
                     <td>
@@ -237,7 +234,12 @@ function DeleteQuestion({ subject, questionId }) {
   );
 }
 
-function EditQuestion({ subject, questionId, setQuestionData }) {
+function EditQuestion({
+  subject,
+  questionId,
+  setQuestionData,
+  setQuestionMetaData,
+}) {
   const [loading, setLoading] = useState(false);
 
   const getQuestion = async () => {
@@ -249,18 +251,28 @@ function EditQuestion({ subject, questionId, setQuestionData }) {
     if (data) {
       // setQuestionData(data);
 
-      setQuestionData(data.questions[0]);
+      setQuestionData(data.question.questions[0]);
+      setQuestionMetaData({
+        subject: data.subject,
+        questionId: data.questionId,
+      });
     }
     setLoading(false);
   };
   return (
     <IconButton onClick={getQuestion} disabled={loading}>
-      {loading ? <CircularProgress size={10} /> : <Edit />}
+      {loading ? <CircularProgress size={20} /> : <Edit />}
     </IconButton>
   );
 }
 
-function EnterQuestionText({ questionData, setQuestionData }) {
+function EnterQuestionText({
+  questionData,
+  setQuestionData,
+  questionMetaData,
+}) {
+  const [loading, setLoading] = useState(false);
+  const { setAlertData } = useContext(AlertContext);
   // const optionToolbar = [
   //   ["bold", "italic", "underline", "strike"], // toggled buttons
   //   ["blockquote", "code-block"],
@@ -269,45 +281,73 @@ function EnterQuestionText({ questionData, setQuestionData }) {
 
   //   [{ script: "sub" }, { script: "super" }], // superscript/subscript
   // ];
-  const toolbarOptions = [
-    ["bold", "italic", "underline", "strike"], // toggled buttons
-    ["blockquote", "code-block"],
+  // const toolbarOptions = [
+  //   ["bold", "italic", "underline", "strike"], // toggled buttons
+  //   ["blockquote", "code-block"],
 
-    [{ header: 1 }, { header: 2 }], // custom button values
-    [{ list: "ordered" }, { list: "bullet" }],
-    [{ script: "sub" }, { script: "super" }], // superscript/subscript
-    [{ indent: "-1" }, { indent: "+1" }], // outdent/indent
-    [{ direction: "rtl" }], // text direction
+  //   [{ header: 1 }, { header: 2 }], // custom button values
+  //   [{ list: "ordered" }, { list: "bullet" }],
+  //   [{ script: "sub" }, { script: "super" }], // superscript/subscript
+  //   [{ indent: "-1" }, { indent: "+1" }], // outdent/indent
+  //   [{ direction: "rtl" }], // text direction
 
-    [{ size: ["small", false, "large", "huge"] }], // custom dropdown
-    [{ header: [1, 2, 3, 4, 5, 6, false] }],
+  //   [{ size: ["small", false, "large", "huge"] }], // custom dropdown
+  //   [{ header: [1, 2, 3, 4, 5, 6, false] }],
 
-    [{ color: [] }, { background: [] }], // dropdown with defaults from theme
-    [{ font: [] }],
-    [{ align: [] }],
+  //   [{ color: [] }, { background: [] }], // dropdown with defaults from theme
+  //   [{ font: [] }],
+  //   [{ align: [] }],
 
-    ["clean"],
-  ];
+  //   ["clean"],
+  // ];
+
+  const updateQuestion = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    const { data, error } = await httpService.post(
+      "aguila/subject/questionbank/updatequestion",
+      { ...questionData, ...questionMetaData }
+    );
+    if (data) {
+      setAlertData({ message: data, open: true, severity: "success" });
+    }
+    if (error) {
+      setAlertData({ message: error, open: true, severity: "error" });
+    }
+    setLoading(false);
+  };
+  const handleChange = (e) =>
+    setQuestionData({ ...questionData, [e.target.name]: e.target.value });
   return (
     <div className="bg-light p-3">
       {questionData && (
-        <div className="row">
-          <div className="col-lg-4 mb-2">
-            <Typography variant="caption">Question</Typography>
-            <ReactQuill
+        <form onSubmit={updateQuestion}>
+          <div className="row">
+            <div className="col-lg-4 mb-2">
+              {/* <ReactQuill
               theme="snow"
-              modules={{ toolbar: toolbarOptions }}
+              modules={{ toolbar: optionToolbar }}
               value={questionData.question}
               onChange={(e) =>
                 setQuestionData({ ...questionData, question: e })
               }
-            />
-          </div>
-          <div className="col-lg-4 mb-2">
-            <Typography variant="caption">Option A</Typography>
-            <ReactQuill
+            /> */}
+              <TextField
+                multiline
+                maxRows={6}
+                value={questionData.question}
+                name="question"
+                onChange={handleChange}
+                fullWidth
+                required
+                label="Question"
+                variant="standard"
+              />
+            </div>
+            <div className="col-lg-4 mb-2">
+              {/* <ReactQuill
               theme="snow"
-              modules={{ toolbar: toolbarOptions }}
+              modules={{ toolbar: optionToolbar }}
               value={questionData.optionA}
               onChange={(e) =>
                 setQuestionData({
@@ -315,62 +355,113 @@ function EnterQuestionText({ questionData, setQuestionData }) {
                   optionA: e,
                 })
               }
-            />
-          </div>
-          <div className="col-lg-4 mb-2">
-            <Typography variant="caption">Option B</Typography>
-            <ReactQuill
+            /> */}
+              <TextField
+                multiline
+                maxRows={6}
+                value={questionData.optionA}
+                name="optionA"
+                onChange={handleChange}
+                fullWidth
+                required
+                label="Option A"
+                variant="standard"
+              />
+            </div>
+            <div className="col-lg-4 mb-2">
+              {/* <ReactQuill
               theme="snow"
-              modules={{ toolbar: toolbarOptions }}
+              modules={{ toolbar: optionToolbar }}
               value={questionData.optionB}
               onChange={(e) => setQuestionData({ ...questionData, optionB: e })}
-            />
-          </div>
-          <div className="col-lg-4 mb-2">
-            <Typography variant="caption">Option C</Typography>
-            <ReactQuill
+            /> */}
+              <TextField
+                multiline
+                maxRows={6}
+                value={questionData.optionB}
+                name="optionB"
+                onChange={handleChange}
+                fullWidth
+                required
+                label="Option B"
+                variant="standard"
+              />
+            </div>
+            <div className="col-lg-4 mb-2">
+              {/* <ReactQuill
               theme="snow"
-              modules={{ toolbar: toolbarOptions }}
+              modules={{ toolbar: optionToolbar }}
               value={questionData.optionC}
               onChange={(e) => setQuestionData({ ...questionData, optionC: e })}
-            />
-          </div>
-          <div className="col-lg-4 mb-2">
-            <Typography variant="caption">Option D</Typography>
-            <ReactQuill
+            /> */}
+              <TextField
+                multiline
+                maxRows={6}
+                value={questionData.optionC}
+                name="optionC"
+                onChange={handleChange}
+                fullWidth
+                required
+                label="Option C"
+                variant="standard"
+              />
+            </div>
+            <div className="col-lg-4 mb-2">
+              {/* <ReactQuill
               theme="snow"
-              modules={{ toolbar: toolbarOptions }}
+              modules={{ toolbar: optionToolbar }}
               value={questionData.optionD}
               onChange={(e) => setQuestionData({ ...questionData, optionD: e })}
-            />
+            /> */}
+              <TextField
+                multiline
+                maxRows={6}
+                value={questionData.optionD}
+                name="optionD"
+                onChange={handleChange}
+                fullWidth
+                required
+                label="Option D"
+                variant="standard"
+              />
+            </div>
+            <div className="col-lg-4 mb-2">
+              <TextField
+                select
+                fullWidth
+                name="correctAns"
+                onChange={handleChange}
+                value={questionData.correctAns}
+                required
+                label="Correct Answer"
+                variant="standard"
+              >
+                <MenuItem value={questionData.optionA}>
+                  {questionData.optionA}
+                </MenuItem>
+                <MenuItem value={questionData.optionB}>
+                  {questionData.optionB}
+                </MenuItem>
+                <MenuItem value={questionData.optionC}>
+                  {questionData.optionC}
+                </MenuItem>
+                <MenuItem value={questionData.optionD}>
+                  {questionData.optionD}
+                </MenuItem>
+              </TextField>
+            </div>
+            <div className="col-lg-4">
+              <LoadingButton
+                loadingPosition="end"
+                loading={loading}
+                variant="contained"
+                type="submit"
+              >
+                update question
+              </LoadingButton>
+            </div>
           </div>
-          <div className="col-lg-4 mb-2">
-            <Typography variant="caption">Correct Answer</Typography>
-            <TextField
-              select
-              fullWidth
-              onChange={(e) =>
-                setQuestionData({ ...questionData, correctAns: e })
-              }
-            >
-              <MenuItem value={questionData.optionA} selected>
-                {questionData.optionA}
-              </MenuItem>
-              <MenuItem value={questionData.optionB}>
-                {questionData.optionB}
-              </MenuItem>
-              <MenuItem value={questionData.optionC}>
-                {questionData.optionC}
-              </MenuItem>
-              <MenuItem value={questionData.optionD}>
-                {questionData.optionD}
-              </MenuItem>
-            </TextField>
-          </div>
-          <div className="col-lg-4">
-            <LoadingButton variant="contained">update question</LoadingButton>
-          </div>
-        </div>
+        </form>
       )}
     </div>
   );
