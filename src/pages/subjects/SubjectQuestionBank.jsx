@@ -26,6 +26,8 @@ export default function SubjectQuestionBank() {
   const [uploading, setUploading] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [showQuestionField, setShowQuestionField] = useState(false);
+
+  const [questionData, setQuestionData] = useState(null);
   const getQuestionBank = async () => {
     setLoading(true);
     const { data } = await httpService(
@@ -154,7 +156,7 @@ export default function SubjectQuestionBank() {
                 ? "hide questions field"
                 : "show questions field"}
             </Button>
-            {showQuestionField && <EnterQuestionText />}
+            {showQuestionField || (questionData && <EnterQuestionText />)}
           </div>
           <div className="mt-3">
             <Table bordered>
@@ -198,7 +200,11 @@ export default function SubjectQuestionBank() {
                       <Typography>{c.correctAns}</Typography>
                     </td>
                     <td>
-                      <EditQuestion />
+                      <EditQuestion
+                        subject={questionBank.subject}
+                        questionId={c._id}
+                        setQuestionData={setQuestionData}
+                      />
                     </td>
                     <td>
                       <DeleteQuestion />
@@ -217,7 +223,7 @@ export default function SubjectQuestionBank() {
   );
 }
 
-function DeleteQuestion() {
+function DeleteQuestion({ subject, questionId }) {
   return (
     <IconButton>
       <Delete />
@@ -225,10 +231,25 @@ function DeleteQuestion() {
   );
 }
 
-function EditQuestion() {
+function EditQuestion({ subject, questionId, setQuestionData }) {
+  const [loading, setLoading] = useState(false);
+
+  const getQuestion = async () => {
+    setLoading(true);
+    const { data } = await httpService.post(
+      "aguila/subject/questionbank/question",
+      { subject, questionId }
+    );
+    if (data) {
+      // setQuestionData(data);
+
+      setQuestionData(data.questions[0]);
+    }
+    setLoading(false);
+  };
   return (
-    <IconButton>
-      <Edit />
+    <IconButton onClick={getQuestion} disabled={loading}>
+      {loading ? <CircularProgress size={10} /> : <Edit />}
     </IconButton>
   );
 }
