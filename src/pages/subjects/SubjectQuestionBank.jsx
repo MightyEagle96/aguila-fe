@@ -141,7 +141,7 @@ export default function SubjectQuestionBank() {
               </div>
             </div>
           </div>
-          <div className="d-flex justify-content-end">
+          <div className="d-flex justify-content-end" id="editQuestion">
             <Button href={`/subjects/previewexam/${id}`}>preview exam</Button>
             <LoadingButton
               loading={deleting}
@@ -158,6 +158,7 @@ export default function SubjectQuestionBank() {
               questionData={questionData}
               setQuestionData={setQuestionData}
               questionMetaData={questionMetaData}
+              getQuestionBank={getQuestionBank}
             />
           </div>
           <div className="mt-3">
@@ -256,6 +257,8 @@ function EditQuestion({
         subject: data.subject,
         questionId: data.questionId,
       });
+
+      window.location.href = "#editQuestion";
     }
     setLoading(false);
   };
@@ -270,6 +273,7 @@ function EnterQuestionText({
   questionData,
   setQuestionData,
   questionMetaData,
+  getQuestionBank,
 }) {
   const [loading, setLoading] = useState(false);
   const { setAlertData } = useContext(AlertContext);
@@ -309,6 +313,8 @@ function EnterQuestionText({
       { ...questionData, ...questionMetaData }
     );
     if (data) {
+      setQuestionData(null);
+      getQuestionBank();
       setAlertData({ message: data, open: true, severity: "success" });
     }
     if (error) {
