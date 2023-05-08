@@ -156,7 +156,13 @@ export default function SubjectQuestionBank() {
                 ? "hide questions field"
                 : "show questions field"}
             </Button>
-            {showQuestionField || (questionData && <EnterQuestionText />)}
+            {showQuestionField ||
+              (questionData && (
+                <EnterQuestionText
+                  questionData={questionData}
+                  setQuestionData={setQuestionData}
+                />
+              ))}
           </div>
           <div className="mt-3">
             <Table bordered>
@@ -254,15 +260,15 @@ function EditQuestion({ subject, questionId, setQuestionData }) {
   );
 }
 
-function EnterQuestionText() {
-  const optionToolbar = [
-    ["bold", "italic", "underline", "strike"], // toggled buttons
-    ["blockquote", "code-block"],
+function EnterQuestionText({ questionData, setQuestionData }) {
+  // const optionToolbar = [
+  //   ["bold", "italic", "underline", "strike"], // toggled buttons
+  //   ["blockquote", "code-block"],
 
-    [{ header: 1 }, { header: 2 }], // custom button values
+  //   [{ header: 1 }, { header: 2 }], // custom button values
 
-    [{ script: "sub" }, { script: "super" }], // superscript/subscript
-  ];
+  //   [{ script: "sub" }, { script: "super" }], // superscript/subscript
+  // ];
   const toolbarOptions = [
     ["bold", "italic", "underline", "strike"], // toggled buttons
     ["blockquote", "code-block"],
@@ -283,35 +289,89 @@ function EnterQuestionText() {
     ["clean"],
   ];
   return (
-    <div>
-      <div className="row">
-        <div className="col-lg-4">
-          <Typography variant="caption">Question</Typography>
-          <ReactQuill theme="snow" modules={{ toolbar: toolbarOptions }} />
+    <div className="bg-light p-3">
+      {questionData && (
+        <div className="row">
+          <div className="col-lg-4 mb-2">
+            <Typography variant="caption">Question</Typography>
+            <ReactQuill
+              theme="snow"
+              modules={{ toolbar: toolbarOptions }}
+              value={questionData.question}
+              onChange={(e) =>
+                setQuestionData({ ...questionData, question: e })
+              }
+            />
+          </div>
+          <div className="col-lg-4 mb-2">
+            <Typography variant="caption">Option A</Typography>
+            <ReactQuill
+              theme="snow"
+              modules={{ toolbar: toolbarOptions }}
+              value={questionData.optionA}
+              onChange={(e) =>
+                setQuestionData({
+                  ...questionData,
+                  optionA: e,
+                })
+              }
+            />
+          </div>
+          <div className="col-lg-4 mb-2">
+            <Typography variant="caption">Option B</Typography>
+            <ReactQuill
+              theme="snow"
+              modules={{ toolbar: toolbarOptions }}
+              value={questionData.optionB}
+              onChange={(e) => setQuestionData({ ...questionData, optionB: e })}
+            />
+          </div>
+          <div className="col-lg-4 mb-2">
+            <Typography variant="caption">Option C</Typography>
+            <ReactQuill
+              theme="snow"
+              modules={{ toolbar: toolbarOptions }}
+              value={questionData.optionC}
+              onChange={(e) => setQuestionData({ ...questionData, optionC: e })}
+            />
+          </div>
+          <div className="col-lg-4 mb-2">
+            <Typography variant="caption">Option D</Typography>
+            <ReactQuill
+              theme="snow"
+              modules={{ toolbar: toolbarOptions }}
+              value={questionData.optionD}
+              onChange={(e) => setQuestionData({ ...questionData, optionD: e })}
+            />
+          </div>
+          <div className="col-lg-4 mb-2">
+            <Typography variant="caption">Correct Answer</Typography>
+            <TextField
+              select
+              fullWidth
+              onChange={(e) =>
+                setQuestionData({ ...questionData, correctAns: e })
+              }
+            >
+              <MenuItem value={questionData.optionA} selected>
+                {questionData.optionA}
+              </MenuItem>
+              <MenuItem value={questionData.optionB}>
+                {questionData.optionB}
+              </MenuItem>
+              <MenuItem value={questionData.optionC}>
+                {questionData.optionC}
+              </MenuItem>
+              <MenuItem value={questionData.optionD}>
+                {questionData.optionD}
+              </MenuItem>
+            </TextField>
+          </div>
+          <div className="col-lg-4">
+            <LoadingButton variant="contained">update question</LoadingButton>
+          </div>
         </div>
-        <div className="col-lg-4">
-          <Typography variant="caption">Option A</Typography>
-          <ReactQuill theme="snow" modules={{ toolbar: toolbarOptions }} />
-        </div>
-        <div className="col-lg-4">
-          <Typography variant="caption">Option B</Typography>
-          <ReactQuill theme="snow" modules={{ toolbar: toolbarOptions }} />
-        </div>
-        <div className="col-lg-4">
-          <Typography variant="caption">Option C</Typography>
-          <ReactQuill theme="snow" modules={{ toolbar: toolbarOptions }} />
-        </div>
-        <div className="col-lg-4">
-          <Typography variant="caption">Option D</Typography>
-          <ReactQuill theme="snow" modules={{ toolbar: toolbarOptions }} />
-        </div>
-        <div className="col-lg-4">
-          <Typography variant="caption">Correct Answer</Typography>
-          <TextField select fullWidth>
-            <MenuItem>Hello</MenuItem>
-          </TextField>
-        </div>
-      </div>
+      )}
     </div>
   );
 }
