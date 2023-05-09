@@ -560,7 +560,17 @@ function AddQuestionText({
   getQuestionBank,
 }) {
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState(addQuestionData);
+  const [formData, setFormData] = useState({
+    ...addQuestionData,
+    question: "",
+    optionA: "",
+    optionB: "",
+    optionC: "",
+    optionD: "",
+    correctAns: "",
+  });
+  const [field, setField] = useState("question");
+  const [mode, setMode] = useState("plain text");
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
@@ -585,115 +595,217 @@ function AddQuestionText({
 
     setLoading(false);
   };
+
+  const toggleMode = () => {
+    mode === "plain text" ? setMode("rich text") : setMode("plain text");
+    setFormData({
+      ...addQuestionData,
+      question: "",
+      optionA: "",
+      optionB: "",
+      optionC: "",
+      optionD: "",
+      correctAns: "",
+    });
+  };
+
   return (
     <>
       {addQuestionData && (
         <div className="p-4">
-          <Button>toggle text mode</Button>
-          <form onSubmit={saveQuestion}>
-            <div className="row">
-              <div className="col-lg-12 mb-4">
-                <TextField
-                  multiline
-                  maxRows={6}
-                  name="question"
-                  onChange={handleChange}
-                  fullWidth
-                  required
-                  label="Question"
-                  variant="standard"
-                />
+          <Button onClick={toggleMode}>{mode}</Button>
+          {mode === "plain text" ? (
+            <form onSubmit={saveQuestion}>
+              <div className="row">
+                <div className="col-lg-12 mb-4">
+                  <TextField
+                    multiline
+                    maxRows={6}
+                    name="question"
+                    onChange={handleChange}
+                    fullWidth
+                    required
+                    label="Question"
+                    variant="standard"
+                  />
+                </div>
+                <div className="col-lg-4 mb-4">
+                  <TextField
+                    multiline
+                    maxRows={6}
+                    name="optionA"
+                    onChange={handleChange}
+                    fullWidth
+                    required
+                    label="Option A"
+                    variant="standard"
+                  />
+                </div>
+                <div className="col-lg-4 mb-4">
+                  <TextField
+                    multiline
+                    maxRows={6}
+                    name="optionB"
+                    onChange={handleChange}
+                    fullWidth
+                    required
+                    label="Option B"
+                    variant="standard"
+                  />
+                </div>
+                <div className="col-lg-4 mb-4">
+                  <TextField
+                    multiline
+                    maxRows={6}
+                    name="optionC"
+                    onChange={handleChange}
+                    fullWidth
+                    required
+                    label="Option C"
+                    variant="standard"
+                  />
+                </div>
+                <div className="col-lg-4 mb-4">
+                  <TextField
+                    multiline
+                    maxRows={6}
+                    name="optionD"
+                    onChange={handleChange}
+                    fullWidth
+                    required
+                    label="Option D"
+                    variant="standard"
+                  />
+                </div>
+                {formData.optionA &&
+                  formData.optionB &&
+                  formData.optionC &&
+                  formData.optionD && (
+                    <div className="col-lg-4 mb-4">
+                      <TextField
+                        select
+                        fullWidth
+                        name="correctAns"
+                        onChange={handleChange}
+                        required
+                        label="Correct Answer"
+                        variant="standard"
+                      >
+                        <MenuItem value={formData.optionA}>
+                          {formData.optionA}
+                        </MenuItem>
+                        <MenuItem value={formData.optionB}>
+                          {formData.optionB}
+                        </MenuItem>
+                        <MenuItem value={formData.optionC}>
+                          {formData.optionC}
+                        </MenuItem>
+                        <MenuItem value={formData.optionD}>
+                          {formData.optionD}
+                        </MenuItem>
+                      </TextField>
+                    </div>
+                  )}
+                <div className="col-lg-4">
+                  <LoadingButton
+                    loadingPosition="end"
+                    loading={loading}
+                    variant="contained"
+                    type="submit"
+                    endIcon={<Save />}
+                  >
+                    add question
+                  </LoadingButton>
+                </div>
               </div>
-              <div className="col-lg-4 mb-4">
-                <TextField
-                  multiline
-                  maxRows={6}
-                  name="optionA"
-                  onChange={handleChange}
-                  fullWidth
-                  required
-                  label="Option A"
-                  variant="standard"
-                />
-              </div>
-              <div className="col-lg-4 mb-4">
-                <TextField
-                  multiline
-                  maxRows={6}
-                  name="optionB"
-                  onChange={handleChange}
-                  fullWidth
-                  required
-                  label="Option B"
-                  variant="standard"
-                />
-              </div>
-              <div className="col-lg-4 mb-4">
-                <TextField
-                  multiline
-                  maxRows={6}
-                  name="optionC"
-                  onChange={handleChange}
-                  fullWidth
-                  required
-                  label="Option C"
-                  variant="standard"
-                />
-              </div>
-              <div className="col-lg-4 mb-4">
-                <TextField
-                  multiline
-                  maxRows={6}
-                  name="optionD"
-                  onChange={handleChange}
-                  fullWidth
-                  required
-                  label="Option D"
-                  variant="standard"
-                />
-              </div>
-              {formData.optionA &&
-                formData.optionB &&
-                formData.optionC &&
-                formData.optionD && (
-                  <div className="col-lg-4 mb-4">
-                    <TextField
-                      select
-                      fullWidth
-                      name="correctAns"
-                      onChange={handleChange}
-                      required
-                      label="Correct Answer"
-                      variant="standard"
+            </form>
+          ) : (
+            <div>
+              <div className="row">
+                <div className="col-lg-6 bg-light">
+                  <TextField
+                    fullWidth
+                    label="Text Editor"
+                    name={field}
+                    onChange={handleChange}
+                    multiline
+                    maxRows={6}
+                  />
+
+                  <div className="mt-2">
+                    <Button
+                      variant={field === "question" ? "contained" : "outlined"}
+                      className="me-2 mb-2"
                     >
-                      <MenuItem value={formData.optionA}>
-                        {formData.optionA}
-                      </MenuItem>
-                      <MenuItem value={formData.optionB}>
-                        {formData.optionB}
-                      </MenuItem>
-                      <MenuItem value={formData.optionC}>
-                        {formData.optionC}
-                      </MenuItem>
-                      <MenuItem value={formData.optionD}>
-                        {formData.optionD}
-                      </MenuItem>
-                    </TextField>
+                      Question
+                    </Button>
+                    <Button
+                      variant={field === "optionA" ? "contained" : "outlined"}
+                      className="me-2 mb-2"
+                    >
+                      Option A
+                    </Button>
+                    <Button
+                      variant={field === "optionB" ? "contained" : "outlined"}
+                      className="me-2 mb-2"
+                    >
+                      Option B
+                    </Button>
+                    <Button
+                      variant={field === "optionC" ? "contained" : "outlined"}
+                      className="me-2 mb-2"
+                    >
+                      Option C
+                    </Button>
+                    <Button
+                      variant={field === "optionD" ? "contained" : "outlined"}
+                      className="me-2 mb-2"
+                    >
+                      Option D
+                    </Button>
+                    <Button
+                      variant={
+                        field === "correctAns" ? "contained" : "outlined"
+                      }
+                      className="me-2 mb-2"
+                    >
+                      Correct Answer
+                    </Button>
                   </div>
-                )}
-              <div className="col-lg-4">
-                <LoadingButton
-                  loadingPosition="end"
-                  loading={loading}
-                  variant="contained"
-                  type="submit"
-                  endIcon={<Save />}
-                >
-                  add question
-                </LoadingButton>
+                </div>
+                <div className="col-lg-6">
+                  <div>
+                    <Typography variant="h6">Output</Typography>
+                    <hr />
+                    <div className="mb-2">
+                      <div>
+                        {" "}
+                        <Typography variant="caption" gutterBottom>
+                          Question
+                        </Typography>
+                      </div>
+                      <div>{parse(formData.question)}</div>
+                    </div>
+                    <div className="mb-2">
+                      <Typography variant="caption">Option A</Typography>
+                    </div>
+                    <div className="mb-2">
+                      <Typography variant="caption">Option B</Typography>
+                    </div>
+                    <div className="mb-2">
+                      <Typography variant="caption">Option C</Typography>
+                    </div>
+                    <div className="mb-2">
+                      <Typography variant="caption">Option D</Typography>
+                    </div>
+                    <div className="mb-2">
+                      <Typography variant="caption">Correct Ans</Typography>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-          </form>
+          )}
         </div>
       )}
     </>
