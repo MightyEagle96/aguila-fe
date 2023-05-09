@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { AlertContext } from "../../contexts/AlertContext";
-import { Table } from "react-bootstrap";
+import { Table, Modal } from "react-bootstrap";
 import { Camera, Delete, Edit } from "@mui/icons-material";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
@@ -154,12 +154,12 @@ export default function SubjectQuestionBank() {
             </LoadingButton>
           </div>
           <div className="mt-2">
-            <EnterQuestionText
+            {/* <EnterQuestionText
               questionData={questionData}
               setQuestionData={setQuestionData}
               questionMetaData={questionMetaData}
               getQuestionBank={getQuestionBank}
-            />
+            /> */}
           </div>
           <div className="mt-3">
             <Table bordered>
@@ -221,6 +221,25 @@ export default function SubjectQuestionBank() {
               </tbody>
             </Table>
           </div>
+          <Modal
+            centered
+            size="xl"
+            show={questionData}
+            onHide={() => {
+              setQuestionData(null);
+              setQuestionMetaData(null);
+            }}
+          >
+            <Modal.Header closeButton>EDIT QUESTION</Modal.Header>
+            <Modal.Body>
+              <EnterQuestionText
+                questionData={questionData}
+                setQuestionData={setQuestionData}
+                questionMetaData={questionMetaData}
+                getQuestionBank={getQuestionBank}
+              />
+            </Modal.Body>
+          </Modal>
         </div>
       )}
     </div>
@@ -257,8 +276,6 @@ function EditQuestion({
         subject: data.subject,
         questionId: data.questionId,
       });
-
-      window.location.href = "#editQuestion";
     }
     setLoading(false);
   };
@@ -329,7 +346,7 @@ function EnterQuestionText({
       {questionData && (
         <form onSubmit={updateQuestion}>
           <div className="row">
-            <div className="col-lg-4 mb-2">
+            <div className="col-lg-12 mb-4">
               {/* <ReactQuill
               theme="snow"
               modules={{ toolbar: optionToolbar }}
@@ -350,7 +367,7 @@ function EnterQuestionText({
                 variant="standard"
               />
             </div>
-            <div className="col-lg-4 mb-2">
+            <div className="col-lg-4 mb-4">
               {/* <ReactQuill
               theme="snow"
               modules={{ toolbar: optionToolbar }}
@@ -374,7 +391,7 @@ function EnterQuestionText({
                 variant="standard"
               />
             </div>
-            <div className="col-lg-4 mb-2">
+            <div className="col-lg-4 mb-4">
               {/* <ReactQuill
               theme="snow"
               modules={{ toolbar: optionToolbar }}
@@ -393,7 +410,7 @@ function EnterQuestionText({
                 variant="standard"
               />
             </div>
-            <div className="col-lg-4 mb-2">
+            <div className="col-lg-4 mb-4">
               {/* <ReactQuill
               theme="snow"
               modules={{ toolbar: optionToolbar }}
@@ -412,7 +429,7 @@ function EnterQuestionText({
                 variant="standard"
               />
             </div>
-            <div className="col-lg-4 mb-2">
+            <div className="col-lg-4 mb-4">
               {/* <ReactQuill
               theme="snow"
               modules={{ toolbar: optionToolbar }}
@@ -431,7 +448,7 @@ function EnterQuestionText({
                 variant="standard"
               />
             </div>
-            <div className="col-lg-4 mb-2">
+            <div className="col-lg-4 mb-4">
               <TextField
                 select
                 fullWidth
