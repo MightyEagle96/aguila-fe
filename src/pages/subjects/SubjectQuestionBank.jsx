@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useParams } from "react-router-dom";
+import { useOutlet, useParams } from "react-router-dom";
 import { httpService } from "../../httpService";
 import {
   Button,
@@ -263,7 +263,11 @@ export default function SubjectQuestionBank() {
             }}
           >
             <Modal.Header closeButton>ADD QUESTION</Modal.Header>
-            <AddQuestionText addQuestionData={addQuestionData} />
+            <AddQuestionText
+              addQuestionData={addQuestionData}
+              getQuestionBank={getQuestionBank}
+              setAddQuestionData={setAddQuestionData}
+            />
           </Modal>
         </div>
       )}
@@ -552,7 +556,7 @@ function UploadQuestionImage() {
 
 function AddQuestionText({
   addQuestionData,
-
+  setAddQuestionData,
   getQuestionBank,
 }) {
   const [loading, setLoading] = useState(false);
@@ -560,13 +564,24 @@ function AddQuestionText({
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
+  const { setAlertData } = useContext(AlertContext);
+
   const saveQuestion = async (e) => {
     e.preventDefault();
     setLoading(true);
-    // const { save, error } = await httpService.post(
-    //   "aguila/subject/questionbank/addquestion",
-    //   formData
-    // );
+    const { data, error } = await httpService.post(
+      "aguila/subject/questionbank/addquestion",
+      formData
+    );
+
+    if (data) {
+      setAlertData({ message: data, severity: "success", open: true });
+      setAddQuestionData(null);
+      getQuestionBank();
+    }
+    if (error) {
+      setAlertData({ message: error, severity: "error", open: true });
+    }
     console.log(formData);
     setLoading(false);
   };
