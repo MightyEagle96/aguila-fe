@@ -17,6 +17,7 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import parse from "html-react-parser";
 import { Editor, EditorState } from "draft-js";
+import Swal from "sweetalert2";
 
 export default function SubjectQuestionBank() {
   const { id } = useParams();
@@ -211,7 +212,11 @@ export default function SubjectQuestionBank() {
                       />
                     </td>
                     <td>
-                      <DeleteQuestion />
+                      <DeleteQuestion
+                        subject={questionBank.subject._id}
+                        questionId={c._id}
+                        getQuestionBank={getQuestionBank}
+                      />
                     </td>
                     <td>
                       <UploadQuestionImage />
@@ -246,10 +251,37 @@ export default function SubjectQuestionBank() {
   );
 }
 
-function DeleteQuestion({ subject, questionId }) {
+function DeleteQuestion({ subject, questionId, getQuestionBank }) {
+  const { setAlertData } = useContext(AlertContext);
+  const [loading, setLoading] = useState(false);
+  const deleteQuestion = () => {
+    Swal.fire({
+      icon: "question",
+      title: "Delete Question",
+      text: "Are you sure you want to delete this question?",
+      showCancelButton: true,
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        setLoading(true);
+        const { data, error } = await httpService.post(
+          "aguila/subject/questionbank/deletequestion",
+          { subject, questionId }
+        );
+
+        if (data) {
+          setAlertData({ open: true, message: data, severity: "success" });
+          getQuestionBank();
+        }
+        if (error) {
+          setAlertData({ open: true, message: error, severity: "error" });
+        }
+        setLoading(false);
+      }
+    });
+  };
   return (
-    <IconButton>
-      <Delete />
+    <IconButton disabled={loading} onClick={deleteQuestion}>
+      {loading ? <CircularProgress size={20} /> : <Delete />}
     </IconButton>
   );
 }
