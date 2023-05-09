@@ -12,7 +12,7 @@ import {
 import { LoadingButton } from "@mui/lab";
 import { AlertContext } from "../../contexts/AlertContext";
 import { Table, Modal } from "react-bootstrap";
-import { Camera, Delete, Edit } from "@mui/icons-material";
+import { AddAPhoto, Camera, Delete, Edit, Save } from "@mui/icons-material";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import parse from "html-react-parser";
@@ -172,7 +172,7 @@ export default function SubjectQuestionBank() {
             /> */}
           </div>
           <div className="mt-3">
-            <Table bordered>
+            <Table bordered striped>
               <thead>
                 <tr>
                   <th>S/N</th>
@@ -549,7 +549,7 @@ function EnterQuestionText({
 function UploadQuestionImage() {
   return (
     <IconButton>
-      <Camera />
+      <AddAPhoto />
     </IconButton>
   );
 }
@@ -582,13 +582,14 @@ function AddQuestionText({
     if (error) {
       setAlertData({ message: error, severity: "error", open: true });
     }
-    console.log(formData);
+
     setLoading(false);
   };
   return (
     <>
       {addQuestionData && (
-        <div className="p-3">
+        <div className="p-4">
+          <Button>toggle text mode</Button>
           <form onSubmit={saveQuestion}>
             <div className="row">
               <div className="col-lg-12 mb-4">
@@ -686,6 +687,7 @@ function AddQuestionText({
                   loading={loading}
                   variant="contained"
                   type="submit"
+                  endIcon={<Save />}
                 >
                   add question
                 </LoadingButton>
