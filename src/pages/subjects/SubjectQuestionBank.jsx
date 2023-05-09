@@ -31,6 +31,7 @@ export default function SubjectQuestionBank() {
 
   const [questionData, setQuestionData] = useState(null);
   const [questionMetaData, setQuestionMetaData] = useState(null);
+  const [addQuestionData, setAddQuestionData] = useState(null);
 
   const getQuestionBank = async () => {
     setLoading(true);
@@ -141,6 +142,14 @@ export default function SubjectQuestionBank() {
                 </form>
               </div>
             </div>
+            <Button
+              variant="contained"
+              onClick={() => {
+                setAddQuestionData({ id });
+              }}
+            >
+              add question manually
+            </Button>
           </div>
           <div className="d-flex justify-content-end" id="editQuestion">
             <Button href={`/subjects/previewexam/${id}`}>preview exam</Button>
@@ -244,6 +253,17 @@ export default function SubjectQuestionBank() {
                 getQuestionBank={getQuestionBank}
               />
             </Modal.Body>
+          </Modal>
+          <Modal
+            centered
+            size="xl"
+            show={addQuestionData}
+            onHide={() => {
+              setAddQuestionData(null);
+            }}
+          >
+            <Modal.Header closeButton>ADD QUESTION</Modal.Header>
+            <AddQuestionText addQuestionData={addQuestionData} />
           </Modal>
         </div>
       )}
@@ -527,5 +547,138 @@ function UploadQuestionImage() {
     <IconButton>
       <Camera />
     </IconButton>
+  );
+}
+
+function AddQuestionText({
+  addQuestionData,
+
+  getQuestionBank,
+}) {
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState(addQuestionData);
+  const handleChange = (e) =>
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+
+  const saveQuestion = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    // const { save, error } = await httpService.post(
+    //   "aguila/subject/questionbank/addquestion",
+    //   formData
+    // );
+    console.log(formData);
+    setLoading(false);
+  };
+  return (
+    <>
+      {addQuestionData && (
+        <div className="p-3">
+          <form onSubmit={saveQuestion}>
+            <div className="row">
+              <div className="col-lg-12 mb-4">
+                <TextField
+                  multiline
+                  maxRows={6}
+                  name="question"
+                  onChange={handleChange}
+                  fullWidth
+                  required
+                  label="Question"
+                  variant="standard"
+                />
+              </div>
+              <div className="col-lg-4 mb-4">
+                <TextField
+                  multiline
+                  maxRows={6}
+                  name="optionA"
+                  onChange={handleChange}
+                  fullWidth
+                  required
+                  label="Option A"
+                  variant="standard"
+                />
+              </div>
+              <div className="col-lg-4 mb-4">
+                <TextField
+                  multiline
+                  maxRows={6}
+                  name="optionB"
+                  onChange={handleChange}
+                  fullWidth
+                  required
+                  label="Option B"
+                  variant="standard"
+                />
+              </div>
+              <div className="col-lg-4 mb-4">
+                <TextField
+                  multiline
+                  maxRows={6}
+                  name="optionC"
+                  onChange={handleChange}
+                  fullWidth
+                  required
+                  label="Option C"
+                  variant="standard"
+                />
+              </div>
+              <div className="col-lg-4 mb-4">
+                <TextField
+                  multiline
+                  maxRows={6}
+                  name="optionD"
+                  onChange={handleChange}
+                  fullWidth
+                  required
+                  label="Option D"
+                  variant="standard"
+                />
+              </div>
+              {formData.optionA &&
+                formData.optionB &&
+                formData.optionC &&
+                formData.optionD && (
+                  <div className="col-lg-4 mb-4">
+                    <TextField
+                      select
+                      fullWidth
+                      name="correctAns"
+                      onChange={handleChange}
+                      required
+                      label="Correct Answer"
+                      variant="standard"
+                    >
+                      <MenuItem value={formData.optionA}>
+                        {formData.optionA}
+                      </MenuItem>
+                      <MenuItem value={formData.optionB}>
+                        {formData.optionB}
+                      </MenuItem>
+                      <MenuItem value={formData.optionC}>
+                        {formData.optionC}
+                      </MenuItem>
+                      <MenuItem value={formData.optionD}>
+                        {formData.optionD}
+                      </MenuItem>
+                    </TextField>
+                  </div>
+                )}
+              <div className="col-lg-4">
+                <LoadingButton
+                  loadingPosition="end"
+                  loading={loading}
+                  variant="contained"
+                  type="submit"
+                >
+                  add question
+                </LoadingButton>
+              </div>
+            </div>
+          </form>
+        </div>
+      )}
+    </>
   );
 }
