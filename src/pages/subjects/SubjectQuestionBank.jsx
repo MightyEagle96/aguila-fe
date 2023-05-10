@@ -12,11 +12,10 @@ import {
 import { LoadingButton } from "@mui/lab";
 import { AlertContext } from "../../contexts/AlertContext";
 import { Table, Modal } from "react-bootstrap";
-import { AddAPhoto, Camera, Delete, Edit, Save } from "@mui/icons-material";
-import ReactQuill from "react-quill";
+import { AddAPhoto, Delete, Edit, Save } from "@mui/icons-material";
 import "react-quill/dist/quill.snow.css";
 import parse from "html-react-parser";
-import { Editor, EditorState } from "draft-js";
+
 import Swal from "sweetalert2";
 
 export default function SubjectQuestionBank() {
@@ -27,7 +26,6 @@ export default function SubjectQuestionBank() {
   const [questionFile, setQuestionFile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [deleting, setDeleting] = useState(false);
-  const [showQuestionField, setShowQuestionField] = useState(false);
 
   const [questionData, setQuestionData] = useState(null);
   const [questionMetaData, setQuestionMetaData] = useState(null);
@@ -728,49 +726,86 @@ function AddQuestionText({
                     label="Text Editor"
                     name={field}
                     onChange={handleChange}
+                    value={formData[field]}
                     multiline
                     maxRows={6}
                   />
 
                   <div className="mt-2">
-                    <Button
-                      variant={field === "question" ? "contained" : "outlined"}
-                      className="me-2 mb-2"
-                    >
-                      Question
-                    </Button>
-                    <Button
-                      variant={field === "optionA" ? "contained" : "outlined"}
-                      className="me-2 mb-2"
-                    >
-                      Option A
-                    </Button>
-                    <Button
-                      variant={field === "optionB" ? "contained" : "outlined"}
-                      className="me-2 mb-2"
-                    >
-                      Option B
-                    </Button>
-                    <Button
-                      variant={field === "optionC" ? "contained" : "outlined"}
-                      className="me-2 mb-2"
-                    >
-                      Option C
-                    </Button>
-                    <Button
-                      variant={field === "optionD" ? "contained" : "outlined"}
-                      className="me-2 mb-2"
-                    >
-                      Option D
-                    </Button>
-                    <Button
+                    <div className="mb-2">
+                      <Button
+                        variant={
+                          field === "question" ? "contained" : "outlined"
+                        }
+                        className="me-2 mb-2"
+                        color="warning"
+                        onClick={() => setField("question")}
+                      >
+                        Question
+                      </Button>
+                      <Button
+                        variant={field === "optionA" ? "contained" : "outlined"}
+                        className="me-2 mb-2"
+                        color="warning"
+                        onClick={() => setField("optionA")}
+                      >
+                        Option A
+                      </Button>
+                      <Button
+                        variant={field === "optionB" ? "contained" : "outlined"}
+                        className="me-2 mb-2"
+                        color="warning"
+                        onClick={() => setField("optionB")}
+                      >
+                        Option B
+                      </Button>
+                      <Button
+                        variant={field === "optionC" ? "contained" : "outlined"}
+                        className="me-2 mb-2"
+                        color="warning"
+                        onClick={() => setField("optionC")}
+                      >
+                        Option C
+                      </Button>
+                      <Button
+                        variant={field === "optionD" ? "contained" : "outlined"}
+                        className="me-2 mb-2"
+                        color="warning"
+                        onClick={() => setField("optionD")}
+                      >
+                        Option D
+                      </Button>
+                    </div>
+                    <div>
+                      <TextField
+                        fullWidth
+                        label="Correct Answer"
+                        select
+                        name="correctAns"
+                        onChange={handleChange}
+                      >
+                        <MenuItem value={formData.optionA}>
+                          {parse(formData.optionA)}
+                        </MenuItem>
+                        <MenuItem value={formData.optionB}>
+                          {parse(formData.optionB)}
+                        </MenuItem>
+                        <MenuItem value={formData.optionC}>
+                          {parse(formData.optionC)}
+                        </MenuItem>
+                        <MenuItem value={formData.optionD}>
+                          {parse(formData.optionD)}
+                        </MenuItem>
+                      </TextField>
+                    </div>
+                    {/* <Button
                       variant={
                         field === "correctAns" ? "contained" : "outlined"
                       }
                       className="me-2 mb-2"
                     >
                       Correct Answer
-                    </Button>
+                    </Button> */}
                   </div>
                 </div>
                 <div className="col-lg-6">
@@ -788,18 +823,23 @@ function AddQuestionText({
                     </div>
                     <div className="mb-2">
                       <Typography variant="caption">Option A</Typography>
+                      <div>{parse(formData.optionA)}</div>
                     </div>
                     <div className="mb-2">
                       <Typography variant="caption">Option B</Typography>
+                      <div>{parse(formData.optionB)}</div>
                     </div>
                     <div className="mb-2">
                       <Typography variant="caption">Option C</Typography>
+                      <div>{parse(formData.optionC)}</div>
                     </div>
                     <div className="mb-2">
                       <Typography variant="caption">Option D</Typography>
+                      <div>{parse(formData.optionD)}</div>
                     </div>
                     <div className="mb-2">
                       <Typography variant="caption">Correct Ans</Typography>
+                      <div>{parse(formData.correctAns)}</div>
                     </div>
                   </div>
                 </div>
