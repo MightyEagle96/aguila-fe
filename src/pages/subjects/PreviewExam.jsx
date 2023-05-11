@@ -59,25 +59,25 @@ function QuestionCard({ c, i }) {
           <Typography variant="h6">Question {i}</Typography>
           <div className="mt-3 mb-3">{parse(c.question)}</div>
           <div className="mb-1">
-            <>
+            <span>
               A. {parse(c.optionA)} {c.optionA === c.correctAns && <Done />}
-            </>
+            </span>
           </div>
           <div className="mb-1">
-            <>
+            <span>
               B. {parse(c.optionB)} {c.optionB === c.correctAns && <Done />}
-            </>
+            </span>
           </div>
           <div className="mb-1">
-            <>
+            <span>
               C. {parse(c.optionC)} {c.optionC === c.correctAns && <Done />}
-            </>
+            </span>
           </div>
 
           <div className="mb-1">
-            <>
+            <span>
               D. {parse(c.optionD)} {c.optionD === c.correctAns && <Done />}
-            </>
+            </span>
           </div>
         </div>
       ) : (
