@@ -360,42 +360,16 @@ function EnterQuestionText({
   questionMetaData,
   getQuestionBank,
 }) {
+  const [editData, setEditData] = useState(questionData);
   const [loading, setLoading] = useState(false);
   const { setAlertData } = useContext(AlertContext);
-  // const optionToolbar = [
-  //   ["bold", "italic", "underline", "strike"], // toggled buttons
-  //   ["blockquote", "code-block"],
-
-  //   [{ header: 1 }, { header: 2 }], // custom button values
-
-  //   [{ script: "sub" }, { script: "super" }], // superscript/subscript
-  // ];
-  // const toolbarOptions = [
-  //   ["bold", "italic", "underline", "strike"], // toggled buttons
-  //   ["blockquote", "code-block"],
-
-  //   [{ header: 1 }, { header: 2 }], // custom button values
-  //   [{ list: "ordered" }, { list: "bullet" }],
-  //   [{ script: "sub" }, { script: "super" }], // superscript/subscript
-  //   [{ indent: "-1" }, { indent: "+1" }], // outdent/indent
-  //   [{ direction: "rtl" }], // text direction
-
-  //   [{ size: ["small", false, "large", "huge"] }], // custom dropdown
-  //   [{ header: [1, 2, 3, 4, 5, 6, false] }],
-
-  //   [{ color: [] }, { background: [] }], // dropdown with defaults from theme
-  //   [{ font: [] }],
-  //   [{ align: [] }],
-
-  //   ["clean"],
-  // ];
 
   const updateQuestion = async (e) => {
     e.preventDefault();
     setLoading(true);
     const { data, error } = await httpService.post(
       "aguila/subject/questionbank/updatequestion",
-      { ...questionData, ...questionMetaData }
+      { ...editData, ...questionMetaData }
     );
     if (data) {
       setQuestionData(null);
@@ -408,10 +382,10 @@ function EnterQuestionText({
     setLoading(false);
   };
   const handleChange = (e) =>
-    setQuestionData({ ...questionData, [e.target.name]: e.target.value });
+    setEditData({ ...editData, [e.target.name]: e.target.value });
   return (
     <div className="bg-light p-3">
-      {questionData && (
+      {editData && (
         <form onSubmit={updateQuestion}>
           <div className="row">
             <div className="col-lg-12 mb-4">
@@ -426,7 +400,7 @@ function EnterQuestionText({
               <TextField
                 multiline
                 maxRows={6}
-                value={questionData.question}
+                value={editData.question}
                 name="question"
                 onChange={handleChange}
                 fullWidth
@@ -436,21 +410,10 @@ function EnterQuestionText({
               />
             </div>
             <div className="col-lg-4 mb-4">
-              {/* <ReactQuill
-              theme="snow"
-              modules={{ toolbar: optionToolbar }}
-              value={questionData.optionA}
-              onChange={(e) =>
-                setQuestionData({
-                  ...questionData,
-                  optionA: e,
-                })
-              }
-            /> */}
               <TextField
                 multiline
                 maxRows={6}
-                value={questionData.optionA}
+                value={editData.optionA}
                 name="optionA"
                 onChange={handleChange}
                 fullWidth
@@ -460,16 +423,10 @@ function EnterQuestionText({
               />
             </div>
             <div className="col-lg-4 mb-4">
-              {/* <ReactQuill
-              theme="snow"
-              modules={{ toolbar: optionToolbar }}
-              value={questionData.optionB}
-              onChange={(e) => setQuestionData({ ...questionData, optionB: e })}
-            /> */}
               <TextField
                 multiline
                 maxRows={6}
-                value={questionData.optionB}
+                value={editData.optionB}
                 name="optionB"
                 onChange={handleChange}
                 fullWidth
@@ -479,16 +436,10 @@ function EnterQuestionText({
               />
             </div>
             <div className="col-lg-4 mb-4">
-              {/* <ReactQuill
-              theme="snow"
-              modules={{ toolbar: optionToolbar }}
-              value={questionData.optionC}
-              onChange={(e) => setQuestionData({ ...questionData, optionC: e })}
-            /> */}
               <TextField
                 multiline
                 maxRows={6}
-                value={questionData.optionC}
+                value={editData.optionC}
                 name="optionC"
                 onChange={handleChange}
                 fullWidth
@@ -498,16 +449,10 @@ function EnterQuestionText({
               />
             </div>
             <div className="col-lg-4 mb-4">
-              {/* <ReactQuill
-              theme="snow"
-              modules={{ toolbar: optionToolbar }}
-              value={questionData.optionD}
-              onChange={(e) => setQuestionData({ ...questionData, optionD: e })}
-            /> */}
               <TextField
                 multiline
                 maxRows={6}
-                value={questionData.optionD}
+                value={editData.optionD}
                 name="optionD"
                 onChange={handleChange}
                 fullWidth
@@ -522,23 +467,15 @@ function EnterQuestionText({
                 fullWidth
                 name="correctAns"
                 onChange={handleChange}
-                value={questionData.correctAns}
+                value={editData.correctAns}
                 required
                 label="Correct Answer"
                 variant="standard"
               >
-                <MenuItem value={questionData.optionA}>
-                  {questionData.optionA}
-                </MenuItem>
-                <MenuItem value={questionData.optionB}>
-                  {questionData.optionB}
-                </MenuItem>
-                <MenuItem value={questionData.optionC}>
-                  {questionData.optionC}
-                </MenuItem>
-                <MenuItem value={questionData.optionD}>
-                  {questionData.optionD}
-                </MenuItem>
+                <MenuItem value={editData.optionA}>{editData.optionA}</MenuItem>
+                <MenuItem value={editData.optionB}>{editData.optionB}</MenuItem>
+                <MenuItem value={editData.optionC}>{editData.optionC}</MenuItem>
+                <MenuItem value={editData.optionD}>{editData.optionD}</MenuItem>
               </TextField>
             </div>
             <div className="col-lg-4">
@@ -618,6 +555,7 @@ function AddQuestionText({
       optionC: "",
       optionD: "",
       correctAns: "",
+      isRichText: mode === "plain text" ? false : true,
     });
   };
 
