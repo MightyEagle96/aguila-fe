@@ -231,6 +231,20 @@ export default function SubjectQuestionBank() {
                   </tr>
                 ))}
               </tbody>
+              <tfoot>
+                <tr>
+                  <th>S/N</th>
+                  <th>Question</th>
+                  <th>Option A</th>
+                  <th>Option B</th>
+                  <th>Option C</th>
+                  <th>Option D</th>
+                  <th>Correct Answer</th>
+                  <th>Edit</th>
+                  <th>Delete</th>
+                  <th>Image</th>
+                </tr>
+              </tfoot>
             </Table>
           </div>
           <Modal
