@@ -285,6 +285,7 @@ export default function SubjectQuestionBank() {
           <Modal
             centered
             size="xl"
+            backdrop="static"
             show={questionData}
             onHide={() => {
               setQuestionData(null);
@@ -304,6 +305,7 @@ export default function SubjectQuestionBank() {
           <Modal
             centered
             size="xl"
+            backdrop="static"
             show={addQuestionData}
             onHide={() => {
               setAddQuestionData(null);
