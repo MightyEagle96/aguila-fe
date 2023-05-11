@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { httpService } from "../../httpService";
 import { CircularProgress, Typography } from "@mui/material";
 import { Done } from "@mui/icons-material";
+import parse from "html-react-parser";
 export default function PreviewExam() {
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
@@ -53,31 +54,61 @@ export default function PreviewExam() {
 function QuestionCard({ c, i }) {
   return (
     <div className="shadow-sm p-2 mb-1">
-      <Typography variant="h6">Question {i}</Typography>
-      <div className="mt-3 mb-3">
-        <Typography>{c.question} </Typography>
-      </div>
-      <div className="mb-1">
-        <Typography>
-          A. {c.optionA} {c.optionA === c.correctAns && <Done />}
-        </Typography>
-      </div>
-      <div className="mb-1">
-        <Typography>
-          B. {c.optionB} {c.optionB === c.correctAns && <Done />}
-        </Typography>
-      </div>
-      <div className="mb-1">
-        <Typography>
-          C. {c.optionC} {c.optionC === c.correctAns && <Done />}
-        </Typography>
-      </div>
+      {c.isRichText ? (
+        <div>
+          <Typography variant="h6">Question {i}</Typography>
+          <div className="mt-3 mb-3">{parse(c.question)}</div>
+          <div className="mb-1">
+            <>
+              A. {parse(c.optionA)} {c.optionA === c.correctAns && <Done />}
+            </>
+          </div>
+          <div className="mb-1">
+            <>
+              B. {parse(c.optionB)} {c.optionB === c.correctAns && <Done />}
+            </>
+          </div>
+          <div className="mb-1">
+            <>
+              C. {parse(c.optionC)} {c.optionC === c.correctAns && <Done />}
+            </>
+          </div>
 
-      <div className="mb-1">
-        <Typography>
-          D. {c.optionD} {c.optionD === c.correctAns && <Done />}
-        </Typography>
-      </div>
+          <div className="mb-1">
+            <>
+              D. {parse(c.optionD)} {c.optionD === c.correctAns && <Done />}
+            </>
+          </div>
+        </div>
+      ) : (
+        <div>
+          <Typography variant="h6">Question {i}</Typography>
+          <div className="mt-3 mb-3">
+            <Typography>{c.question} </Typography>
+          </div>
+          <div className="mb-1">
+            <Typography>
+              A. {c.optionA} {c.optionA === c.correctAns && <Done />}
+            </Typography>
+          </div>
+          <div className="mb-1">
+            <Typography>
+              B. {c.optionB} {c.optionB === c.correctAns && <Done />}
+            </Typography>
+          </div>
+          <div className="mb-1">
+            <Typography>
+              C. {c.optionC} {c.optionC === c.correctAns && <Done />}
+            </Typography>
+          </div>
+
+          <div className="mb-1">
+            <Typography>
+              D. {c.optionD} {c.optionD === c.correctAns && <Done />}
+            </Typography>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
