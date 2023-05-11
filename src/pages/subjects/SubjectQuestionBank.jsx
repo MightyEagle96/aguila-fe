@@ -187,48 +187,83 @@ export default function SubjectQuestionBank() {
               </thead>
               <tbody>
                 {questionBank.questions.map((c, i) => (
-                  <tr key={i}>
-                    <td>
-                      <Typography>{i + 1}</Typography>
-                    </td>
-                    <td className="col-lg-4">
-                      <Typography>{c.question}</Typography>
-                    </td>
-                    <td className="col-lg-1">
-                      <Typography>{c.optionA}</Typography>
-                    </td>
-                    <td className="col-lg-1">
-                      <Typography>{c.optionB}</Typography>
-                    </td>
-                    <td className="col-lg-1">
-                      <Typography>{c.optionC}</Typography>
-                    </td>
+                  <>
+                    {c.isRichText ? (
+                      <tr key={i}>
+                        <td>
+                          <Typography>{i + 1}</Typography>
+                        </td>
+                        <td className="col-lg-4">{parse(c.question)}</td>
+                        <td className="col-lg-1">{parse(c.optionA)}</td>
+                        <td className="col-lg-1">{parse(c.optionB)}</td>
+                        <td className="col-lg-1">{parse(c.optionC)}</td>
 
-                    <td className="col-lg-1">
-                      <Typography>{c.optionD}</Typography>
-                    </td>
-                    <td className="col-lg-1">
-                      <Typography>{c.correctAns}</Typography>
-                    </td>
-                    <td>
-                      <EditQuestion
-                        subject={questionBank.subject}
-                        questionId={c._id}
-                        setQuestionData={setQuestionData}
-                        setQuestionMetaData={setQuestionMetaData}
-                      />
-                    </td>
-                    <td>
-                      <DeleteQuestion
-                        subject={questionBank.subject._id}
-                        questionId={c._id}
-                        getQuestionBank={getQuestionBank}
-                      />
-                    </td>
-                    <td>
-                      <UploadQuestionImage />
-                    </td>
-                  </tr>
+                        <td className="col-lg-1">{parse(c.optionD)}</td>
+                        <td className="col-lg-1">{parse(c.correctAns)}</td>
+                        <td>
+                          <EditQuestion
+                            subject={questionBank.subject}
+                            questionId={c._id}
+                            setQuestionData={setQuestionData}
+                            setQuestionMetaData={setQuestionMetaData}
+                          />
+                        </td>
+                        <td>
+                          <DeleteQuestion
+                            subject={questionBank.subject._id}
+                            questionId={c._id}
+                            getQuestionBank={getQuestionBank}
+                          />
+                        </td>
+                        <td>
+                          <UploadQuestionImage />
+                        </td>
+                      </tr>
+                    ) : (
+                      <tr key={i}>
+                        <td>
+                          <Typography>{i + 1}</Typography>
+                        </td>
+                        <td className="col-lg-4">
+                          <Typography>{c.question}</Typography>
+                        </td>
+                        <td className="col-lg-1">
+                          <Typography>{c.optionA}</Typography>
+                        </td>
+                        <td className="col-lg-1">
+                          <Typography>{c.optionB}</Typography>
+                        </td>
+                        <td className="col-lg-1">
+                          <Typography>{c.optionC}</Typography>
+                        </td>
+
+                        <td className="col-lg-1">
+                          <Typography>{c.optionD}</Typography>
+                        </td>
+                        <td className="col-lg-1">
+                          <Typography>{c.correctAns}</Typography>
+                        </td>
+                        <td>
+                          <EditQuestion
+                            subject={questionBank.subject}
+                            questionId={c._id}
+                            setQuestionData={setQuestionData}
+                            setQuestionMetaData={setQuestionMetaData}
+                          />
+                        </td>
+                        <td>
+                          <DeleteQuestion
+                            subject={questionBank.subject._id}
+                            questionId={c._id}
+                            getQuestionBank={getQuestionBank}
+                          />
+                        </td>
+                        <td>
+                          <UploadQuestionImage />
+                        </td>
+                      </tr>
+                    )}
+                  </>
                 ))}
               </tbody>
               <tfoot>
@@ -528,9 +563,13 @@ function AddQuestionText({
   const saveQuestion = async (e) => {
     e.preventDefault();
     setLoading(true);
+
     const { data, error } = await httpService.post(
       "aguila/subject/questionbank/addquestion",
-      formData
+      {
+        ...formData,
+        isRichText: mode === "rich text" ? true : false,
+      }
     );
 
     if (data) {
@@ -555,7 +594,6 @@ function AddQuestionText({
       optionC: "",
       optionD: "",
       correctAns: "",
-      isRichText: mode === "plain text" ? false : true,
     });
   };
 
@@ -793,6 +831,17 @@ function AddQuestionText({
                       <Typography variant="caption">Correct Ans</Typography>
                       <div>{parse(formData.correctAns)}</div>
                     </div>
+                  </div>
+                  <div className="mt-3">
+                    <LoadingButton
+                      loadingPosition="end"
+                      loading={loading}
+                      variant="contained"
+                      onClick={saveQuestion}
+                      endIcon={<Save />}
+                    >
+                      add question
+                    </LoadingButton>
                   </div>
                 </div>
               </div>
