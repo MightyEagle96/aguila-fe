@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { httpService } from "../../httpService";
+import { backendURL, httpService } from "../../httpService";
 import { CircularProgress, Typography } from "@mui/material";
 import { Done } from "@mui/icons-material";
 import parse from "html-react-parser";
@@ -58,6 +58,16 @@ function QuestionCard({ c, i }) {
         <div>
           <Typography variant="h6">Question {i}</Typography>
           <div className="mt-3 mb-3">{parse(c.question)}</div>
+
+          {c.image && (
+            <div className="mt-2 mb-2">
+              <img
+                className="img-fluid"
+                src={`${backendURL}questionimages/${c.image}`}
+                alt={`Question ${i}`}
+              />
+            </div>
+          )}
           <div className="mb-1">
             <span>
               A. {parse(c.optionA)} {c.optionA === c.correctAns && <Done />}
@@ -86,6 +96,15 @@ function QuestionCard({ c, i }) {
           <div className="mt-3 mb-3">
             <Typography>{c.question} </Typography>
           </div>
+          {c.image && (
+            <div className="mt-2 mb-2">
+              <img
+                className="img-fluid"
+                src={`${backendURL}questionimages/${c.image}`}
+                alt={`Question ${i}`}
+              />
+            </div>
+          )}
           <div className="mb-1">
             <Typography>
               A. {c.optionA} {c.optionA === c.correctAns && <Done />}

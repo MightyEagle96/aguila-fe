@@ -12,7 +12,7 @@ import {
 import { LoadingButton } from "@mui/lab";
 import { AlertContext } from "../../contexts/AlertContext";
 import { Table, Modal } from "react-bootstrap";
-import { AddAPhoto, Delete, Edit, Save } from "@mui/icons-material";
+import { AddAPhoto, Delete, Edit, Save, UploadFile } from "@mui/icons-material";
 import "react-quill/dist/quill.snow.css";
 import parse from "html-react-parser";
 
@@ -259,7 +259,10 @@ export default function SubjectQuestionBank() {
                           />
                         </td>
                         <td>
-                          <UploadQuestionImage />
+                          <UploadQuestionImage
+                            subject={questionBank.subject._id}
+                            questionId={c._id}
+                          />
                         </td>
                       </tr>
                     )}
@@ -532,11 +535,101 @@ function EnterQuestionText({
   );
 }
 
-function UploadQuestionImage() {
+function UploadQuestionImage({ subject, questionId }) {
+  const [show, setShow] = useState(false);
+  const [file, setFile] = useState(null);
+  const [image, setImage] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const { setAlertData } = useContext(AlertContext);
+
+  const toggle = () => setShow(!show);
+
+  const handleChange = (e) => {
+    setFile(e.target.files[0]);
+    setImage(URL.createObjectURL(e.target.files[0]));
+  };
+
+  const clearImage = () => {
+    setFile(null);
+    setImage(null);
+  };
+
+  const uploadImage = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    let formData = new FormData();
+
+    formData.append("imageFile", file, file.name);
+
+    const { data, error } = await httpService.post(
+      "aguila/subject/questionbank/uploadimage",
+      formData,
+      { headers: { subject, questionid: questionId } }
+    );
+
+    if (data) {
+      setImage(null);
+      setFile(null);
+      setShow(false);
+      setAlertData({ open: true, message: data, severity: "success" });
+    }
+    if (error) {
+      setAlertData({ open: true, message: error, severity: "error" });
+    }
+    setLoading(false);
+  };
   return (
-    <IconButton>
-      <AddAPhoto />
-    </IconButton>
+    <>
+      <IconButton onClick={toggle}>
+        <AddAPhoto />
+      </IconButton>
+
+      <Modal centered size="xl" backdrop="static" show={show} onHide={toggle}>
+        <Modal.Header closeButton>Insert Image</Modal.Header>
+        <Modal.Body>
+          <div className="row">
+            <div className="col-lg-6">
+              <div class="mb-3">
+                <label for="formFile" class="form-label">
+                  Default file input example
+                </label>
+                <input
+                  class="form-control"
+                  type="file"
+                  id="formFile"
+                  accept="image/png, image/gif, image/jpeg"
+                  onChange={handleChange}
+                />
+              </div>
+            </div>
+            <div className="col-lg-6">
+              {image && (
+                <div>
+                  <img src={image} alt="question" className="img-fluid" />
+                  <div className="mt-3">
+                    <LoadingButton
+                      endIcon={<UploadFile />}
+                      color="success"
+                      onClick={uploadImage}
+                      variant="contained"
+                      loading={loading}
+                      loadingPosition="end"
+                    >
+                      Upload image
+                    </LoadingButton>
+                    <Button color="error" onClick={clearImage}>
+                      clear
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </Modal.Body>
+      </Modal>
+    </>
   );
 }
 

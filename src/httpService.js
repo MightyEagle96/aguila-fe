@@ -12,6 +12,8 @@ const httpService = axios.create({
   },
 });
 
+export const backendURL = process.env.REACT_APP_BACKEND_URL;
+
 httpService.interceptors.response.use(
   (response) => {
     return response;

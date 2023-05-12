@@ -60,7 +60,10 @@ export default function SideMenu() {
 
   return (
     <div className="mt-5 mb-5">
-      <div className="mt-5 mb-5 text-center">
+      <div
+        className="mt-5 mb-5 text-center p-3"
+        style={{ backgroundColor: "#7da38c", color: "#fff" }}
+      >
         <Typography letterSpacing={2} variant="h4" fontWeight={700}>
           AGUILA CENTRAL
         </Typography>
