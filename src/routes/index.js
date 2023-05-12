@@ -39,7 +39,7 @@ function MainRoutes() {
       {loggedInUser ? (
         <>
           <div className="row m-0">
-            <div className="col-lg-2" style={{ backgroundColor: "#58626c" }}>
+            <div className="col-lg-2" style={{ backgroundColor: "#FAFAFA" }}>
               <SideMenu />
             </div>
             <div className="col-lg-10">

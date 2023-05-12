@@ -6,6 +6,7 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  Typography,
 } from "@mui/material";
 import {
   Quiz,
@@ -59,13 +60,19 @@ export default function SideMenu() {
 
   return (
     <div className="mt-5 mb-5">
+      <div className="mt-5 mb-5 text-center">
+        <Typography letterSpacing={2} variant="h4" fontWeight={700}>
+          AGUILA CENTRAL
+        </Typography>
+      </div>
       <List>
         {listItems.map((item, index) => (
-          <ListItem key={index} sx={{ color: "white" }}>
+          <ListItem key={index} sx={{ color: "#282828" }}>
             <ListItemButton
-              onClick={() => window.location.assign(item.redirectTo)}
+              href={item.redirectTo}
+              sx={{ ":hover": { color: "GrayText" } }}
             >
-              <ListItemIcon sx={{ color: "white" }}>{item.icon}</ListItemIcon>
+              <ListItemIcon sx={{ color: "#282828" }}>{item.icon}</ListItemIcon>
               <ListItemText primary={item.text} />
             </ListItemButton>
           </ListItem>
