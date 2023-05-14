@@ -43,7 +43,7 @@ export default function PreviewExam() {
           </div>
 
           {questionBank.questions.map((c, i) => (
-            <QuestionCard c={c} i={i + 1} />
+            <QuestionCard c={c} i={i + 1} key={i} />
           ))}
         </div>
       )}
@@ -59,11 +59,11 @@ function QuestionCard({ c, i }) {
           <Typography variant="h6">Question {i}</Typography>
           <div className="mt-3 mb-3">{parse(c.question)}</div>
 
-          {c.image && (
+          {c.imageURL && (
             <div className="mt-2 mb-2">
               <img
                 className="img-fluid"
-                src={`${backendURL}questionimages/${c.image}`}
+                src={c.imageURL}
                 alt={`Question ${i}`}
               />
             </div>
@@ -96,11 +96,11 @@ function QuestionCard({ c, i }) {
           <div className="mt-3 mb-3">
             <Typography>{c.question} </Typography>
           </div>
-          {c.image && (
+          {c.imageURL && (
             <div className="mt-2 mb-2">
               <img
                 className="img-fluid"
-                src={`${backendURL}questionimages/${c.image}`}
+                src={c.imageURL}
                 alt={`Question ${i}`}
               />
             </div>
