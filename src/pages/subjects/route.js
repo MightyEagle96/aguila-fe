@@ -7,12 +7,14 @@ import AllSubjects from "./AllSubjects";
 import ViewSubject from "./ViewSubject";
 import SubjectQuestionBank from "./SubjectQuestionBank";
 import PreviewExam from "./PreviewExam";
+import QuestionImages from "./QuestionImages";
 
 const privateRoutes = [
   { path: "/", component: AllSubjects },
   { path: "/view/:id", component: ViewSubject },
   { path: "/questionBank/:id", component: SubjectQuestionBank },
   { path: "/previewexam/:id", component: PreviewExam },
+  { path: "/questionimages", component: QuestionImages },
   { path: "*", component: NotFound },
 ];
 

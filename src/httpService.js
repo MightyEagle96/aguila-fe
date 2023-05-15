@@ -20,8 +20,7 @@ httpService.interceptors.response.use(
   },
   async (error) => {
     if (error.response && error.response.status === 401) {
-      const path = "refreshToken";
-      await httpService.post(path, { id: loggedInUser._id });
+      await httpService.post("auth/v1/refreshtoken", { id: loggedInUser._id });
       return httpService(error.config);
     } else if (error.response)
       return { error: error.response.data, status: error.response.status };

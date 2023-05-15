@@ -79,31 +79,33 @@ export default function AllSubjects() {
               </tbody>
             </Table>
           </div>
-          <div
-            className="col-lg-4 p-4 rounded-3"
-            style={{ backgroundColor: "#f5f1ee", height: 200 }}
-          >
-            <div className="mb-2">
-              <Typography variant="h6">Create a new subject</Typography>
-            </div>
-            <form onSubmit={createSubject}>
+          <div className="col-lg-4 p-4 rounded-3">
+            <div className="mb-3">
               <div className="mb-2">
-                <TextField
-                  fullWidth
-                  onChange={(e) => setSubject(e.target.value)}
-                  value={subject}
-                />
+                <Typography variant="h6">Create a new subject</Typography>
               </div>
-              <div>
-                <LoadingButton
-                  type="submit"
-                  variant="contained"
-                  endIcon={<Save />}
-                >
-                  Create
-                </LoadingButton>
-              </div>
-            </form>
+              <form onSubmit={createSubject}>
+                <div className="mb-2">
+                  <TextField
+                    fullWidth
+                    onChange={(e) => setSubject(e.target.value)}
+                    value={subject}
+                  />
+                </div>
+                <div>
+                  <LoadingButton
+                    type="submit"
+                    variant="contained"
+                    endIcon={<Save />}
+                  >
+                    Create
+                  </LoadingButton>
+                </div>
+              </form>
+            </div>
+            <Link href="/subjects/questionimages">
+              View images for questions
+            </Link>
           </div>
         </div>
       </div>
