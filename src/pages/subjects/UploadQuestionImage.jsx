@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import { AlertContext } from "../../contexts/AlertContext";
 import { Modal, ProgressBar } from "react-bootstrap";
 import { LoadingButton } from "@mui/lab";
-import { Button, IconButton, Typography } from "@mui/material";
+import { Button, IconButton } from "@mui/material";
 import { UploadFile, AddAPhoto } from "@mui/icons-material";
 import { httpService } from "../../httpService";
 import { storage } from "../../firebase";
@@ -111,7 +111,9 @@ export default function UploadQuestionImage({ subject, questionId }) {
                   onChange={handleChange}
                 />
               </div>
-              {progress > 0 && <ProgressBar now={progress} />}
+              {progress > 0 && (
+                <ProgressBar now={progress} label={`${progress}%`} />
+              )}
             </div>
             <div className="col-lg-6">
               {image && (
