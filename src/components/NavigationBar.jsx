@@ -1,12 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import { Container, Nav, Navbar } from "react-bootstrap";
 import { loggedInUser } from "../httpService";
-import { Button, Typography, Avatar, Stack } from "@mui/material";
-import { logout } from "../httpService";
+import { Typography, Avatar, Stack } from "@mui/material";
+import { httpService } from "../httpService";
 import aguila from "../images/aguila.png";
 import { Logout } from "@mui/icons-material";
+import { LoadingButton } from "@mui/lab";
 
 export default function NavigationBar() {
+  const [loading, setLoading] = useState(false);
+  const logout = async () => {
+    setLoading(true);
+    const { data } = await httpService.get("auth/v1/logout");
+
+    if (data) {
+      localStorage.removeItem(process.env.REACT_APP_PROJECT_USER);
+      window.location.assign("/");
+    }
+    setLoading(false);
+  };
   return (
     <Navbar bg="light" variant="light" expand="lg">
       <Container>
@@ -35,9 +47,15 @@ export default function NavigationBar() {
                     {loggedInUser.lastName}
                   </Typography>
                 </div>
-                <Button color="error" endIcon={<Logout />} onClick={logout}>
+                <LoadingButton
+                  color="error"
+                  endIcon={<Logout />}
+                  onClick={logout}
+                  loadingPosition="end"
+                  loading={loading}
+                >
                   Logout
-                </Button>
+                </LoadingButton>
               </>
             ) : null}
           </Nav>
