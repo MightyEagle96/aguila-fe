@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import { AlertContext } from "../../contexts/AlertContext";
-import { Modal } from "react-bootstrap";
+import { Modal, ProgressBar } from "react-bootstrap";
 import { LoadingButton } from "@mui/lab";
 import { Button, IconButton, Typography } from "@mui/material";
 import { UploadFile, AddAPhoto } from "@mui/icons-material";
@@ -72,6 +72,7 @@ export default function UploadQuestionImage({ subject, questionId }) {
 
           if (data) {
             setAlertData({ open: true, message: data, severity: "success" });
+            setShow(false);
           }
 
           if (error) {
@@ -110,7 +111,7 @@ export default function UploadQuestionImage({ subject, questionId }) {
                   onChange={handleChange}
                 />
               </div>
-              {progress > 0 && <Typography>Uploading {progress}%</Typography>}
+              {progress > 0 && <ProgressBar now={progress} />}
             </div>
             <div className="col-lg-6">
               {image && (
