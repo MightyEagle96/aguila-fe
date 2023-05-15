@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { httpService } from "../../httpService";
 import {
+  Avatar,
   Button,
   CircularProgress,
   IconButton,
@@ -218,10 +219,14 @@ export default function SubjectQuestionBank() {
                           />
                         </td>
                         <td>
-                          <UploadQuestionImage
-                            subject={questionBank.subject._id}
-                            questionId={c._id}
-                          />
+                          {c.imageURL ? (
+                            <Avatar src={c.imageURL} />
+                          ) : (
+                            <UploadQuestionImage
+                              subject={questionBank.subject._id}
+                              questionId={c._id}
+                            />
+                          )}
                         </td>
                       </tr>
                     ) : (
@@ -264,10 +269,14 @@ export default function SubjectQuestionBank() {
                           />
                         </td>
                         <td>
-                          <UploadQuestionImage
-                            subject={questionBank.subject._id}
-                            questionId={c._id}
-                          />
+                          {c.imageURL ? (
+                            <Avatar src={c.imageURL} />
+                          ) : (
+                            <UploadQuestionImage
+                              subject={questionBank.subject._id}
+                              questionId={c._id}
+                            />
+                          )}
                         </td>
                       </tr>
                     )}
