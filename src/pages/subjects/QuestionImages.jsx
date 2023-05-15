@@ -30,7 +30,7 @@ export default function QuestionImages() {
           </Typography>
         </div>
         {loading && <CircularProgress />}
-        <div className="row">
+        <div className="row mt-3">
           {images.map((c, i) => (
             <div className="col-lg-4 me-1 mb-1" key={i}>
               <img className="img-fluid" src={c.imageURL} alt="" />
