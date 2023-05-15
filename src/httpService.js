@@ -14,17 +14,31 @@ const httpService = axios.create({
 
 export const backendURL = process.env.REACT_APP_BACKEND_URL;
 
+// httpService.interceptors.request.use(
+//   function (config) {
+//     console.log(loggedInUser);
+//     return config;
+//   },
+//   function (error) {
+//     return Promise.reject(error);
+//   }
+// );
+
 httpService.interceptors.response.use(
   (response) => {
     return response;
   },
   async (error) => {
     if (error.response && error.response.status === 401) {
-      await httpService.post("auth/v1/refreshtoken", { id: loggedInUser._id });
-      return httpService(error.config);
-    } else if (error.response)
+      await httpService.post("auth/v1/refreshtoken", {
+        id: loggedInUser.user._id,
+      });
+      httpService(error.config);
+    }
+    // } else if (error.response)
+    //   return { error: error.response.data, status: error.response.status };
+    if (error.response)
       return { error: error.response.data, status: error.response.status };
-
     return { error: "Lost connection to the server" };
   }
 );
