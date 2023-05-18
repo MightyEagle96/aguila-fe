@@ -1,10 +1,11 @@
 import { CircularProgress, Link, TextField, Typography } from "@mui/material";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { httpService } from "../../httpService";
 import { Table } from "react-bootstrap";
 import { LoadingButton } from "@mui/lab";
 import { Height, Save } from "@mui/icons-material";
 import MySnackBar from "../../components/MySnackBar";
+import { AlertContext } from "../../contexts/AlertContext";
 
 export default function AllSubjects() {
   const [subjects, setSubjects] = useState([]);
@@ -14,12 +15,15 @@ export default function AllSubjects() {
   const [message, setMessage] = useState("");
   const [open, setOpen] = useState(false);
   const [severity, setSeverity] = useState("");
+
+  const { setAlertData } = useContext(AlertContext);
   const getData = async () => {
     setLoading(true);
-    const { data } = await httpService("aguila/subject/all");
+    const { data, error } = await httpService("aguila/subject/all");
     if (data) {
       setSubjects(data);
     }
+    if (error) setAlertData({ message: error, open: true, severity: "error" });
     setLoading(false);
   };
   useEffect(() => {

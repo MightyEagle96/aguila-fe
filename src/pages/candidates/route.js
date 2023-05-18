@@ -5,11 +5,12 @@ import NotFound from "../NotFound";
 import { loggedInUser } from "../../httpService";
 import CandidatesList from "./CandidatesList";
 import PerformSyncOperations from "./PerformSyncOperations";
+import SearchCandidate from "./SearchCandidate";
 
 const privateRoutes = [
   { path: "/:id/list", component: CandidatesList },
   { path: "/sync", component: PerformSyncOperations },
-
+  { path: "/search", component: SearchCandidate },
   { path: "*", component: NotFound },
 ];
 

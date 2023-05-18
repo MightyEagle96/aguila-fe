@@ -18,11 +18,12 @@ export default function ViewSubject() {
 
   const getSubject = async () => {
     setLoading(true);
-    const { data } = await httpService(`aguila/subject/view/${id}`);
+    const { data, error } = await httpService(`aguila/subject/view/${id}`);
 
     if (data) {
       setSubject(data);
     }
+    if (error) setAlertData({ message: error, open: true, severity: "error" });
     setLoading(false);
   };
 

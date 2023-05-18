@@ -16,6 +16,7 @@ import {
   AdminPanelSettings,
   Chat,
   Sync,
+  Search,
 } from "@mui/icons-material";
 
 export default function SideMenu() {
@@ -50,6 +51,11 @@ export default function SideMenu() {
       text: "Subjects Control",
       icon: <Book />,
       redirectTo: `/subjects`,
+    },
+    {
+      text: "Search Candidates",
+      icon: <Search />,
+      redirectTo: `/candidates/search`,
     },
     {
       text: "Admin Panel",
