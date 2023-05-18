@@ -21,21 +21,16 @@ export default class ErrorBoundary extends Component {
     if (this.state.hasError) {
       // You can render any custom fallback UI
       return (
-        <div className="container mt-5 mb-5">
-          <div className="row">
-            <div className="col-md-6">
-              <img
-                alt="broken page"
-                className="img-fluid"
-                src="https://images.unsplash.com/photo-1509078932415-355dbe95f1ef?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"
-              />
-            </div>
-            <div className="col-md-6 d-flex align-items-center">
-              <Typography variant="h4" fontWeight={600} color="GrayText">
-                This Page has errors
-              </Typography>
-            </div>
-          </div>
+        <div className="container mt-5 mb-5 text-center">
+          <Typography
+            variant="h4"
+            fontWeight={600}
+            color="GrayText"
+            gutterBottom
+          >
+            This Page has errors
+          </Typography>
+          <Typography>Please contact the developer</Typography>
         </div>
       );
     }
