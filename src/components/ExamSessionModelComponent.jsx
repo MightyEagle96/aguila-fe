@@ -37,7 +37,9 @@ export default function ExamSessionModelComponent({ c, examination }) {
   const [updating, setUpdating] = useState(false);
   const [activating, setActivating] = useState(false);
 
-  const [searchData, setSearchData] = useState({});
+  const [scheduledDate, setScheduledDate] = useState(null);
+
+  const [scheduledTime, setScheduledTime] = useState(null);
 
   const getExamSession = async () => {
     const { data } = await httpService.post(
@@ -94,6 +96,29 @@ export default function ExamSessionModelComponent({ c, examination }) {
       setAlertData({ severity: "success", message: data, open: true });
     }
     setCreating(false);
+  };
+
+  const setSessionDateTime = () => {
+    Swal.fire({
+      icon: "question",
+      title: "Update session date or time",
+      text: "Do you wish to update the date or time of this session",
+      showCancelButton: true,
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const { data, error } = await httpService.patch(
+          `aguila/examination/setsessiondatetime/${examSession._id}`,
+          { scheduledDate, scheduledTime }
+        );
+
+        if (data) {
+          setAlertData({ message: data, open: true, severity: "success" });
+          getExamSession();
+        }
+        if (error)
+          setAlertData({ message: error, open: true, severity: "error" });
+      }
+    });
   };
   useEffect(() => {
     getExamSession();
@@ -231,7 +256,7 @@ export default function ExamSessionModelComponent({ c, examination }) {
                     setErrorHr(false);
                   }
                 }}
-                onBlue={(e) => {
+                onBlur={(e) => {
                   if (e.target.value > 3 || e.target.value < 0) {
                     setErrorHr(true);
                   } else {
@@ -335,45 +360,83 @@ export default function ExamSessionModelComponent({ c, examination }) {
           </LoadingButton>
         </div>
         <div className="col-lg-3 border-end">
-          <Typography gutterBottom variant="caption">
-            Examination date and time
-          </Typography>
-          <DatePicker
-            label="Select exam date"
-            onChange={(e) =>
-              setSearchData({
-                ...searchData,
-                dateDownloaded: new Date(e.$d).toDateString(),
-              })
-            }
-          />
-
-          <TimePicker
-            label="Select exam time"
-            className="mt-4 mb-4"
-            onChange={(e) =>
-              console.log({ hour: e.hour(), minute: e.minute() })
-            }
-          />
-          <div className="mt-3">
-            <LoadingButton>set date and time for this session</LoadingButton>
+          <div className="mb-3">
+            <Typography gutterBottom variant="caption">
+              Examination date and time
+            </Typography>
           </div>
-          <div className="mt-2">
-            {examSession && !examSession.scheduledDate && (
-              <Alert severity="warning">
-                <AlertTitle>NO DATE</AlertTitle>
-                No date for this session has been set yet
+          {examSession ? (
+            <>
+              {" "}
+              <DatePicker
+                label="Select exam date"
+                onChange={(e) =>
+                  setScheduledDate({
+                    date: e.$d,
+                    dateString: new Date(e).toDateString(),
+                  })
+                }
+                disablePast
+                format="LL"
+              />
+              <TimePicker
+                label="Select exam time"
+                className="mt-4 mb-4"
+                onChange={(e) =>
+                  setScheduledTime({ hour: e.hour(), minute: e.minute() })
+                }
+              />
+              <div className="mt-3">
+                <LoadingButton onClick={setSessionDateTime}>
+                  set date and time for this session
+                </LoadingButton>
+              </div>
+              <div className="mt-2">
+                {examSession && !examSession.scheduledDate && (
+                  <Alert severity="warning">
+                    <AlertTitle>NO DATE</AlertTitle>
+                    No date for this session has been set yet
+                  </Alert>
+                )}
+                {examSession && examSession.scheduledDate && (
+                  <Alert severity="info">
+                    <AlertTitle>Session Date</AlertTitle>
+                    {examSession.scheduledDate.dateString}
+                  </Alert>
+                )}
+              </div>
+              <div className="mt-2">
+                {examSession && !examSession.scheduledTime && (
+                  <Alert severity="warning">
+                    <AlertTitle>NO TIME</AlertTitle>
+                    No time for this session has been set yet
+                  </Alert>
+                )}
+                {examSession &&
+                  examSession.scheduledDate &&
+                  examSession.scheduledTime && (
+                    <Alert severity="info">
+                      <AlertTitle>Session Time</AlertTitle>
+                      {new Date(
+                        2023,
+                        0,
+                        1,
+                        examSession.scheduledTime.hour,
+                        examSession.scheduledTime.minute,
+                        0
+                      ).toLocaleTimeString()}
+                    </Alert>
+                  )}
+              </div>
+            </>
+          ) : (
+            <>
+              <Alert severity="error">
+                <AlertTitle>No session created</AlertTitle>
+                Please create a session to set the date and time for it
               </Alert>
-            )}
-          </div>
-          <div className="mt-2">
-            {examSession && !examSession.scheduledTime && (
-              <Alert severity="warning">
-                <AlertTitle>NO TIME</AlertTitle>
-                No time for this session has been set yet
-              </Alert>
-            )}
-          </div>
+            </>
+          )}
         </div>
         <div className="col-lg-3">
           <div className="col-lg-12">
