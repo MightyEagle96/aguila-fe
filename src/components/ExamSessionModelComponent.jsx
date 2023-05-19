@@ -9,12 +9,15 @@ import {
   CircularProgress,
   IconButton,
   Button,
+  Alert,
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { SettingsSharp, FavoriteBorder, Favorite } from "@mui/icons-material";
 import { Modal, Table } from "react-bootstrap";
 import secondsTimeFormatter from "seconds-time-formatter";
 import Swal from "sweetalert2";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 
 export default function ExamSessionModelComponent({ c, examination }) {
   const [examSession, setExamSession] = useState(null);
@@ -32,6 +35,8 @@ export default function ExamSessionModelComponent({ c, examination }) {
   const [errorHr, setErrorHr] = useState(false);
   const [updating, setUpdating] = useState(false);
   const [activating, setActivating] = useState(false);
+
+  const [searchData, setSearchData] = useState({});
 
   const getExamSession = async () => {
     const { data } = await httpService.post(
@@ -168,17 +173,25 @@ export default function ExamSessionModelComponent({ c, examination }) {
   return (
     <div>
       <div className="mb-4">
-        <Chip
+        {/* <Chip
           label={c}
           sx={{
             textTransform: "uppercase",
             backgroundColor: "#726286",
             color: "white",
           }}
-        />
+        /> */}
+        <Typography
+          textTransform={"uppercase"}
+          variant="h4"
+          fontWeight={700}
+          color="GrayText"
+        >
+          {c}
+        </Typography>
       </div>
       <div className="row mt-2 mb-2">
-        <div className="col-lg-4 border-end">
+        <div className="col-lg-3 border-end">
           <Typography gutterBottom>SUBJECT QUESTION BANKS</Typography>
           {examination.subjects.map((c, i) => (
             <div key={i} className="mb-4 mt-3">
@@ -320,7 +333,46 @@ export default function ExamSessionModelComponent({ c, examination }) {
             set duration
           </LoadingButton>
         </div>
-        <div className="col-lg-3  d-flex align-items-end">
+        <div className="col-lg-3">
+          <Typography gutterBottom variant="caption">
+            Examination date and time
+          </Typography>
+          <DatePicker
+            label="Select exam date"
+            onChange={(e) =>
+              setSearchData({
+                ...searchData,
+                dateDownloaded: new Date(e.$d).toDateString(),
+              })
+            }
+          />
+
+          <TimePicker
+            label="Select exam time"
+            className="mt-4 mb-4"
+            onChange={(e) =>
+              console.log({ hour: e.hour(), minute: e.minute() })
+            }
+          />
+          <div className="mt-3">
+            <LoadingButton>set date and time for this session</LoadingButton>
+          </div>
+          <div className="mt-2">
+            {examSession && !examSession.scheduledDate && (
+              <Alert severity="warning">
+                No date for this session has been set yet
+              </Alert>
+            )}
+          </div>
+          <div className="mt-2">
+            {examSession && !examSession.scheduledTime && (
+              <Alert severity="warning">
+                No time for this session has been set yet
+              </Alert>
+            )}
+          </div>
+        </div>
+        <div className="col-lg-3">
           <div className="col-lg-12">
             {!examSession ? (
               <div>

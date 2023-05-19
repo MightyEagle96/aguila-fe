@@ -53,7 +53,7 @@ export default function ExaminationSchedule() {
         {examination ? (
           <div>
             <div className="row">
-              <div className="col-lg-9">
+              <div className="">
                 <Typography
                   variant="h4"
                   textTransform={"capitalize"}
@@ -92,7 +92,7 @@ export default function ExaminationSchedule() {
                   <ExamSessions examination={examination} />
                 </div>
               </div>
-              <div className="col-lg-3 shadow-sm">
+              {/* <div className="col-lg-3 shadow-sm">
                 <Typography textTransform={"uppercase"} variant="h6">
                   Instructions for this examination
                 </Typography>
@@ -120,7 +120,7 @@ export default function ExaminationSchedule() {
                     </div>
                   )}
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
         ) : null}
