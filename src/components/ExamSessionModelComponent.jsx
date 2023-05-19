@@ -41,6 +41,8 @@ export default function ExamSessionModelComponent({ c, examination }) {
 
   const [scheduledTime, setScheduledTime] = useState(null);
 
+  const [updatingTime, setUpdatingTime] = useState(false);
+
   const getExamSession = async () => {
     const { data } = await httpService.post(
       "aguila/examination/examsession/view",
@@ -106,6 +108,7 @@ export default function ExamSessionModelComponent({ c, examination }) {
       showCancelButton: true,
     }).then(async (result) => {
       if (result.isConfirmed) {
+        setUpdatingTime(true);
         const { data, error } = await httpService.patch(
           `aguila/examination/setsessiondatetime/${examSession._id}`,
           { scheduledDate, scheduledTime }
@@ -117,6 +120,8 @@ export default function ExamSessionModelComponent({ c, examination }) {
         }
         if (error)
           setAlertData({ message: error, open: true, severity: "error" });
+
+        setUpdatingTime(false);
       }
     });
   };
@@ -387,7 +392,11 @@ export default function ExamSessionModelComponent({ c, examination }) {
                 }
               />
               <div className="mt-3">
-                <LoadingButton onClick={setSessionDateTime}>
+                <LoadingButton
+                  onClick={setSessionDateTime}
+                  loading={updatingTime}
+                  color="warning"
+                >
                   set date and time for this session
                 </LoadingButton>
               </div>
