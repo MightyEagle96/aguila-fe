@@ -10,6 +10,7 @@ import {
   IconButton,
   Button,
   Alert,
+  AlertTitle,
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { SettingsSharp, FavoriteBorder, Favorite } from "@mui/icons-material";
@@ -194,7 +195,7 @@ export default function ExamSessionModelComponent({ c, examination }) {
         <div className="col-lg-3 border-end">
           <Typography gutterBottom>SUBJECT QUESTION BANKS</Typography>
           {examination.subjects.map((c, i) => (
-            <div key={i} className="mb-4 mt-3">
+            <div key={i} className="mb-2">
               <Chip
                 disabled={!examSession || examSession.available}
                 onClick={() => handleClick(c)}
@@ -333,7 +334,7 @@ export default function ExamSessionModelComponent({ c, examination }) {
             set duration
           </LoadingButton>
         </div>
-        <div className="col-lg-3">
+        <div className="col-lg-3 border-end">
           <Typography gutterBottom variant="caption">
             Examination date and time
           </Typography>
@@ -360,6 +361,7 @@ export default function ExamSessionModelComponent({ c, examination }) {
           <div className="mt-2">
             {examSession && !examSession.scheduledDate && (
               <Alert severity="warning">
+                <AlertTitle>NO DATE</AlertTitle>
                 No date for this session has been set yet
               </Alert>
             )}
@@ -367,6 +369,7 @@ export default function ExamSessionModelComponent({ c, examination }) {
           <div className="mt-2">
             {examSession && !examSession.scheduledTime && (
               <Alert severity="warning">
+                <AlertTitle>NO TIME</AlertTitle>
                 No time for this session has been set yet
               </Alert>
             )}
