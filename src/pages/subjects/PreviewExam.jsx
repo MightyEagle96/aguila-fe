@@ -54,11 +54,11 @@ export default function PreviewExam() {
 
 function QuestionCard({ c, i }) {
   return (
-    <div className="shadow-sm p-2 mb-1">
+    <div className="shadow-sm p-2 mb-1  border-bottom">
       {c.isRichText ? (
         <div>
           <Typography variant="h6">Question {i}</Typography>
-          <div className="mt-3 mb-3">{parse(c.question)}</div>
+          <div className="mt-3 mb-5">{parse(c.question)}</div>
 
           {c.imageURL && (
             <div className="mt-2 mb-2">
@@ -69,7 +69,7 @@ function QuestionCard({ c, i }) {
               />
             </div>
           )}
-          <div className="mb-1">
+          <div className="mb-4">
             <span>
               A. {parse(c.optionA)}{" "}
               {c.optionA === c.correctAns && (
@@ -77,7 +77,7 @@ function QuestionCard({ c, i }) {
               )}
             </span>
           </div>
-          <div className="mb-1">
+          <div className="mb-4">
             <span>
               B. {parse(c.optionB)}{" "}
               {c.optionB === c.correctAns && (
@@ -85,7 +85,7 @@ function QuestionCard({ c, i }) {
               )}
             </span>
           </div>
-          <div className="mb-1">
+          <div className="mb-4">
             <span>
               C. {parse(c.optionC)}{" "}
               {c.optionC === c.correctAns && (
@@ -94,7 +94,7 @@ function QuestionCard({ c, i }) {
             </span>
           </div>
 
-          <div className="mb-1">
+          <div className="mb-4">
             <span>
               D. {parse(c.optionD)}{" "}
               {c.optionD === c.correctAns && (
@@ -106,7 +106,7 @@ function QuestionCard({ c, i }) {
       ) : (
         <div>
           <Typography variant="h6">Question {i}</Typography>
-          <div className="mt-3 mb-3">
+          <div className="mt-3 mb-5">
             <Typography>{c.question} </Typography>
           </div>
           {c.imageURL && (
@@ -118,7 +118,7 @@ function QuestionCard({ c, i }) {
               />
             </div>
           )}
-          <div className="mb-1">
+          <div className="mb-4">
             <Typography>
               A. {c.optionA}{" "}
               {c.optionA === c.correctAns && (
@@ -126,7 +126,7 @@ function QuestionCard({ c, i }) {
               )}
             </Typography>
           </div>
-          <div className="mb-1">
+          <div className="mb-4">
             <Typography>
               B. {c.optionB}{" "}
               {c.optionB === c.correctAns && (
@@ -134,7 +134,7 @@ function QuestionCard({ c, i }) {
               )}
             </Typography>
           </div>
-          <div className="mb-1">
+          <div className="mb-4">
             <Typography>
               C. {c.optionC}{" "}
               {c.optionC === c.correctAns && (
@@ -143,7 +143,7 @@ function QuestionCard({ c, i }) {
             </Typography>
           </div>
 
-          <div className="mb-1">
+          <div className="mb-4">
             <Typography>
               D. {c.optionD}{" "}
               {c.optionD === c.correctAns && (
