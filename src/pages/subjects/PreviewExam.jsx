@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { backendURL, httpService } from "../../httpService";
+import { httpService } from "../../httpService";
 import { CircularProgress, Typography } from "@mui/material";
-import { Done } from "@mui/icons-material";
+
 import parse from "html-react-parser";
+import { Badge } from "react-bootstrap";
 export default function PreviewExam() {
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
@@ -70,23 +71,35 @@ function QuestionCard({ c, i }) {
           )}
           <div className="mb-1">
             <span>
-              A. {parse(c.optionA)} {c.optionA === c.correctAns && <Done />}
+              A. {parse(c.optionA)}{" "}
+              {c.optionA === c.correctAns && (
+                <Badge bg="success">Correct Answer</Badge>
+              )}
             </span>
           </div>
           <div className="mb-1">
             <span>
-              B. {parse(c.optionB)} {c.optionB === c.correctAns && <Done />}
+              B. {parse(c.optionB)}{" "}
+              {c.optionB === c.correctAns && (
+                <Badge bg="success">Correct Answer</Badge>
+              )}
             </span>
           </div>
           <div className="mb-1">
             <span>
-              C. {parse(c.optionC)} {c.optionC === c.correctAns && <Done />}
+              C. {parse(c.optionC)}{" "}
+              {c.optionC === c.correctAns && (
+                <Badge bg="success">Correct Answer</Badge>
+              )}
             </span>
           </div>
 
           <div className="mb-1">
             <span>
-              D. {parse(c.optionD)} {c.optionD === c.correctAns && <Done />}
+              D. {parse(c.optionD)}{" "}
+              {c.optionD === c.correctAns && (
+                <Badge bg="success">Correct Answer</Badge>
+              )}
             </span>
           </div>
         </div>
@@ -107,23 +120,35 @@ function QuestionCard({ c, i }) {
           )}
           <div className="mb-1">
             <Typography>
-              A. {c.optionA} {c.optionA === c.correctAns && <Done />}
+              A. {c.optionA}{" "}
+              {c.optionA === c.correctAns && (
+                <Badge bg="success">Correct Answer</Badge>
+              )}
             </Typography>
           </div>
           <div className="mb-1">
             <Typography>
-              B. {c.optionB} {c.optionB === c.correctAns && <Done />}
+              B. {c.optionB}{" "}
+              {c.optionB === c.correctAns && (
+                <Badge bg="success">Correct Answer</Badge>
+              )}
             </Typography>
           </div>
           <div className="mb-1">
             <Typography>
-              C. {c.optionC} {c.optionC === c.correctAns && <Done />}
+              C. {c.optionC}{" "}
+              {c.optionC === c.correctAns && (
+                <Badge bg="success">Correct Answer</Badge>
+              )}
             </Typography>
           </div>
 
           <div className="mb-1">
             <Typography>
-              D. {c.optionD} {c.optionD === c.correctAns && <Done />}
+              D. {c.optionD}{" "}
+              {c.optionD === c.correctAns && (
+                <Badge bg="success">Correct Answer</Badge>
+              )}
             </Typography>
           </div>
         </div>
