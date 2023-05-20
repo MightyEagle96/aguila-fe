@@ -1,4 +1,4 @@
-import { Person, Search, Tag } from "@mui/icons-material";
+import { CalendarMonth, Person, Search, Tag } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 import { Icon, Stack, TextField, Typography } from "@mui/material";
 import React, { useContext, useState } from "react";
@@ -6,7 +6,12 @@ import { httpService } from "../../httpService";
 import { AlertContext } from "../../contexts/AlertContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faArrowRight,
+  faCalendar,
+  faChair,
+  faClock,
   faComputer,
+  faHandPaper,
   faHouse,
   faIdCard,
   faPen,
@@ -63,7 +68,7 @@ export default function SearchCandidate() {
         </div>
         {candidate && (
           <div className="row mt-4" style={{ color: "#5b5e6b" }}>
-            <div className="col-lg-4">
+            <div className="col-lg-4 alert alert-light border-end">
               <div className="mb-2">
                 <Icon>
                   <Person />
@@ -118,12 +123,94 @@ export default function SearchCandidate() {
               </div>
             </div>
             <div className="col-lg-4">
-              <Typography variant="caption">Subject Combinations</Typography>
-              {candidate.subjectCombinations.map((c, i) => (
-                <Typography gutterBottom key={i}>
-                  {c.name}
+              <div className="mb-2 alert alert-light">
+                <Typography
+                  variant="h6"
+                  textTransform={"uppercase"}
+                  gutterBottom
+                >
+                  Subject Combinations
                 </Typography>
-              ))}
+                <hr />
+                {candidate.subjectCombinations.map((c, i) => (
+                  <Typography fontSize={20} gutterBottom key={i}>
+                    {c.name}
+                  </Typography>
+                ))}
+              </div>
+              {candidate.scheduledDate && candidate.scheduledTime && (
+                <div className="mt-2 alert alert-light">
+                  <Typography
+                    variant="h6"
+                    gutterBottom
+                    textTransform={"uppercase"}
+                  >
+                    Examination Schedule
+                  </Typography>
+                  <hr />
+                  <div>
+                    <div className="mb-2">
+                      <Stack direction="row" spacing={1}>
+                        <div>
+                          <FontAwesomeIcon icon={faArrowRight} /> :
+                        </div>
+                        <div className="d-flex align-items-center">
+                          <Typography>
+                            <strong>{candidate.session}</strong>
+                          </Typography>
+                        </div>
+                      </Stack>
+                    </div>
+                    <div className="mb-2">
+                      <Stack direction="row" spacing={1}>
+                        <div>
+                          <FontAwesomeIcon icon={faChair} /> :
+                        </div>
+                        <div className="d-flex align-items-center">
+                          <Typography>
+                            <strong>{candidate.seatNumber}</strong>
+                          </Typography>
+                        </div>
+                      </Stack>
+                    </div>
+                    <div className="mb-2">
+                      <Stack direction="row" spacing={1}>
+                        <div>
+                          <FontAwesomeIcon icon={faCalendar} /> :
+                        </div>
+                        <div className="d-flex align-items-center">
+                          <Typography>
+                            <strong>
+                              {candidate.scheduledDate.dateString}
+                            </strong>
+                          </Typography>
+                        </div>
+                      </Stack>
+                    </div>
+                    <div className="mb-2">
+                      <Stack direction="row" spacing={1}>
+                        <div>
+                          <FontAwesomeIcon icon={faClock} /> :
+                        </div>
+                        <div className="d-flex align-items-center">
+                          <Typography>
+                            <strong>
+                              {" "}
+                              {new Date(
+                                2023,
+                                0,
+                                1,
+                                candidate.scheduledTime.hour,
+                                candidate.scheduledTime.minute
+                              ).toLocaleTimeString()}
+                            </strong>
+                          </Typography>
+                        </div>
+                      </Stack>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
             <div className="col-lg-4"></div>
           </div>
