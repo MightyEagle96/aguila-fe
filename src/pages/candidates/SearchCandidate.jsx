@@ -1,4 +1,4 @@
-import { CalendarMonth, Person, Search, Tag } from "@mui/icons-material";
+import { Person, Search } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 import { Icon, Stack, TextField, Typography } from "@mui/material";
 import React, { useContext, useState } from "react";
@@ -11,10 +11,8 @@ import {
   faChair,
   faClock,
   faComputer,
-  faHandPaper,
   faHouse,
   faIdCard,
-  faPen,
 } from "@fortawesome/free-solid-svg-icons";
 
 export default function SearchCandidate() {

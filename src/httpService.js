@@ -33,7 +33,7 @@ httpService.interceptors.response.use(
       await httpService.post("auth/v1/refreshtoken", {
         id: loggedInUser.user._id,
       });
-      httpService(error.config);
+      return httpService(error.config);
     }
     // } else if (error.response)
     //   return { error: error.response.data, status: error.response.status };
