@@ -172,7 +172,7 @@ export default function SessionReport() {
                       <td>
                         {c.timeUploaded ? (
                           <Typography>
-                            {new Date(c.timeDownloaded).toLocaleTimeString()}
+                            {new Date(c.timeUploaded).toLocaleTimeString()}
                           </Typography>
                         ) : (
                           <Chip label="pending" color="warning" />

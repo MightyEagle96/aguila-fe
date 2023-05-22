@@ -13,7 +13,12 @@ import {
   AlertTitle,
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
-import { SettingsSharp, FavoriteBorder, Favorite } from "@mui/icons-material";
+import {
+  SettingsSharp,
+  FavoriteBorder,
+  Favorite,
+  DoneAll,
+} from "@mui/icons-material";
 import { Modal, Table } from "react-bootstrap";
 import secondsTimeFormatter from "seconds-time-formatter";
 import Swal from "sweetalert2";
@@ -43,7 +48,12 @@ export default function ExamSessionModelComponent({ c, examination }) {
 
   const [updatingTime, setUpdatingTime] = useState(false);
 
+  const [completing, setCompleting] = useState(false);
+
+  const [loading, setLoading] = useState(false);
+
   const getExamSession = async () => {
+    setLoading(true);
     const { data } = await httpService.post(
       "aguila/examination/examsession/view",
       { examination: examination._id, session: c }
@@ -62,6 +72,29 @@ export default function ExamSessionModelComponent({ c, examination }) {
       });
       setExamSession(data);
     }
+    setLoading(false);
+  };
+
+  const markAsComplete = () => {
+    Swal.fire({
+      icon: "question",
+      title: "Mark Session as complete",
+      text: "Do you want to mark this session as complete. It will not be available for download again.",
+      showCancelButton: true,
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        setCompleting(true);
+        const { data } = await httpService(
+          `aguila/examination/markexamascomplete/${examSession._id}`
+        );
+
+        if (data) {
+          setAlertData({ open: true, message: data, severity: "success" });
+          getExamSession();
+        }
+        setCompleting(false);
+      }
+    });
   };
 
   const handleChangeDuration = (e) => {
@@ -203,15 +236,8 @@ export default function ExamSessionModelComponent({ c, examination }) {
   }
   return (
     <div>
+      {loading && <CircularProgress />}
       <div className="mb-4">
-        {/* <Chip
-          label={c}
-          sx={{
-            textTransform: "uppercase",
-            backgroundColor: "#726286",
-            color: "white",
-          }}
-        /> */}
         <Typography
           textTransform={"uppercase"}
           variant="h4"
@@ -474,35 +500,58 @@ export default function ExamSessionModelComponent({ c, examination }) {
                   {examSession.questionBanks.length} question bank(s) added
                 </Typography>
                 <div className="mt-3">
-                  {examSession.questionBanks.length ===
-                    examination.subjects.length && (
+                  {examSession.sessionConcluded ? (
                     <>
-                      {!examSession.available ? (
-                        <LoadingButton
-                          onClick={MakeExamAvaialbleForDownload}
-                          color="success"
-                          variant="contained"
-                          loadingPosition="center"
-                          loading={activating}
-                        >
-                          MAKE EXAM AVAILABLE FOR DOWNLOAD
-                        </LoadingButton>
-                      ) : (
-                        <LoadingButton
-                          onClick={MakeExamAvaialbleForDownload}
-                          color="error"
-                          variant="contained"
-                          loadingPosition="center"
-                          loading={activating}
-                        >
-                          MAKE EXAM UNAVAILABLE FOR DOWNLOAD
-                        </LoadingButton>
+                      <Typography variant="h6" fontWeight={700}>
+                        Session Complete
+                      </Typography>
+                    </>
+                  ) : (
+                    <>
+                      {examSession.questionBanks.length ===
+                        examination.subjects.length && (
+                        <>
+                          {!examSession.available ? (
+                            <LoadingButton
+                              onClick={MakeExamAvaialbleForDownload}
+                              color="success"
+                              variant="contained"
+                              loadingPosition="center"
+                              loading={activating}
+                            >
+                              MAKE EXAM AVAILABLE FOR DOWNLOAD
+                            </LoadingButton>
+                          ) : (
+                            <LoadingButton
+                              onClick={MakeExamAvaialbleForDownload}
+                              color="error"
+                              variant="contained"
+                              loadingPosition="center"
+                              loading={activating}
+                            >
+                              MAKE EXAM UNAVAILABLE FOR DOWNLOAD
+                            </LoadingButton>
+                          )}
+                        </>
                       )}
                     </>
                   )}
                 </div>
               </div>
             )}
+          </div>
+
+          <div className="mt-4">
+            <LoadingButton
+              color="success"
+              endIcon={<DoneAll />}
+              loading={completing}
+              loadingPosition="end"
+              onClick={markAsComplete}
+              disabled={examSession.sessionConcluded}
+            >
+              Mark exam session as complete
+            </LoadingButton>
           </div>
         </div>
       </div>
