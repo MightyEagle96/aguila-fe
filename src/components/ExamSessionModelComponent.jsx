@@ -548,7 +548,7 @@ export default function ExamSessionModelComponent({ c, examination }) {
               loading={completing}
               loadingPosition="end"
               onClick={markAsComplete}
-              disabled={examSession.sessionConcluded}
+              disabled={examSession ? examSession.sessionConcluded : false}
             >
               Mark exam session as complete
             </LoadingButton>
