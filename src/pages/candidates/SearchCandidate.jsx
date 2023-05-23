@@ -14,6 +14,8 @@ import {
   faHouse,
   faIdCard,
 } from "@fortawesome/free-solid-svg-icons";
+import { Table } from "react-bootstrap";
+import timeFormatter from "seconds-time-formatter";
 
 export default function SearchCandidate() {
   const [registrationNumber, setRegistrationNumber] = useState("");
@@ -35,6 +37,18 @@ export default function SearchCandidate() {
     }
 
     setLoading(false);
+  };
+
+  const renderTime = (time) => {
+    const result = timeFormatter.timeConvert({
+      seconds: time / 1000,
+      format: "json",
+    });
+
+    if (time > 1000)
+      return `${result.hours}:${result.minutes}:${result.seconds}`;
+
+    return "00:00:00";
   };
   return (
     <div>
@@ -120,7 +134,7 @@ export default function SearchCandidate() {
                 )}
               </div>
             </div>
-            <div className="col-lg-4">
+            <div className="col-lg-4 border-end">
               <div className="mb-2 alert alert-light">
                 <Typography
                   variant="h6"
@@ -131,7 +145,12 @@ export default function SearchCandidate() {
                 </Typography>
                 <hr />
                 {candidate.subjectCombinations.map((c, i) => (
-                  <Typography fontSize={20} gutterBottom key={i}>
+                  <Typography
+                    textTransform={"capitalize"}
+                    fontSize={20}
+                    gutterBottom
+                    key={i}
+                  >
                     {c.name}
                   </Typography>
                 ))}
@@ -210,7 +229,90 @@ export default function SearchCandidate() {
                 </div>
               )}
             </div>
-            <div className="col-lg-4"></div>
+            {candidate.hasWrittenExam && (
+              <div className="col-lg-4">
+                <div className="mb-2">
+                  <Typography gutterBottom>Results Analysis</Typography>
+                  <hr />
+                  <Table striped borderless>
+                    <thead>
+                      <tr>
+                        <th>Subject</th>
+                        <th>Score</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {candidate.results.length > 0 ? (
+                        <>
+                          {candidate.results.map((c, i) => (
+                            <tr key={i}>
+                              <td>
+                                <Typography textTransform={"capitalize"}>
+                                  {c.subject.name}
+                                </Typography>
+                              </td>
+                              <td>
+                                <Typography textTransform={"capitalize"}>
+                                  {c.score}
+                                </Typography>
+                              </td>
+                            </tr>
+                          ))}
+                        </>
+                      ) : (
+                        <tr>
+                          <td colSpan={12}>No result yet</td>
+                        </tr>
+                      )}
+                    </tbody>
+                    <tfoot
+                      style={{ backgroundColor: "#38527a", color: "white" }}
+                    >
+                      <tr>
+                        <th>Total Score:</th>
+                        <th>{candidate.totalScore}</th>
+                      </tr>
+                    </tfoot>
+                  </Table>
+                </div>
+                <div className="mb-2">
+                  <div className="mb-1">
+                    <Typography variant="caption" gutterBottom>
+                      Time Spent
+                    </Typography>
+                    <Typography fontSize={20}>
+                      {renderTime(
+                        candidate.examSession.duration - candidate.duration
+                      )}
+                    </Typography>
+                  </div>
+                  <div className="mb-1">
+                    <Typography variant="caption" gutterBottom>
+                      Time Started
+                    </Typography>
+                    <Typography fontSize={20}>
+                      {new Date(candidate.startTime).toLocaleTimeString()}
+                    </Typography>
+                  </div>
+                  <div className="mb-1">
+                    <Typography variant="caption" gutterBottom>
+                      Time Stopped
+                    </Typography>
+                    <Typography fontSize={20}>
+                      {new Date(candidate.stopTime).toLocaleTimeString()}
+                    </Typography>
+                  </div>
+                </div>
+                <div className="mb-2">
+                  <Typography variant="caption" gutterBottom>
+                    Total Questions Answered
+                  </Typography>
+                  <Typography fontSize={20}>
+                    {candidate.answeredQuestions}
+                  </Typography>
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>
