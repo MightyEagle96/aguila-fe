@@ -16,6 +16,7 @@ import SubjectRoutes from "../pages/subjects/route";
 import ExaminationRoutes from "../pages/examinations/route";
 import CandidatesRoutes from "../pages/candidates/route";
 import CentresRoutes from "../pages/centres/route";
+import CandidateResult from "../pages/CandidateResult";
 
 const privateRoutes = [
   { path: "/", component: Dashboard },
@@ -31,6 +32,7 @@ const publicRoutes = [
   { path: "/exams/:id", component: ExaminationRegistrationPage },
   { path: "/ebube", component: EbubeCV },
   { path: "/subjects/*", component: SubjectRoutes },
+  { path: "/result", component: CandidateResult },
   { path: "*", component: NotFound },
 ];
 function MainRoutes() {
