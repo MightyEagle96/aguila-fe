@@ -1,5 +1,6 @@
 import React from "react";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faClock } from "@fortawesome/free-solid-svg-icons";
 import {
   List,
   ListItem,
@@ -41,6 +42,11 @@ export default function SideMenu() {
       text: "Sync Operation",
       icon: <Sync />,
       redirectTo: `/candidates/sync`,
+    },
+    {
+      text: "Active Exam Session",
+      icon: <FontAwesomeIcon icon={faClock} />,
+      redirectTo: "/examination/activesession",
     },
     {
       text: "Session Report",

@@ -7,12 +7,14 @@ import ExaminationHandler from "./ExaminationHandler";
 import ExaminationSchedule from "./ExaminationSchedule";
 import ExamResults from "./ExamResults";
 import SessionReport from "./SessionReport";
+import ActiveExamSession from "./ActiveExamSession";
 
 const privateRoutes = [
   { path: "/", component: ExaminationHandler },
   { path: "/schedule/:id", component: ExaminationSchedule },
   { path: "/results/:id", component: ExamResults },
   { path: "/sessionreport", component: SessionReport },
+  { path: "/activesession", component: ActiveExamSession },
   { path: "*", component: NotFound },
 ];
 
