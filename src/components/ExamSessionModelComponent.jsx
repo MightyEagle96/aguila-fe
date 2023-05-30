@@ -11,6 +11,7 @@ import {
   Button,
   Alert,
   AlertTitle,
+  Link,
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import {
@@ -19,7 +20,7 @@ import {
   Favorite,
   DoneAll,
 } from "@mui/icons-material";
-import { Modal, Table } from "react-bootstrap";
+import { Badge, Modal, Table } from "react-bootstrap";
 import secondsTimeFormatter from "seconds-time-formatter";
 import Swal from "sweetalert2";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -51,6 +52,14 @@ export default function ExamSessionModelComponent({ c, examination }) {
   const [completing, setCompleting] = useState(false);
 
   const [loading, setLoading] = useState(false);
+
+  const [makingActive, setMakingActive] = useState(false);
+
+  const [makingInactive, setMakingInactive] = useState(false);
+
+  const [showCentres, setShowCentres] = useState(false);
+
+  const [sessionCentres, setSessionCentres] = useState([]);
 
   const getExamSession = async () => {
     setLoading(true);
@@ -234,18 +243,116 @@ export default function ExamSessionModelComponent({ c, examination }) {
       }
     });
   }
+
+  function MakeSessionActive() {
+    Swal.fire({
+      icon: "question",
+      title: "Make Active?",
+      text: "Do you want to make this session the active session?",
+      showCancelButton: true,
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        setMakingActive(true);
+        const { data, error } = await httpService.get(
+          `aguila/examination/makesessionactive/${examSession._id}`
+        );
+
+        if (data) {
+          setAlertData({ open: true, message: data, severity: "success" });
+          getExamSession();
+        }
+
+        if (error)
+          setAlertData({ open: true, message: error, severity: "error" });
+
+        setMakingActive(false);
+      }
+    });
+  }
+  function MakeSessionInactive() {
+    Swal.fire({
+      icon: "question",
+      title: "Make Active?",
+      text: "Do you want to make this session inactive?",
+      showCancelButton: true,
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        setMakingInactive(true);
+        const { data, error } = await httpService.get(
+          `aguila/examination/makesessioninactive/${examSession._id}`
+        );
+
+        if (data) {
+          setAlertData({ open: true, message: data, severity: "success" });
+          getExamSession();
+        }
+
+        if (error)
+          setAlertData({ open: true, message: error, severity: "error" });
+
+        setMakingInactive(false);
+      }
+    });
+  }
+
+  const handleCloseCentres = () => {
+    setShowCentres(false);
+    setSessionCentres([]);
+  };
+
+  const GetSessionCentres = async () => {
+    const { data, error } = await httpService.get(
+      `aguila/centres/sessioncentres/${examSession._id}`
+    );
+
+    if (data) {
+      setSessionCentres(data);
+      setShowCentres(true);
+    }
+
+    if (error) {
+      setAlertData({ open: true, message: error, severity: "error" });
+    }
+  };
   return (
     <div>
       {loading && <CircularProgress />}
       <div className="mb-4">
-        <Typography
-          textTransform={"uppercase"}
-          variant="h4"
-          fontWeight={700}
-          color="GrayText"
-        >
-          {c}
-        </Typography>
+        <Stack>
+          <div>
+            <Typography
+              textTransform={"uppercase"}
+              variant="h4"
+              fontWeight={700}
+              color="GrayText"
+            >
+              {c}
+            </Typography>
+          </div>
+          {examSession && !examSession.activeSession && (
+            <div>
+              <LoadingButton
+                variant="contained"
+                loading={makingActive}
+                onClick={MakeSessionActive}
+              >
+                make this session the active session
+              </LoadingButton>
+            </div>
+          )}
+          {examSession && examSession.activeSession && (
+            <div>
+              <Badge bg="success">ACTIVE SESSION</Badge>
+              <LoadingButton
+                color="error"
+                loading={makingInactive}
+                onClick={MakeSessionInactive}
+              >
+                make session inactive
+              </LoadingButton>
+            </div>
+          )}
+        </Stack>
       </div>
       <div className="row mt-2 mb-2">
         <div className="col-lg-3 border-end">
@@ -542,17 +649,26 @@ export default function ExamSessionModelComponent({ c, examination }) {
           </div>
 
           <div className="mt-4">
-            <LoadingButton
-              color="success"
-              endIcon={<DoneAll />}
-              loading={completing}
-              loadingPosition="end"
-              onClick={markAsComplete}
-              disabled={examSession ? examSession.sessionConcluded : false}
-            >
-              Mark exam session as complete
-            </LoadingButton>
+            {examSession && (
+              <LoadingButton
+                color="success"
+                endIcon={<DoneAll />}
+                loading={completing}
+                loadingPosition="end"
+                onClick={markAsComplete}
+                disabled={examSession ? examSession.sessionConcluded : false}
+              >
+                Mark exam session as complete
+              </LoadingButton>
+            )}
           </div>
+          {examSession && (
+            <div className="mt-2">
+              <LoadingButton onClick={GetSessionCentres}>
+                View centres that will be conducting this session
+              </LoadingButton>
+            </div>
+          )}
         </div>
       </div>
       <Modal size="lg" show={show} centered onHide={handleClose}>
@@ -631,6 +747,42 @@ export default function ExamSessionModelComponent({ c, examination }) {
             save changes
           </LoadingButton>
         </Modal.Footer>
+      </Modal>
+      <Modal size="lg" show={showCentres} centered onHide={handleCloseCentres}>
+        <Modal.Header closeButton>
+          <Modal.Title
+            id="contained-modal-title-vcenter"
+            style={{ textTransform: "uppercase" }}
+          >
+            {c} CENTRES
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Capacity</th>
+              </tr>
+            </thead>
+            <tbody>
+              {sessionCentres.map((c) => (
+                <tr>
+                  <td>
+                    <Typography textTransform={"uppercase"}>
+                      {c.name}
+                    </Typography>
+                  </td>
+                  <td>
+                    <Typography textTransform={"uppercase"}>
+                      {c.capacity}
+                    </Typography>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </Modal.Body>
       </Modal>
     </div>
   );
