@@ -1,17 +1,38 @@
 import { Box, Typography } from "@mui/material";
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Tabs, Tab } from "@mui/material";
-import { TabContext, TabPanel } from "@mui/lab";
+import { TabContext, TabList, TabPanel } from "@mui/lab";
 import ActiveExamCandidates from "./ActiveExamCandidates";
 import ActiveExamCentres from "./ActiveExamCentres";
+import { httpService } from "../../httpService";
+import { AlertContext } from "../../contexts/AlertContext";
 
 export default function ActiveExamSession() {
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState("1");
+
+  const [activeSession, setActiveSession] = useState(null);
+  const { setAlertData } = useContext(AlertContext);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
+  const viewActiveSession = async () => {
+    const { data, error } = await httpService(
+      "aguila/examination/session/active"
+    );
+
+    if (data) {
+      setActiveSession(data);
+    }
+    if (error) {
+      setAlertData({ message: error, severity: "error", open: true });
+    }
+  };
+
+  useEffect(() => {
+    viewActiveSession();
+  }, []);
   return (
     <div>
       <div className="mt-5 mb-5">
@@ -20,23 +41,45 @@ export default function ActiveExamSession() {
             Active Exam Session
           </Typography>
         </div>
-        <div>
-          <TabContext value={value}>
-            <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-              <Tabs value={value} onChange={handleChange}>
-                <Tab label="Candidates summary" value={0} />
-                <Tab label="Centres report" value={1} />
-                <Tab label="download & upload" value={2} />
-              </Tabs>
-            </Box>
-            <TabPanel value={value} index={0}>
-              <ActiveExamCandidates />
-            </TabPanel>
-            <TabPanel value={value} index={1}>
-              <ActiveExamCentres />
-            </TabPanel>
-          </TabContext>
-        </div>
+        {activeSession && (
+          <div>
+            <div
+              className="col-lg-4 p-3 text-white"
+              style={{ backgroundColor: "#479bb4" }}
+            >
+              <div>
+                <Typography variant="overline">Exam</Typography>
+                <Typography
+                  variant="h5"
+                  textTransform={"uppercase"}
+                  fontWeight={700}
+                >
+                  {activeSession.examination.title}, {activeSession.session}
+                </Typography>
+              </div>
+            </div>
+            <div className="mt-4">
+              <TabContext value={value}>
+                <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                  <TabList onChange={handleChange}>
+                    <Tab label="Candidates summary" value={0} />
+                    <Tab label="Centres report" value={1} />
+                    <Tab label="download & upload" value={2} />
+                  </TabList>
+                </Box>
+                <TabPanel value={0} index={0}>
+                  <ActiveExamCandidates id={activeSession._id} />
+                </TabPanel>
+                <TabPanel value={1} index={1}>
+                  <ActiveExamCentres />
+                </TabPanel>
+                <TabPanel value={2} index={2}>
+                  <ActiveExamCentres />
+                </TabPanel>
+              </TabContext>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

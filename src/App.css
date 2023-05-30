@@ -5,3 +5,19 @@ body {
 .sideMenu {
   background-color: #58626c;
 }
+
+.totalcandidates {
+  background-color: #52aea3;
+  min-height: 35vh;
+}
+
+.currentlywriting {
+  background-color: #aeddcb;
+  min-height: 35vh;
+  color: #f5f5f5;
+}
+.totalsubmitted {
+  background-color: #f7f8f3;
+  min-height: 35vh;
+  color: #58626c;
+}
