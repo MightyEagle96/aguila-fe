@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, CircularProgress, Typography } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
 import { Tabs, Tab } from "@mui/material";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
@@ -12,12 +12,14 @@ export default function ActiveExamSession() {
 
   const [activeSession, setActiveSession] = useState(null);
   const { setAlertData } = useContext(AlertContext);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
   const viewActiveSession = async () => {
+    setLoading(true);
     const { data, error } = await httpService(
       "aguila/examination/session/active"
     );
@@ -28,6 +30,7 @@ export default function ActiveExamSession() {
     if (error) {
       setAlertData({ message: error, severity: "error", open: true });
     }
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -36,6 +39,7 @@ export default function ActiveExamSession() {
   return (
     <div>
       <div className="mt-5 mb-5">
+        {loading && <CircularProgress />}
         <div className="col-lg-4 mb-2">
           <Typography variant="h4" color="GrayText" fontWeight={700}>
             Active Exam Session
