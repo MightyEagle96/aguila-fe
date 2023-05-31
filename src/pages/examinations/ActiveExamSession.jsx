@@ -8,7 +8,7 @@ import { httpService } from "../../httpService";
 import { AlertContext } from "../../contexts/AlertContext";
 
 export default function ActiveExamSession() {
-  const [value, setValue] = useState("1");
+  const [value, setValue] = useState(0);
 
   const [activeSession, setActiveSession] = useState(null);
   const { setAlertData } = useContext(AlertContext);
@@ -72,7 +72,10 @@ export default function ActiveExamSession() {
                   </TabList>
                 </Box>
                 <TabPanel value={0} index={0}>
-                  <ActiveExamCandidates id={activeSession._id} />
+                  <ActiveExamCandidates
+                    examSession={activeSession._id}
+                    examination={activeSession.examination._id}
+                  />
                 </TabPanel>
                 <TabPanel value={1} index={1}>
                   <ActiveExamCentres />

@@ -1,14 +1,35 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCheckSquare,
   faHandPaper,
-  faUser,
 } from "@fortawesome/free-regular-svg-icons";
-import {} from "@fortawesome/fontawesome-free";
 import { People } from "@mui/icons-material";
 import { Typography } from "@mui/material";
-export default function ActiveExamCandidates({ id }) {
+import { httpService } from "../../httpService";
+
+export default function ActiveExamCandidates({ examination, examSession }) {
+  const [analysis, setAnalysis] = useState({});
+  const getData = async () => {
+    const { data } = await httpService.post(
+      "aguila/candidates/sessioncandidatesanalysis",
+      { examSession, examination }
+    );
+
+    if (data) {
+      setAnalysis(data);
+    }
+  };
+
+  useEffect(() => {
+    getData();
+
+    const timer = setInterval(() => {
+      getData();
+    }, 60 * 1000);
+
+    return () => clearInterval(timer);
+  }, []);
   return (
     <div>
       <div className="row">
@@ -17,7 +38,7 @@ export default function ActiveExamCandidates({ id }) {
             <People sx={{ height: 100, width: 100 }} />
             <div className="mt-3 mb-3">
               <Typography variant="h1" textAlign={"center"}>
-                100,000
+                {analysis.sessionCandidates}
               </Typography>
             </div>
             <div className="mt-2">
@@ -30,7 +51,7 @@ export default function ActiveExamCandidates({ id }) {
             <FontAwesomeIcon icon={faHandPaper} style={{ height: 80 }} />
             <div className="mt-3 mb-3">
               <Typography variant="h1" textAlign={"center"}>
-                100,000
+                0
               </Typography>
             </div>
             <div className="mt-2">
@@ -43,7 +64,7 @@ export default function ActiveExamCandidates({ id }) {
             <FontAwesomeIcon icon={faCheckSquare} style={{ height: 80 }} />
             <div className="mt-3 mb-3">
               <Typography variant="h1" textAlign={"center"}>
-                100,000
+                0
               </Typography>
             </div>
             <div className="mt-2">
