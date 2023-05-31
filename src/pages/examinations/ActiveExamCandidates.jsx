@@ -26,7 +26,7 @@ export default function ActiveExamCandidates({ examination, examSession }) {
 
     const timer = setInterval(() => {
       getData();
-    }, 60 * 1000);
+    }, 20 * 1000);
 
     return () => clearInterval(timer);
   }, []);
@@ -51,7 +51,7 @@ export default function ActiveExamCandidates({ examination, examSession }) {
             <FontAwesomeIcon icon={faHandPaper} style={{ height: 80 }} />
             <div className="mt-3 mb-3">
               <Typography variant="h1" textAlign={"center"}>
-                0
+                {analysis.stillWriting}
               </Typography>
             </div>
             <div className="mt-2">
@@ -64,7 +64,7 @@ export default function ActiveExamCandidates({ examination, examSession }) {
             <FontAwesomeIcon icon={faCheckSquare} style={{ height: 80 }} />
             <div className="mt-3 mb-3">
               <Typography variant="h1" textAlign={"center"}>
-                0
+                {analysis.hasSubmitted}
               </Typography>
             </div>
             <div className="mt-2">
