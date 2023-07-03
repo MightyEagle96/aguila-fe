@@ -115,6 +115,7 @@ export default function AllSubjects() {
 }
 
 function DeleteSubject({ id, getData }) {
+  const [loading, setLoading] = useState(false);
   const { setAlertData } = useContext(AlertContext);
   const deleteSubject = () => {
     Swal.fire({
@@ -123,6 +124,7 @@ function DeleteSubject({ id, getData }) {
       text: "Deleting a subject will consequently delete all the question banks attached to this particular subject. Are you sure you wish to proceed?",
       showCancelButton: true,
     }).then(async () => {
+      setLoading(true);
       const { data, error } = await httpService.delete(
         `aguila/subject/delete/${id}`
       );
@@ -133,10 +135,17 @@ function DeleteSubject({ id, getData }) {
       if (error) {
         setAlertData({ message: error, severity: "error", open: true });
       }
+      setLoading(false);
     });
   };
   return (
-    <LoadingButton endIcon={<Delete />} onClick={deleteSubject} color="error">
+    <LoadingButton
+      endIcon={<Delete />}
+      onClick={deleteSubject}
+      loading={loading}
+      loadingPosition="end"
+      color="error"
+    >
       Delete
     </LoadingButton>
   );
