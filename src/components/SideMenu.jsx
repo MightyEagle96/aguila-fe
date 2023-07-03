@@ -19,8 +19,11 @@ import {
   Sync,
   Search,
 } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 
 export default function SideMenu() {
+  const navigate = useNavigate();
+
   const listItems = [
     {
       text: "Dashboard",
@@ -84,7 +87,7 @@ export default function SideMenu() {
         {listItems.map((item, index) => (
           <ListItem key={index} sx={{ color: "#282828" }}>
             <ListItemButton
-              href={item.redirectTo}
+              onClick={() => navigate(item.redirectTo)}
               sx={{ ":hover": { color: "GrayText" } }}
             >
               <ListItemIcon sx={{ color: "#282828" }}>{item.icon}</ListItemIcon>

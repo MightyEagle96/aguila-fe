@@ -3,18 +3,15 @@ import React, { useState, useEffect, useContext } from "react";
 import { httpService } from "../../httpService";
 import { Table } from "react-bootstrap";
 import { LoadingButton } from "@mui/lab";
-import { Height, Save } from "@mui/icons-material";
-import MySnackBar from "../../components/MySnackBar";
+import { Delete, Save } from "@mui/icons-material";
 import { AlertContext } from "../../contexts/AlertContext";
+import Swal from "sweetalert2";
 
 export default function AllSubjects() {
   const [subjects, setSubjects] = useState([]);
   const [loading, setLoading] = useState(false);
   const [subject, setSubject] = useState("");
   const [creating, setCreating] = useState(false);
-  const [message, setMessage] = useState("");
-  const [open, setOpen] = useState(false);
-  const [severity, setSeverity] = useState("");
 
   const { setAlertData } = useContext(AlertContext);
   const getData = async () => {
@@ -38,14 +35,10 @@ export default function AllSubjects() {
     });
     if (data) {
       getData();
-      setMessage(data);
-      setOpen(true);
-      setSeverity("success");
+      setAlertData({ message: data, severity: "success", open: true });
     }
     if (error) {
-      setMessage(error);
-      setOpen(true);
-      setSeverity("error");
+      setAlertData({ message: error, severity: "error", open: true });
     }
     setCreating(false);
   };
@@ -59,12 +52,13 @@ export default function AllSubjects() {
         </div>
         {loading && <CircularProgress />}
         <div className="row">
-          <div className="col-lg-6">
-            <Table bordered>
-              <thead>
+          <div className="col-lg-9">
+            <Table borderless striped>
+              <thead className="bg-dark text-white">
                 <tr>
                   <th>Subject</th>
                   <th>Question Bank</th>
+                  <th>Delete Subject</th>
                 </tr>
               </thead>
               <tbody>
@@ -78,12 +72,15 @@ export default function AllSubjects() {
                     <td>
                       <Link href={`/subjects/view/${c._id}`}>view</Link>
                     </td>
+                    <td>
+                      <DeleteSubject id={c._id} getData={getData} />
+                    </td>
                   </tr>
                 ))}
               </tbody>
             </Table>
           </div>
-          <div className="col-lg-4 p-4 rounded-3">
+          <div className="col-lg-3  rounded-3">
             <div className="mb-3">
               <div className="mb-2">
                 <Typography variant="h6">Create a new subject</Typography>
@@ -113,12 +110,34 @@ export default function AllSubjects() {
           </div>
         </div>
       </div>
-      <MySnackBar
-        open={open}
-        setOpen={setOpen}
-        message={message}
-        severity={severity}
-      />
     </div>
+  );
+}
+
+function DeleteSubject({ id, getData }) {
+  const { setAlertData } = useContext(AlertContext);
+  const deleteSubject = () => {
+    Swal.fire({
+      icon: "question",
+      title: "Delete Subject",
+      text: "Deleting a subject will consequently delete all the question banks attached to this particular subject. Are you sure you wish to proceed?",
+      showCancelButton: true,
+    }).then(async () => {
+      const { data, error } = await httpService.delete(
+        `aguila/subject/delete/${id}`
+      );
+      if (data) {
+        getData();
+        setAlertData({ message: data, severity: "success", open: true });
+      }
+      if (error) {
+        setAlertData({ message: error, severity: "error", open: true });
+      }
+    });
+  };
+  return (
+    <LoadingButton endIcon={<Delete />} onClick={deleteSubject} color="error">
+      Delete
+    </LoadingButton>
   );
 }

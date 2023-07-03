@@ -14,16 +14,6 @@ const httpService = axios.create({
 
 export const backendURL = process.env.REACT_APP_BACKEND_URL;
 
-// httpService.interceptors.request.use(
-//   function (config) {
-//     console.log(loggedInUser);
-//     return config;
-//   },
-//   function (error) {
-//     return Promise.reject(error);
-//   }
-// );
-
 httpService.interceptors.response.use(
   (response) => {
     return response;
