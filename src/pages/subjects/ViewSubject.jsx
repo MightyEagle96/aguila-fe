@@ -7,6 +7,7 @@ import { AddTask, Delete } from "@mui/icons-material";
 import { AlertContext } from "../../contexts/AlertContext";
 import { Table } from "react-bootstrap";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 export default function ViewSubject() {
   const { setAlertData } = useContext(AlertContext);
@@ -15,6 +16,8 @@ export default function ViewSubject() {
   const [questionBanks, setQuestionBanks] = useState([]);
   const [subject, setSubject] = useState(null);
   const [creating, setCreating] = useState(false);
+
+  const navigate = useNavigate();
 
   const getSubject = async () => {
     setLoading(true);

@@ -1,10 +1,11 @@
-import { CircularProgress, Link, TextField, Typography } from "@mui/material";
+import { Button, CircularProgress, TextField, Typography } from "@mui/material";
 import React, { useState, useEffect, useContext } from "react";
 import { httpService } from "../../httpService";
 import { Table } from "react-bootstrap";
 import { LoadingButton } from "@mui/lab";
 import { Delete, Save } from "@mui/icons-material";
 import { AlertContext } from "../../contexts/AlertContext";
+import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
 export default function AllSubjects() {
@@ -13,6 +14,7 @@ export default function AllSubjects() {
   const [subject, setSubject] = useState("");
   const [creating, setCreating] = useState(false);
 
+  const navigate = useNavigate();
   const { setAlertData } = useContext(AlertContext);
   const getData = async () => {
     setLoading(true);
@@ -70,7 +72,11 @@ export default function AllSubjects() {
                       </Typography>
                     </td>
                     <td>
-                      <Link href={`/subjects/view/${c._id}`}>view</Link>
+                      <Button
+                        onClick={() => navigate(`/subjects/view/${c._id}`)}
+                      >
+                        view
+                      </Button>
                     </td>
                     <td>
                       <DeleteSubject id={c._id} getData={getData} />
@@ -98,15 +104,13 @@ export default function AllSubjects() {
                     type="submit"
                     variant="contained"
                     endIcon={<Save />}
+                    loading={creating}
                   >
                     Create
                   </LoadingButton>
                 </div>
               </form>
             </div>
-            <Link href="/subjects/questionimages">
-              View images for questions
-            </Link>
           </div>
         </div>
       </div>
@@ -123,19 +127,21 @@ function DeleteSubject({ id, getData }) {
       title: "Delete Subject",
       text: "Deleting a subject will consequently delete all the question banks attached to this particular subject. Are you sure you wish to proceed?",
       showCancelButton: true,
-    }).then(async () => {
-      setLoading(true);
-      const { data, error } = await httpService.delete(
-        `aguila/subject/delete/${id}`
-      );
-      if (data) {
-        getData();
-        setAlertData({ message: data, severity: "success", open: true });
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        setLoading(true);
+        const { data, error } = await httpService.delete(
+          `aguila/subject/delete/${id}`
+        );
+        if (data) {
+          getData();
+          setAlertData({ message: data, severity: "success", open: true });
+        }
+        if (error) {
+          setAlertData({ message: error, severity: "error", open: true });
+        }
+        setLoading(false);
       }
-      if (error) {
-        setAlertData({ message: error, severity: "error", open: true });
-      }
-      setLoading(false);
     });
   };
   return (
