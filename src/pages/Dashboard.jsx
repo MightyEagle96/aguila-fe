@@ -79,7 +79,7 @@ function Dashboard() {
             <div>
               <CloudDoneOutlined style={{ height: 50, width: 50 }} />
               <Typography variant="h6" fontWeight={300}>
-                Question Bank
+                Question Banks
               </Typography>
             </div>
             <div>
