@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock } from "@fortawesome/free-solid-svg-icons";
 import {
+  CircularProgress,
   List,
   ListItem,
   ListItemButton,
@@ -18,11 +19,14 @@ import {
   Chat,
   Sync,
   Search,
+  Logout,
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import { loggedInUser, httpService } from "../httpService";
 
 export default function SideMenu() {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const listItems = [
     {
@@ -72,7 +76,16 @@ export default function SideMenu() {
       redirectTo: `/adminPanel`,
     },
   ];
+  const logout = async () => {
+    setLoading(true);
+    const { data } = await httpService.get("auth/v1/logout");
 
+    if (data) {
+      localStorage.removeItem(process.env.REACT_APP_PROJECT_USER);
+      window.location.assign("/");
+    }
+    setLoading(false);
+  };
   return (
     <div className="mt-5 mb-5">
       <div
@@ -95,6 +108,19 @@ export default function SideMenu() {
             </ListItemButton>
           </ListItem>
         ))}
+        {loggedInUser && (
+          <ListItem>
+            <ListItemButton
+              onClick={logout}
+              sx={{ ":hover": { color: "GrayText" } }}
+            >
+              <ListItemIcon sx={{ color: "#282828" }}>
+                {loading ? <CircularProgress size={20} /> : <Logout />}
+              </ListItemIcon>
+              <ListItemText primary="Logout" />
+            </ListItemButton>
+          </ListItem>
+        )}
       </List>
     </div>
   );

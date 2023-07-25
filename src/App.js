@@ -23,7 +23,7 @@ function App() {
     <>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <AlertContext.Provider value={{ alertData, setAlertData }}>
-          <NavigationBar />
+          {/* <NavigationBar /> */}
           <ErrorBoundary>
             <MainRoutes />
           </ErrorBoundary>

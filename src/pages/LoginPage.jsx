@@ -13,6 +13,9 @@ import { LoadingButton } from "@mui/lab";
 import aguilaLogo from "../images/aguilalogo.png";
 import MySnackBar from "../components/MySnackBar.jsx";
 import { Login } from "@mui/icons-material";
+import logo from "./logo.png";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCloud } from "@fortawesome/free-solid-svg-icons";
 
 export default function LoginPage() {
   const [type, setType] = useState("password");
@@ -66,23 +69,29 @@ export default function LoginPage() {
   return (
     <div>
       <div className="row m-0">
-        <div className="col-lg-6 homeBanner"></div>
+        <div className="col-lg-6 homeBanner d-flex justify-content-center align-items-center text-white text-center">
+          <div>
+            <div className="mb-2">
+              <img src={logo} height={100} width={170} alt="logo" />
+            </div>
+            <Typography
+              variant="h2"
+              textTransform={"capitalize"}
+              fontWeight={700}
+              gutterBottom
+            >
+              Central Server <FontAwesomeIcon icon={faCloud} />
+            </Typography>
+            <hr />
+            <div className="mt-2">
+              <Typography fontWeight={300}>AGUILA</Typography>
+            </div>
+          </div>
+        </div>
         <div className="col-lg-6 d-flex align-items-center justify-content-center">
           <div className="col-lg-6">
-            {/* desktop */}
             <div className="d-none d-lg-block">
               <div className="">
-                <div className="text-center">
-                  <img src={aguilaLogo} alt="aguila" height={100} width={100} />
-                </div>
-                <Typography
-                  textAlign={"center"}
-                  variant="h3"
-                  color="GrayText"
-                  fontWeight={900}
-                >
-                  AGUILA CENTRAL
-                </Typography>
                 <form onSubmit={handleSubmit}>
                   <div className="mt-3">
                     <TextField

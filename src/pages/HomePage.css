@@ -10,7 +10,7 @@
 }
 
 .homeBanner {
-  background-image: url("../images/backgroundImage.jpg");
-  height: 94vh;
+  background-image: linear-gradient(to right bottom, #c33764, #1d2671);
+  height: 100vh;
   background-size: cover;
 }
