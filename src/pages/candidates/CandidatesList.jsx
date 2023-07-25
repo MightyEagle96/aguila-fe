@@ -1,9 +1,9 @@
 import {
-  CircularProgress,
   TextField,
   Typography,
   Chip,
   Link,
+  LinearProgress,
 } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { httpService } from "../../httpService";
@@ -90,7 +90,7 @@ export default function CandidatesList() {
   return (
     <div className="mt-5 mb-5 p-3">
       <div>
-        {loading && <CircularProgress />}
+        {loading && <LinearProgress />}
         {examination && (
           <>
             <div className="row">

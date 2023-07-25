@@ -1,4 +1,9 @@
-import { Box, CircularProgress, Typography } from "@mui/material";
+import {
+  Box,
+  CircularProgress,
+  LinearProgress,
+  Typography,
+} from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
 import { Tabs, Tab } from "@mui/material";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
@@ -39,7 +44,7 @@ export default function ActiveExamSession() {
   return (
     <div>
       <div className="mt-5 mb-5">
-        {loading && <CircularProgress />}
+        {loading && <LinearProgress />}
         <div className="col-lg-4 mb-2">
           <Typography variant="h4" color="GrayText" fontWeight={700}>
             Active Exam Session
@@ -68,7 +73,6 @@ export default function ActiveExamSession() {
                   <TabList onChange={handleChange}>
                     <Tab label="Candidates summary" value={0} />
                     <Tab label="Centres report" value={1} />
-                    <Tab label="download & upload" value={2} />
                   </TabList>
                 </Box>
                 <TabPanel value={0} index={0}>
@@ -78,9 +82,6 @@ export default function ActiveExamSession() {
                   />
                 </TabPanel>
                 <TabPanel value={1} index={1}>
-                  <ActiveExamCentres />
-                </TabPanel>
-                <TabPanel value={2} index={2}>
                   <ActiveExamCentres />
                 </TabPanel>
               </TabContext>

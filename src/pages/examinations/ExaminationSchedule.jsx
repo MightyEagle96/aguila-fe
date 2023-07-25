@@ -1,4 +1,4 @@
-import { Button, CircularProgress, TextField, Typography } from "@mui/material";
+import { Button, LinearProgress, TextField, Typography } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { httpService } from "../../httpService";
@@ -49,7 +49,7 @@ export default function ExaminationSchedule() {
   return (
     <div>
       <div className="mt-5 mb-5 p-3">
-        {loading && <CircularProgress />}
+        {loading && <LinearProgress />}
         {examination ? (
           <div>
             <div className="row">
