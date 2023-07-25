@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 import React, { useState, useEffect, useContext } from "react";
 import { httpService } from "../../httpService";
-import { Table, Modal } from "react-bootstrap";
+import { Table, Modal, Badge } from "react-bootstrap";
 import { LoadingButton } from "@mui/lab";
 import { AlertContext } from "../../contexts/AlertContext";
 
@@ -77,6 +77,7 @@ export default function ViewAllCentres() {
               <th>Centre ID</th>
               <th>Password</th>
               <th>Capacity</th>
+              <th>Assigned</th>
             </tr>
           </thead>
           <tbody>
@@ -95,6 +96,13 @@ export default function ViewAllCentres() {
                 </td>
                 <td>
                   <Typography>{c.capacity}</Typography>
+                </td>
+                <td>
+                  {c.createdOnServer ? (
+                    <Badge bg="success">YES</Badge>
+                  ) : (
+                    <Badge bg="danger">NO</Badge>
+                  )}
                 </td>
               </tr>
             ))}
