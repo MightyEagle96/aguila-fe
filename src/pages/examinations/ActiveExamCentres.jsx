@@ -1,8 +1,26 @@
 import { Typography } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Table } from "react-bootstrap";
+import { httpService } from "../../httpService";
 
-export default function ActiveExamCentres() {
+export default function ActiveExamCentres({ examSession, examination }) {
+  const [result, setResult] = useState([]);
+  const getData = async () => {
+    const { data } = await httpService.post("aguila/centres/sessionreport", {
+      examination,
+      examSession,
+    });
+    if (data) setResult(data);
+  };
+  useEffect(() => {
+    getData();
+
+    const interval = setInterval(() => {
+      getData();
+    }, 10000);
+
+    return () => clearInterval(interval);
+  }, []);
   return (
     <div>
       <div className="mb-3">
@@ -26,7 +44,18 @@ export default function ActiveExamCentres() {
               </tr>
             </thead>
             <tbody>
-              <tr>
+              {result.map((c, i) => (
+                <tr>
+                  <td>{i + 1}</td>
+                  <td>
+                    <Typography>{c.centre.centreId}</Typography>
+                  </td>
+                  <td>
+                    <Typography>{c.assignedCandidates}</Typography>
+                  </td>
+                </tr>
+              ))}
+              {/* <tr>
                 <td>1</td>
                 <td>123</td>
                 <td>150</td>
@@ -34,7 +63,7 @@ export default function ActiveExamCentres() {
                 <td>{new Date().toLocaleTimeString()}</td>
                 <td>1</td>
                 <td>1</td>
-              </tr>
+              </tr> */}
             </tbody>
           </Table>
         </div>
