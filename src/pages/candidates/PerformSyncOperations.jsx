@@ -35,7 +35,7 @@ export default function PerformSyncOperations() {
   };
   const getExams = async () => {
     setLoading(true);
-    const { data } = await httpService("aguila/examination/active");
+    const { data, error } = await httpService("aguila/examination/active");
 
     if (data) {
       setActiveExam(data);
@@ -45,8 +45,11 @@ export default function PerformSyncOperations() {
         `aguila/centres/centresforexam/${data.examination._id}`
       );
 
-      setExamCentres(res2.data);
+      if (res2.data) setExamCentres(res2.data);
+      if (res2.error)
+        setAlertData({ severity: "error", message: res2.error, open: true });
     }
+    if (error) setAlertData({ severity: "error", message: error, open: true });
     setLoading(false);
   };
 
