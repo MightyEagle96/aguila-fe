@@ -1,15 +1,14 @@
 import {
-  CircularProgress,
   TextField,
   Typography,
   FormControlLabel,
   Checkbox,
   MenuItem,
   InputAdornment,
+  LinearProgress,
 } from "@mui/material";
 import React, { useState, useEffect, useContext } from "react";
 import { httpService } from "../../httpService";
-import { sessionsList } from "../examinations/route";
 import { House, Person, Schedule } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 import { AlertContext } from "../../contexts/AlertContext";
@@ -43,7 +42,7 @@ export default function PerformSyncOperations() {
 
       //get the centres for the exam
       const res2 = await httpService(
-        `aguila/centres/centresforexam/${data._id}`
+        `aguila/centres/centresforexam/${data.examination._id}`
       );
 
       setExamCentres(res2.data);
@@ -102,7 +101,7 @@ export default function PerformSyncOperations() {
             SYNC OPERATION
           </Typography>
         </div>
-        {loading && <CircularProgress />}
+        <div className="mb-2">{loading && <LinearProgress />}</div>
         {activeExam && (
           <div>
             <div className="alert alert-success col-lg-4 mb-2">
@@ -114,7 +113,7 @@ export default function PerformSyncOperations() {
                 fontWeight={700}
                 textTransform={"uppercase"}
               >
-                {activeExam.title}
+                {activeExam.examination.title}
               </Typography>
             </div>
             <div>
@@ -165,7 +164,7 @@ export default function PerformSyncOperations() {
                       <Typography variant="caption">
                         Select the subject combination for this candidate
                       </Typography>
-                      {activeExam.subjects.map((c, i) => (
+                      {activeExam.examination.subjects.map((c, i) => (
                         <div>
                           <FormControlLabel
                             key={i}
@@ -222,8 +221,8 @@ export default function PerformSyncOperations() {
                           ),
                         }}
                       >
-                        {sessionsList().map((c) => (
-                          <MenuItem value={c}>{c}</MenuItem>
+                        {activeExam.examSessions.map((c) => (
+                          <MenuItem value={c}>{c.session}</MenuItem>
                         ))}
                       </TextField>
                     </div>

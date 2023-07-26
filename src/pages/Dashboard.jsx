@@ -29,10 +29,9 @@ function Dashboard() {
           <div className="row">
             <div className="col-lg-3">
               <Typography variant="h4" fontWeight={300}>
-                DASHBOARD
+                DASHBOARD {loading && <CircularProgress size={20} />}
               </Typography>
             </div>
-            <div className="col-lg-3">{loading && <CircularProgress />}</div>
           </div>
         </div>
         <div className="row">
