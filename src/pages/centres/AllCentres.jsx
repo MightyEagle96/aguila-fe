@@ -57,13 +57,10 @@ export default function AllCentres() {
           <CandidateDistribution
             viewCentres={viewCentres}
             centres={centres}
-            examination={activeExam}
+            examination={activeExam.examination}
           />
         )}
       </div>
-      {/* <div className="mt-1">
-        {activeExam && <CentresForExam examination={activeExam._id} />}
-      </div> */}
     </div>
   );
 }
@@ -87,7 +84,7 @@ function CandidateDistribution({ viewCentres, centres, examination }) {
     const { data } = await httpService("aguila/examination/active");
 
     if (data) {
-      getAnalysis(data._id);
+      getAnalysis(data.examination._id);
     }
   };
   const getExamCentres = async () => {
