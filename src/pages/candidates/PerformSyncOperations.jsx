@@ -78,14 +78,16 @@ export default function PerformSyncOperations() {
           {
             ...candidateData,
             subjectCombinations: selected,
-            examination: activeExam._id,
+            examination: activeExam.examination._id,
           }
         );
 
         if (data) {
           setAlertData({ message: data, open: true, severity: "success" });
           setTimeout(() => {
-            window.location.assign(`/candidates/${activeExam._id}/list`);
+            window.location.assign(
+              `/candidates/${activeExam.examination._id}/list`
+            );
           }, 3000);
         }
 
@@ -213,7 +215,7 @@ export default function PerformSyncOperations() {
                         fullWidth
                         required
                         select
-                        name="session"
+                        name="examSession"
                         onChange={handleChange}
                         label="Sessions List"
                         InputProps={{
@@ -225,7 +227,7 @@ export default function PerformSyncOperations() {
                         }}
                       >
                         {activeExam.examSessions.map((c) => (
-                          <MenuItem value={c}>{c.session}</MenuItem>
+                          <MenuItem value={c._id}>{c.session}</MenuItem>
                         ))}
                       </TextField>
                     </div>
