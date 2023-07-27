@@ -18,6 +18,8 @@ import { Modal, Table } from "react-bootstrap";
 import Swal from "sweetalert2";
 
 import { AlertContext } from "../../contexts/AlertContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEdit } from "@fortawesome/free-solid-svg-icons";
 
 export default function ExaminationHandler() {
   const [examinations, setExaminations] = useState([]);
@@ -121,33 +123,35 @@ export default function ExaminationHandler() {
               <thead>
                 <tr>
                   <th>Title</th>
-                  <th>Status</th>
                   <th>Subject List</th>
+                  <th>Status</th>
                   <th>Candidates List</th>
                   <th>Schedule</th>
                   <th>Results</th>
+                  <th>Edit</th>
                   <th>Delete</th>
                 </tr>
               </thead>
               <tbody>
                 {examinations.map((c, i) => (
                   <tr key={i}>
-                    <td>
+                    <td className="col-lg-4">
                       <Typography textTransform={"uppercase"}>
                         {c.title}
                       </Typography>
                     </td>
-                    <td>
-                      <ToggleActivation examination={c} viewExams={viewExams} />
-                    </td>
-                    <td className="col-lg-4">
+                    <td className="col-lg-2">
                       <SubjectsList
                         examination={c}
                         subjects={subjects}
                         viewExams={viewExams}
                       />
                     </td>
-                    <td>
+                    <td className="col-lg-1">
+                      <ToggleActivation examination={c} viewExams={viewExams} />
+                    </td>
+
+                    <td className="col-lg-1">
                       <Button
                         disabled={!c.active}
                         href={`/candidates/${c._id}/list`}
@@ -155,7 +159,7 @@ export default function ExaminationHandler() {
                         view list
                       </Button>
                     </td>
-                    <td>
+                    <td className="col-lg-1">
                       <Button
                         disabled={!c.active}
                         href={`/examination/schedule/${c._id}`}
@@ -163,12 +167,15 @@ export default function ExaminationHandler() {
                         schedule
                       </Button>
                     </td>
-                    <td>
+                    <td className="col-lg-1">
                       <Button href={`/examination/results/${c._id}`}>
                         view results
                       </Button>
                     </td>
-                    <td>
+                    <td className="col-lg-1">
+                      <EditExam />
+                    </td>
+                    <td className="col-lg-1">
                       <DeleteExam examination={c} viewExams={viewExams} />
                     </td>
                   </tr>
@@ -443,5 +450,13 @@ function DeleteExam({ examination, viewExams }) {
         </Modal.Footer>
       </Modal>
     </>
+  );
+}
+
+function EditExam({}) {
+  return (
+    <IconButton>
+      <FontAwesomeIcon icon={faEdit} />
+    </IconButton>
   );
 }
