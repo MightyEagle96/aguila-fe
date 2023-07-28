@@ -173,7 +173,11 @@ export default function ExaminationHandler() {
                       </Button>
                     </td>
                     <td className="col-lg-1">
-                      <EditExam />
+                      <EditExam
+                        examinationId={c._id}
+                        subjects={subjects}
+                        viewExams={viewExams}
+                      />
                     </td>
                     <td className="col-lg-1">
                       <DeleteExam examination={c} viewExams={viewExams} />
@@ -453,10 +457,132 @@ function DeleteExam({ examination, viewExams }) {
   );
 }
 
-function EditExam({}) {
+function EditExam({ examinationId, subjects, viewExams }) {
+  const [show, setShow] = useState(false);
+  const [examination, setExamination] = useState(null);
+  const [selected, setSelected] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [fetching, setFetching] = useState(false);
+
+  const { setAlertData } = useContext(AlertContext);
+
+  const viewExam = async () => {
+    setFetching(true);
+    const { data } = await httpService.get(
+      `aguila/examination/${examinationId}/view`
+    );
+
+    if (data) {
+      setExamination(data);
+      setShow(true);
+    }
+    setFetching(false);
+  };
+
+  const selectSubject = (e) => {
+    if (e.target.checked) {
+      setSelected([...selected, e.target.value]);
+    } else {
+      const filtered = selected.filter((c) => c !== e.target.value);
+      setSelected(filtered);
+    }
+  };
+
+  const handleClose = () => setShow(!show);
+
+  const handleSubmit = () => {
+    if (selected.length === 0)
+      return Swal.fire({
+        icon: "warning",
+        title: "No subject selected",
+        text: "Please select one or more subjects for this examination",
+      });
+
+    Swal.fire({
+      icon: "question",
+      title: "Update Exam",
+      text: "Are you sure you want to edit this examination",
+      showCancelButton: true,
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        setLoading(true);
+        const body = { ...examination, subjects: selected };
+
+        const { data, error } = await httpService.patch(
+          "aguila/examination/editexam",
+          body
+        );
+
+        if (data) {
+          viewExams();
+          setAlertData({ open: true, message: data, severity: "success" });
+          setShow(false);
+        }
+        if (error) {
+          setAlertData({ open: true, message: error, severity: "error" });
+        }
+
+        setLoading(false);
+      }
+    });
+  };
+
   return (
-    <IconButton>
-      <FontAwesomeIcon icon={faEdit} />
-    </IconButton>
+    <>
+      {fetching ? (
+        <CircularProgress size={20} />
+      ) : (
+        <IconButton onClick={viewExam}>
+          <FontAwesomeIcon icon={faEdit} />
+        </IconButton>
+      )}
+      <Modal show={show} onHide={handleClose} backdrop="static" size="lg">
+        <Modal.Header closeButton>
+          <Modal.Title>Edit Examination</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {examination && (
+            <div className="col-lg-8">
+              <div className="mb-2">
+                <TextField
+                  fullWidth
+                  label="Title"
+                  value={examination.title}
+                  onChange={(e) =>
+                    setExamination({ ...examination, title: e.target.value })
+                  }
+                />
+              </div>
+              <div className="mb-2">
+                <FormGroup>
+                  {subjects.map((c, i) => (
+                    <FormControlLabel
+                      key={i}
+                      onChange={selectSubject}
+                      control={<Checkbox />}
+                      value={c._id}
+                      label={
+                        <Typography textTransform={"capitalize"}>
+                          {c.name}
+                        </Typography>
+                      }
+                    />
+                  ))}
+                </FormGroup>
+              </div>
+            </div>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <LoadingButton
+            loading={loading}
+            variant="contained"
+            onClick={handleSubmit}
+          >
+            save changes
+          </LoadingButton>
+        </Modal.Footer>
+      </Modal>
+    </>
   );
 }
