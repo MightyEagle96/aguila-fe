@@ -7,13 +7,17 @@ import {
 } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { httpService } from "../../httpService";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Save } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 import Swal from "sweetalert2";
 import MySnackBar from "../../components/MySnackBar";
 import MyPagination from "../../components/MyPagination";
 import { Table } from "react-bootstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUpload } from "@fortawesome/free-solid-svg-icons";
+import { AlertContext } from "../../contexts/AlertContext";
+
 export default function CandidatesList() {
   const { id } = useParams();
   const [examination, setExamination] = useState(null);
@@ -29,6 +33,9 @@ export default function CandidatesList() {
   const [startIndex, setStartIndex] = useState(0);
   const [assigned, setAssigned] = useState(0);
   const [unassigned, setUnassigned] = useState(0);
+  const [file, setFile] = useState(null);
+
+  const { setAlertData } = useContext(AlertContext);
 
   const getExamination = async () => {
     setLoading(true);
@@ -38,6 +45,20 @@ export default function CandidatesList() {
       setExamination(data);
     }
     setLoading(false);
+  };
+
+  const uploadFile = async () => {
+    const formData = new FormData();
+
+    formData.append("candidateFile", file, file.name);
+    const { data, error } = await httpService.post(
+      `aguila/candidates/${id}/uploadcandidates`,
+      formData
+    );
+
+    if (data) setAlertData({ open: true, message: data, severity: "success" });
+
+    if (error) setAlertData({ open: true, message: error, severity: "error" });
   };
 
   const createDummyCandidates = (e) => {
@@ -87,22 +108,27 @@ export default function CandidatesList() {
     getExamination();
     getCandidates();
   }, []);
+
+  const handleChange = (e) => {
+    setFile(e.target.files[0]);
+  };
   return (
     <div className="mt-5 mb-5 p-3">
       <div>
         {loading && <LinearProgress />}
         {examination && (
           <>
-            <div className="row">
-              <div className="alert alert-light col-lg-6 shadow-sm">
+            <div className="row mb-4">
+              <div className="col-lg-6 border-end ">
                 <Typography
                   textTransform={"uppercase"}
                   variant="h4"
                   fontWeight={600}
+                  gutterBottom
                 >
                   {examination.title}
                 </Typography>
-                <hr />
+
                 <Typography>Candidates List</Typography>
               </div>
               <div className="col-lg-4">
@@ -123,6 +149,34 @@ export default function CandidatesList() {
                     create
                   </LoadingButton>
                 </form>
+              </div>
+            </div>
+
+            <div className="col-lg-4 mb-3">
+              <label for="formFile" class="form-label">
+                Select an image file
+              </label>
+              <input
+                class="form-control"
+                type="file"
+                id="formFile"
+                accept=".xlsx,.csv"
+                onChange={handleChange}
+              />
+              <div className="mt-1">
+                {file && (
+                  <div>
+                    <Typography gutterBottom textTransform={"uppercase"}>
+                      {file.name}
+                    </Typography>
+                    <LoadingButton
+                      onClick={uploadFile}
+                      startIcon={<FontAwesomeIcon icon={faUpload} />}
+                    >
+                      Upload file
+                    </LoadingButton>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -155,10 +209,10 @@ export default function CandidatesList() {
               </div>
               <div className="mt-2 mb-2">
                 <Link underline="none" href={`/candidates/performsync/${id}`}>
-                  perform a sync operation
+                  PERFORM SYNC OPERATION
                 </Link>
               </div>
-              <Table bordered>
+              <Table borderless striped>
                 <thead>
                   <th>
                     <Typography>S/N</Typography>
