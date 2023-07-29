@@ -90,11 +90,10 @@ export default function ExaminationHandler() {
 
           {loading && <CircularProgress />}
           <div className="col-lg-4">
-            <Typography>Create new exam</Typography>
-
             <form onSubmit={createExam}>
               <TextField
                 fullWidth
+                label="Create new exam"
                 required
                 onChange={(e) => setTitle(e.target.value)}
               />
@@ -111,7 +110,7 @@ export default function ExaminationHandler() {
               </div>
             </form>
           </div>
-          <div className="mb-1 mt-1 col-lg-3 alert alert-info">
+          <div className="mb-1 mt-1 col-lg-4 alert alert-info">
             <Typography fontWeight={600}>ATTENTION</Typography>
             <Typography>
               Please note when creating a new examination, always update the
@@ -119,9 +118,10 @@ export default function ExaminationHandler() {
             </Typography>
           </div>
           <div className="mt-4">
-            <Table bordered>
+            <Table borderless striped>
               <thead>
                 <tr>
+                  <th>S/N</th>
                   <th>Title</th>
                   <th>Subject List</th>
                   <th>Status</th>
@@ -133,57 +133,74 @@ export default function ExaminationHandler() {
                 </tr>
               </thead>
               <tbody>
-                {examinations.map((c, i) => (
-                  <tr key={i}>
-                    <td className="col-lg-4">
-                      <Typography textTransform={"uppercase"}>
-                        {c.title}
-                      </Typography>
-                    </td>
-                    <td className="col-lg-2">
-                      <SubjectsList
-                        examination={c}
-                        subjects={subjects}
-                        viewExams={viewExams}
-                      />
-                    </td>
-                    <td className="col-lg-1">
-                      <ToggleActivation examination={c} viewExams={viewExams} />
-                    </td>
+                <>
+                  {examinations.length > 0 ? (
+                    <>
+                      {" "}
+                      {examinations.map((c, i) => (
+                        <tr key={i}>
+                          <td>{i + 1}</td>
+                          <td className="col-lg-4">
+                            <Typography textTransform={"uppercase"}>
+                              {c.title}
+                            </Typography>
+                          </td>
+                          <td className="col-lg-2">
+                            <SubjectsList
+                              examination={c}
+                              subjects={subjects}
+                              viewExams={viewExams}
+                            />
+                          </td>
+                          <td className="col-lg-1">
+                            <ToggleActivation
+                              examination={c}
+                              viewExams={viewExams}
+                            />
+                          </td>
 
-                    <td className="col-lg-1">
-                      <Button
-                        disabled={!c.active}
-                        href={`/candidates/${c._id}/list`}
-                      >
-                        view list
-                      </Button>
-                    </td>
-                    <td className="col-lg-1">
-                      <Button
-                        disabled={!c.active}
-                        href={`/examination/schedule/${c._id}`}
-                      >
-                        schedule
-                      </Button>
-                    </td>
-                    <td className="col-lg-1">
-                      <Button href={`/examination/results/${c._id}`}>
-                        view results
-                      </Button>
-                    </td>
-                    <td className="col-lg-1">
-                      <EditExam
-                        examinationId={c._id}
-                        subjects={subjects}
-                        viewExams={viewExams}
-                      />
-                    </td>
-                    <td className="col-lg-1">
-                      <DeleteExam examination={c} viewExams={viewExams} />
-                    </td>
-                  </tr>
-                ))}
+                          <td className="col-lg-1">
+                            <Button
+                              disabled={!c.active}
+                              href={`/candidates/${c._id}/list`}
+                            >
+                              view list
+                            </Button>
+                          </td>
+                          <td className="col-lg-1">
+                            <Button
+                              disabled={!c.active}
+                              href={`/examination/schedule/${c._id}`}
+                            >
+                              schedule
+                            </Button>
+                          </td>
+                          <td className="col-lg-1">
+                            <Button href={`/examination/results/${c._id}`}>
+                              view results
+                            </Button>
+                          </td>
+                          <td className="col-lg-1">
+                            <EditExam
+                              examinationId={c._id}
+                              subjects={subjects}
+                              viewExams={viewExams}
+                            />
+                          </td>
+                          <td className="col-lg-1">
+                            <DeleteExam examination={c} viewExams={viewExams} />
+                          </td>
+                        </tr>
+                      ))}
+                    </>
+                  ) : (
+                    <tr>
+                      <td colSpan={12} className="text-center">
+                        <h5>No exams found</h5>
+                      </td>
+                    </tr>
+                  )}
+                </>
               </tbody>
             </Table>
           </div>
