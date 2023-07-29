@@ -6,6 +6,7 @@ import {
   FormControlLabel,
   FormGroup,
   IconButton,
+  LinearProgress,
   TextField,
   Typography,
 } from "@mui/material";
@@ -88,7 +89,7 @@ export default function ExaminationHandler() {
             Examination Control
           </Typography>
 
-          {loading && <CircularProgress />}
+          {loading && <LinearProgress />}
           <div className="col-lg-4">
             <form onSubmit={createExam}>
               <TextField
