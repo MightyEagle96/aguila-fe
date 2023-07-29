@@ -58,31 +58,53 @@ export default function AllSubjects() {
             <Table borderless striped>
               <thead className="bg-dark text-white">
                 <tr>
+                  <th>S/N</th>
                   <th>Subject</th>
+                  <th>Subject Code</th>
                   <th>Question Bank</th>
                   <th>Delete Subject</th>
                 </tr>
               </thead>
               <tbody>
-                {subjects.map((c, i) => (
-                  <tr key={i}>
-                    <td>
-                      <Typography textTransform={"capitalize"}>
-                        {c.name}
-                      </Typography>
-                    </td>
-                    <td>
-                      <Button
-                        onClick={() => navigate(`/subjects/view/${c._id}`)}
-                      >
-                        view
-                      </Button>
-                    </td>
-                    <td>
-                      <DeleteSubject id={c._id} getData={getData} />
-                    </td>
-                  </tr>
-                ))}
+                <>
+                  {subjects.length > 0 ? (
+                    <>
+                      {subjects.map((c, i) => (
+                        <tr key={i}>
+                          <td>{i + 1}</td>
+                          <td>
+                            <Typography textTransform={"capitalize"}>
+                              {c.name}
+                            </Typography>
+                          </td>
+                          <td>
+                            <Typography textTransform={"capitalize"}>
+                              {c.subjectCode}
+                            </Typography>
+                          </td>
+                          <td>
+                            <Button
+                              onClick={() =>
+                                navigate(`/subjects/view/${c._id}`)
+                              }
+                            >
+                              view
+                            </Button>
+                          </td>
+                          <td>
+                            <DeleteSubject id={c._id} getData={getData} />
+                          </td>
+                        </tr>
+                      ))}
+                    </>
+                  ) : (
+                    <tr>
+                      <td colSpan={12} className="text-center">
+                        <Typography variant="h6">No data found</Typography>
+                      </td>
+                    </tr>
+                  )}
+                </>
               </tbody>
             </Table>
           </div>

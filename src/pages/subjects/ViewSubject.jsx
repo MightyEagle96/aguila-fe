@@ -79,7 +79,7 @@ export default function ViewSubject() {
               {subject.name}
             </Typography>
           </div>
-          <div className="mt-2">
+          {/* <div className="mt-2">
             <LoadingButton
               endIcon={<AddTask />}
               loadingPosition="end"
@@ -88,37 +88,51 @@ export default function ViewSubject() {
             >
               add question bank
             </LoadingButton>
-          </div>
+          </div> */}
           <div className="mt-2 col-lg-6">
-            <Table bordered>
+            <Table striped borderless>
               <thead>
                 <tr>
                   <th>Question Banks</th>
                   <th>Questions</th>
-                  <th>View Questions</th>
+                  <th>Date Created</th>
                   <th>Delete</th>
                 </tr>
               </thead>
               <tbody>
-                {questionBanks.map((c, i) => (
-                  <tr key={i}>
-                    <td>
-                      <Typography>Bank {i + 1}</Typography>
-                    </td>
-                    <td>
-                      <Typography>{c.questions}</Typography>
-                    </td>
-                    <td>
-                      <Link href={`/subjects/questionbank/${c._id}`}>view</Link>
-                    </td>
-                    <td>
-                      <DeleteQuestionBank
-                        id={c._id}
-                        viewQuestionBanks={viewQuestionBanks}
-                      />
-                    </td>
-                  </tr>
-                ))}
+                <>
+                  {questionBanks.length > 0 ? (
+                    <>
+                      {questionBanks.map((c, i) => (
+                        <tr key={i}>
+                          <td>
+                            <Typography>Bank {i + 1}</Typography>
+                          </td>
+                          <td>
+                            <Typography>{c.questions}</Typography>
+                          </td>
+                          <td>
+                            <Typography>
+                              {c.dateCreated.toDateString()}
+                            </Typography>
+                          </td>
+                          <td>
+                            <DeleteQuestionBank
+                              id={c._id}
+                              viewQuestionBanks={viewQuestionBanks}
+                            />
+                          </td>
+                        </tr>
+                      ))}
+                    </>
+                  ) : (
+                    <tr>
+                      <td colSpan={12} className="text-center">
+                        No question bank created yet
+                      </td>
+                    </tr>
+                  )}
+                </>
               </tbody>
             </Table>
           </div>
