@@ -4,16 +4,16 @@ import {
   Chip,
   Link,
   LinearProgress,
+  Tooltip,
 } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { httpService } from "../../httpService";
 import React, { useEffect, useState, useContext } from "react";
-import { Save } from "@mui/icons-material";
+import { Delete, Save } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 import Swal from "sweetalert2";
-import MySnackBar from "../../components/MySnackBar";
 import MyPagination from "../../components/MyPagination";
-import { Table } from "react-bootstrap";
+import { Badge, Table } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUpload } from "@fortawesome/free-solid-svg-icons";
 import { AlertContext } from "../../contexts/AlertContext";
@@ -24,9 +24,6 @@ export default function CandidatesList() {
   const [loading, setLoading] = useState(false);
   const [creating, setCreating] = useState(false);
   const [limit, setLimit] = useState(0);
-  const [message, setMessage] = useState("");
-  const [open, setOpen] = useState(false);
-  const [severity, setSeverity] = useState("");
 
   const [totalCandidates, setTotalCandidates] = useState(0);
   const [results, setResults] = useState([]);
@@ -34,9 +31,34 @@ export default function CandidatesList() {
   const [assigned, setAssigned] = useState(0);
   const [unassigned, setUnassigned] = useState(0);
   const [file, setFile] = useState(null);
+  const [deleting, setDeleting] = useState(false);
 
   const { setAlertData } = useContext(AlertContext);
 
+  const deleteCandidates = () => {
+    Swal.fire({
+      icon: "question",
+      title: "Delete all candidates",
+      text: "Are you sure you want to delete all candidates?",
+      showCancelButton: true,
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        setDeleting(true);
+        const { data, error } = await httpService.delete(
+          `aguila/candidates/${id}/delete`
+        );
+        if (data) {
+          setAlertData({ open: true, message: data, severity: "success" });
+          getCandidates();
+        }
+
+        if (error)
+          setAlertData({ open: true, message: error, severity: "error" });
+
+        setDeleting(false);
+      }
+    });
+  };
   const getExamination = async () => {
     setLoading(true);
 
@@ -45,20 +67,6 @@ export default function CandidatesList() {
       setExamination(data);
     }
     setLoading(false);
-  };
-
-  const uploadFile = async () => {
-    const formData = new FormData();
-
-    formData.append("candidateFile", file, file.name);
-    const { data, error } = await httpService.post(
-      `aguila/candidates/${id}/uploadcandidates`,
-      formData
-    );
-
-    if (data) setAlertData({ open: true, message: data, severity: "success" });
-
-    if (error) setAlertData({ open: true, message: error, severity: "error" });
   };
 
   const createDummyCandidates = (e) => {
@@ -76,14 +84,10 @@ export default function CandidatesList() {
         );
 
         if (data) {
-          setSeverity("success");
-          setOpen(true);
-          setMessage(data);
+          setAlertData({ open: true, severity: "success", message: data });
         }
         if (error) {
-          setSeverity("error");
-          setOpen(true);
-          setMessage(error);
+          setAlertData({ open: true, severity: "error", message: error });
         }
         setCreating(false);
       }
@@ -102,6 +106,24 @@ export default function CandidatesList() {
       setAssigned(data.assigned);
       setUnassigned(data.unassigned);
     }
+  };
+
+  const uploadFile = async () => {
+    const formData = new FormData();
+
+    formData.append("candidateFile", file, file.name);
+    const { data, error } = await httpService.post(
+      `aguila/candidates/${id}/uploadcandidates`,
+      formData
+    );
+
+    if (data) {
+      getCandidates();
+      setAlertData({ open: true, message: data, severity: "success" });
+    }
+
+    if (error) setAlertData({ open: true, message: error, severity: "error" });
+    getCandidates();
   };
 
   useEffect(() => {
@@ -153,8 +175,10 @@ export default function CandidatesList() {
             </div>
 
             <div className="col-lg-4 mb-3">
-              <label for="formFile" class="form-label">
-                Select an image file
+              <label for="formFile" className="form-label">
+                <Typography variant="overline">
+                  Select an excel or csv file
+                </Typography>
               </label>
               <input
                 class="form-control"
@@ -212,23 +236,26 @@ export default function CandidatesList() {
                   PERFORM SYNC OPERATION
                 </Link>
               </div>
+              <div className="mt-2 mb-2 text-end">
+                <LoadingButton
+                  color="error"
+                  onClick={deleteCandidates}
+                  loading={deleting}
+                  loadingPosition="start"
+                  startIcon={<Delete />}
+                >
+                  delete all candidates
+                </LoadingButton>
+              </div>
               <Table borderless striped>
                 <thead>
-                  <th>
-                    <Typography>S/N</Typography>
-                  </th>
-                  <th>
-                    <Typography>First Name</Typography>
-                  </th>
-                  <th>
-                    <Typography>Last Name</Typography>
-                  </th>
-                  <th>
-                    <Typography>Registration Number</Typography>
-                  </th>
-                  <th>
-                    <Typography>Subject Combinations</Typography>
-                  </th>
+                  <th>S/N</th>
+                  <th>First Name</th>
+                  <th>Middle Name</th>
+                  <th>Last Name</th>
+                  <th>Registration Number</th>
+                  <th>Subject Combinations</th>
+                  <th>Error</th>
                 </thead>
                 <tbody>
                   {results.length > 0 ? (
@@ -240,6 +267,9 @@ export default function CandidatesList() {
                           </td>
                           <td>
                             <Typography>{c.firstName}</Typography>
+                          </td>
+                          <td>
+                            <Typography>{c.middleName || "-"}</Typography>
                           </td>
                           <td>
                             <Typography>{c.lastName}</Typography>
@@ -262,6 +292,15 @@ export default function CandidatesList() {
                               />
                             ))}
                           </td>
+                          <td>
+                            {c.errorMessage ? (
+                              <Tooltip title={c.errorMessage} placement="top">
+                                <Badge bg="danger">Has Error</Badge>
+                              </Tooltip>
+                            ) : (
+                              <Badge bg="success">No Error</Badge>
+                            )}
+                          </td>
                         </tr>
                       ))}
                     </>
@@ -280,12 +319,7 @@ export default function CandidatesList() {
           </>
         )}
       </div>
-      <MySnackBar
-        open={open}
-        setOpen={setOpen}
-        message={message}
-        severity={severity}
-      />
+
       <MyPagination
         rootPath={`aguila/candidates/${id}/view?`}
         setResults={setResults}
