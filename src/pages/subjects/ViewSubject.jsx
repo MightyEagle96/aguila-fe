@@ -52,6 +52,7 @@ export default function ViewSubject() {
     );
 
     if (data) {
+      console.log(data);
       setQuestionBanks(data);
     }
     if (error) {
@@ -113,7 +114,7 @@ export default function ViewSubject() {
                           </td>
                           <td>
                             <Typography>
-                              {c.dateCreated.toDateString()}
+                              {new Date(c.dateCreated).toDateString()}
                             </Typography>
                           </td>
                           <td>
