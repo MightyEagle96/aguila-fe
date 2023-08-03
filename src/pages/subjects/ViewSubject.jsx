@@ -1,13 +1,12 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { httpService } from "../../httpService";
-import { CircularProgress, IconButton, Link, Typography } from "@mui/material";
-import { LoadingButton } from "@mui/lab";
-import { AddTask, Delete } from "@mui/icons-material";
+import { CircularProgress, IconButton, Typography } from "@mui/material";
+
+import { Delete } from "@mui/icons-material";
 import { AlertContext } from "../../contexts/AlertContext";
 import { Table } from "react-bootstrap";
 import Swal from "sweetalert2";
-import { useNavigate } from "react-router-dom";
 
 export default function ViewSubject() {
   const { setAlertData } = useContext(AlertContext);
@@ -15,9 +14,6 @@ export default function ViewSubject() {
   const [loading, setLoading] = useState(false);
   const [questionBanks, setQuestionBanks] = useState([]);
   const [subject, setSubject] = useState(null);
-  const [creating, setCreating] = useState(false);
-
-  const navigate = useNavigate();
 
   const getSubject = async () => {
     setLoading(true);
@@ -30,21 +26,6 @@ export default function ViewSubject() {
     setLoading(false);
   };
 
-  const addQuestionBank = async () => {
-    setCreating(true);
-    const { data, error } = await httpService(
-      `aguila/subject/questionbank/add/${id}`
-    );
-
-    if (data) {
-      viewQuestionBanks();
-      setAlertData({ message: data, severity: "success", open: true });
-    }
-    if (error) {
-      setAlertData({ message: error, severity: "error", open: true });
-    }
-    setCreating(false);
-  };
   const viewQuestionBanks = async () => {
     setLoading(true);
     const { data, error } = await httpService(
