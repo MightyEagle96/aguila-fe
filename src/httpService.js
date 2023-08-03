@@ -21,12 +21,11 @@ httpService.interceptors.response.use(
   async (error) => {
     if (error.response && error.response.status === 401) {
       await httpService.post("auth/v1/refreshtoken", {
-        id: loggedInUser.user._id,
+        id: loggedInUser._id,
       });
       return httpService(error.config);
     }
-    // } else if (error.response)
-    //   return { error: error.response.data, status: error.response.status };
+
     if (error.response)
       return { error: error.response.data, status: error.response.status };
     return { error: "Lost connection to the server" };

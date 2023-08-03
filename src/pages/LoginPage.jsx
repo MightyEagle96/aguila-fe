@@ -10,7 +10,7 @@ import { httpService } from "../httpService.js";
 
 import "./HomePage.css";
 import { LoadingButton } from "@mui/lab";
-import aguilaLogo from "../images/aguilalogo.png";
+
 import MySnackBar from "../components/MySnackBar.jsx";
 import { Login } from "@mui/icons-material";
 import logo from "./logo.png";
