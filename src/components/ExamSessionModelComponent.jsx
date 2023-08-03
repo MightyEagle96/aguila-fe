@@ -19,6 +19,7 @@ import {
   FavoriteBorder,
   Favorite,
   DoneAll,
+  Delete,
 } from "@mui/icons-material";
 import { Badge, Modal, Table } from "react-bootstrap";
 import secondsTimeFormatter from "seconds-time-formatter";
@@ -313,6 +314,27 @@ export default function ExamSessionModelComponent({ c, examination }) {
     if (error) {
       setAlertData({ open: true, message: error, severity: "error" });
     }
+  };
+
+  const deleteExamSession = () => {
+    Swal.fire({
+      icon: "question",
+      title: "Delete Exam Session",
+      text: "Are you sure you want to delete this examination session?",
+      showCancelButton: true,
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const { data, error } = await httpService.delete(
+          `aguila/examination/deletesession/${examSession._id}`
+        );
+
+        if (data)
+          setAlertData({ open: true, severity: "success", message: data });
+
+        if (error)
+          setAlertData({ open: true, severity: "error", message: error });
+      }
+    });
   };
   return (
     <div>
@@ -663,11 +685,22 @@ export default function ExamSessionModelComponent({ c, examination }) {
             )}
           </div>
           {examSession && (
-            <div className="mt-2">
-              <LoadingButton onClick={GetSessionCentres}>
-                View centres that will be conducting this session
-              </LoadingButton>
-            </div>
+            <>
+              <div className="mt-2">
+                <LoadingButton onClick={GetSessionCentres}>
+                  View centres that will be conducting this session
+                </LoadingButton>
+              </div>
+              <div className="mt-2">
+                <LoadingButton
+                  startIcon={<Delete />}
+                  color="error"
+                  onClick={deleteExamSession}
+                >
+                  delete this exam session
+                </LoadingButton>
+              </div>
+            </>
           )}
         </div>
       </div>
@@ -770,12 +803,12 @@ export default function ExamSessionModelComponent({ c, examination }) {
                 <tr>
                   <td>
                     <Typography textTransform={"uppercase"}>
-                      {c.name}
+                      {c.centre.name}
                     </Typography>
                   </td>
                   <td>
                     <Typography textTransform={"uppercase"}>
-                      {c.capacity}
+                      {c.centre.capacity}
                     </Typography>
                   </td>
                 </tr>
